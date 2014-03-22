@@ -1,0 +1,57 @@
+<html>
+
+
+<div id="header">
+	<header>
+	<title>Submit Files to MASTIFF</title>
+	<LINK href="./css/upload2.css" rel="stylesheet" type="text/css">
+	<h1>Submit Files to MASTIFF</h1>
+	<a href="./mastiffResults.php">MASTIFF Results Dashboard</a> | <a href="./search.php">Search</a>
+	</header>
+</div>
+
+
+<body>
+	
+<div id="container">
+	
+	<div id="forms">
+	
+		<div id="mastiff">
+			
+			
+		
+			<form action="accept-file.php" method="post" enctype="multipart/form-data">
+
+				<div id="required">
+					<div id="reqHead">
+						Required Fields
+					</div>
+					<br/>
+					<input type="file" name="malware" size="25" required />
+					<br/>
+					<b>Note:</b> .xlsx and .docx files may take several minutes to complete,<br/>
+					as they are treated by MASTIFF as .zip files.
+					<br/>
+					<br/>
+					Ticket #: 
+					<input id="ticket" type="text" name="ticket" pattern="\d{1,12}" size="25" required />
+					<br/>
+				</div>
+				Notes:
+				<br/>
+				<textarea name="notes" cols="25" rows="5" style="width:700px; height:150px;"></textarea>
+				<br/>
+				<input type="submit" name="submit" value="Submit" />
+
+			</form>
+		
+		</div>
+	
+	</div>
+	
+</div>
+
+</body>
+
+</html>

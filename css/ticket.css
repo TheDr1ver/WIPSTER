@@ -1,0 +1,22 @@
+.even{
+	background-color:aliceblue;
+}
+
+header{
+	text-align:center;
+}
+
+#table{
+	width:1000px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:20px;
+}
+
+#ticket-table-main{
+	width:100%;
+}
+
+#container{
+	height:90%;
+}
