@@ -27,7 +27,7 @@ REMnux (http://zeltser.com/remnux).
 
 ## INSTALLATION
 
-1. Install [MASTIFF Upgrade](http://zeltser.com/remnux/remnux4-installation-notes.html)
+1. **REMnux v4 ONLY:** Install [MASTIFF Upgrade](http://zeltser.com/remnux/remnux4-installation-notes.html)
 
 	`wget http://remnux.org/mastiff-upgrade.zip`
 
@@ -90,7 +90,7 @@ REMnux (http://zeltser.com/remnux).
 
 	CTRL+X Y [Enter] To save and quit Nano
 
-7. Install [tcpick](http://tcpick.sourceforge.net/?t=1&p=INSTALL)
+7. **REMnux v4 ONLY:** Install [tcpick](http://tcpick.sourceforge.net/?t=1&p=INSTALL)
 
 	`sudo apt-get install tcpick`
 
