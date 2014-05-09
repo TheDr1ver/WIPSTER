@@ -1,8 +1,7 @@
 
 <center> 
 # Web Interface Portal & Security Threat Engine for REMnux (WIPSTER) v0.2
-(C) Nick Driver - 2014<br/>
-http://www.nickdriver.com - Twitter: @TheDr1ver</center>
+(C) Nick Driver - 2014 | http://www.nickdriver.com | [@TheDr1ver](https://www.twitter.com/TheDr1ver)</center>
 
 
 ## ABOUT
