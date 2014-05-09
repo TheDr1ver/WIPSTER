@@ -13,7 +13,6 @@
 ###########################
 
 require './func/urlFunctions.php';
-require './func/config.php';
 
 ###########################
 /*
@@ -22,6 +21,7 @@ require './func/config.php';
 ###########################
 
 #$apis = getAPIs();
+require './func/config.php';
 
 ##########################
 #For looking up a previously searched URL
@@ -200,7 +200,7 @@ else{
 					<br/>
 					<br/>
 					<div class="attribute">Ticket #: </div>
-					<input id="ticket" type="text" name="ticket" pattern="\d{1,12}" size="25" required />
+					<input id="ticket" type="text" name="ticket" pattern="\d{7,12}" size="25" required />
 					<br/>
 				</div>
 				

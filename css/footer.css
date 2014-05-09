@@ -24,3 +24,19 @@
 #footcontent .two{
 	font-style:italic;
 }
+
+#footcontent #right{
+	margin-right:15px;
+	position:absolute;
+	bottom:0;
+	right:0;
+}
+
+#footcontent #left{
+	display:inline-block;
+	margin-right:50px;
+}
+
+#footcontent #center{
+	display:inline-block;
+}

@@ -1,5 +1,7 @@
 <?php
 
+require './func/config.php'; #For Mastiff Config File
+
 /*
  * 
  * Process Uploaded File
@@ -170,7 +172,7 @@ echo '<br/>';
 
 
 #Run uploaded file through Remnux and delete original upload after run
-$command = '/usr/local/bin/mas.py -c /usr/local/etc/mastiff.conf "/var/www/upload/malware/'.$new_file_name.'" && rm "/var/www/upload/malware/'.$new_file_name.'"';
+$command = $mastiffPy.' -c '.$mastiffConf.' "/var/www/upload/malware/'.$new_file_name.'" && rm "/var/www/upload/malware/'.$new_file_name.'"';
 $masResult = shell_exec($command);
 
 #Get the largest row # in the files table of the mastiff.db

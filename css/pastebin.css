@@ -1,0 +1,44 @@
+.page{
+	padding:5px;
+}
+
+.pages{
+	text-align:center;
+	padding:5px;
+	background-color:white;
+}
+
+.res{
+	margin:10px;
+}
+
+.title{
+	font-size:25px;
+}
+
+#body{
+	width:1000px;
+	margin-left:auto;
+	margin-right:auto;
+	background-color:#F8F8F8;
+	border-style:solid;
+	border-color:#A5B2BD;
+}
+
+#header{
+	text-align:center;
+}
+
+#results{
+	height:700px;
+	overflow-y:auto;
+	overflow-x:auto;
+}
+
+#search{
+	padding-top:10px;
+	padding-bottom:1px;
+	text-align:center;
+	font-weight:bold;
+	background-color:aliceblue;
+}

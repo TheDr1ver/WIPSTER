@@ -12,7 +12,7 @@ session_start();
 #}
 
 error_reporting(E_ALL); ini_set('display_errors',1);
-
+require './func/config.php';
 #echo '<pre>';
 
 #var_dump($_SESSION);
@@ -243,7 +243,7 @@ if(isset($filename)){
 
 
 if(isset($filename)){
-	$trid = shell_exec('trid -d:/usr/local/lib/triddefs.trd "/var/www/mastiff/'.$md5.'/'.$filename.'"');
+	$trid = shell_exec('trid -d:'.$tridLoc.' "/var/www/mastiff/'.$md5.'/'.$filename.'"');
 	if (!is_null($trid)){
 		echo "\n".'##### FILE TYPE INFO (from TrID) #####'."\n";
 		echo $trid;

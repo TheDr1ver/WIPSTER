@@ -167,8 +167,9 @@ echo '<div id="container">';
 	echo '</div>'; #Content
 
 echo '</div>'; #Container
-//include './footer.php';
+
 echo '</body></html>';
+//include './footer.php';
 ?>
 
 
