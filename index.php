@@ -1,15 +1,15 @@
-<!-- WIPSTER - Web Interface Portal & Security Threat Engine for REMnux4 -->
-<!-- Pieced together by Nick Driver (@TheDr1ver) using Remnux v4 and various other FOSS - February 2014 -->
+<!-- WIPSTER - Web Interface Portal & Security Threat Engine for REMnux -->
+<!-- Pieced together by Nick Driver (@TheDr1ver) using REMnux and various other FOSS -->
 
 <HTML>
 	<HEAD>
-		<TITLE>WIPSTER v0.1 Beta</TITLE>
+		<TITLE>WIPSTER Beta - Web Interface Portal & Security Threat Engine for REMnux</TITLE>
 		<LINK href="./css/index.css" rel="stylesheet" type="text/css">
 	</HEAD>
 	<BODY>
 		<div id="container">
 			<div id="header">
-				<h1>WIPSTER v0.1 Beta</h1>
+				<h1>WIPSTER Beta Dashboard</h1>
 			</div>
 			<div id="content">
 				<div id="mastiff">
@@ -31,6 +31,7 @@
 					<h1>Other Tools</h1>
 					<ul>
 						<li><a href="./convert.php">Convert Strings to Various Other Formats</a></li>
+						<li><a href="./pastebinsearch.php">Search Various Pastebin Sites</a></li>
 						
 					</ul>
 				</div>
