@@ -73,6 +73,16 @@ mv /var/www/index.html /var/www/indexhtml.bak
 echo "Setting /var/www/ permissions to chown -R www-data:www-data..."
 chown -R www-data:www-data /var/www/
 
+# Mastiff fix for REMnux v4
+if (( "$remv"==4 )); then
+	wget http://remnux.org/mastiff-upgrade.zip
+	unzip mastiff-upgrade.zip
+	cd mastiff-upgrade
+	./upgrade_mastiff.sh
+	cd ..
+	rm -rf mastiff-upgrade mastiff-upgrade.zip
+fi
+
 # Restart Apache
 echo "Restarting Apache..."
 service apache2 restart
