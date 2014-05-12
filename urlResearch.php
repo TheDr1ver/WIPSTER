@@ -128,11 +128,11 @@ if (($_SERVER['REQUEST_METHOD']=='POST')||(isset($validOldURL)))	#If submitting 
 	##########################
 	#Open source actions
 	##########################
-	$vtScan = (!isset($_POST['vtChk'])) ? FALSE : vtInteract($_POST);	#If virustotal checkbox is checked, runs vt function, otherwise sets $vtScan to FALSE
+	$vtScan = (!isset($_POST['vtChk'])||($_POST['vtapi']=='Your VirusTotal API')) ? FALSE : vtInteract($_POST);	#If virustotal checkbox is checked, runs vt function, otherwise sets $vtScan to FALSE
 	$text = getMLD($url);
 	$checkMLD = (!isset($_POST['mldChk'])) ? FALSE : checkMLD($text,$urlArray['host']);	#Return FALSE if no matches, Return Array of matches if found
-	$googResults = (!isset($_POST['googChk'])) ? FALSE : checkGoog($urlArray['host'],$_POST['googapi']);
-	$wotResults = (!isset($_POST['wotChk'])) ? FALSE : checkWot($urlArray['host'],$_POST['wotapi']);
+	$googResults = (!isset($_POST['googChk'])||($_POST['googapi']=='Your Google SafeBrowsing API')) ? FALSE : checkGoog($urlArray['host'],$_POST['googapi']);
+	$wotResults = (!isset($_POST['wotChk'])||($_POST['wotapi']=='Your MyWOT API')) ? FALSE : checkWot($urlArray['host'],$_POST['wotapi']);
 	$wepawetResults = (!isset($_POST['wepawetChk'])) ? FALSE : wepawet($url);
 	$sucuriResults = (!isset($_POST['sucChk'])) ? FALSE : sucuri($urlArray['host']);
 	
