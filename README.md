@@ -27,6 +27,13 @@ REMnux (http://zeltser.com/remnux).
 
 ## INSTALLATION
 
+**NOTE:** For automatic installation, simply download install.sh to your home directory in REMnux and run:
+	`cd ~`
+	`chmod +x ./install.sh`
+	`sudo ./install.sh`
+	
+For manual installation, follow these steps:
+
 1. **REMnux v4 ONLY:** Install [MASTIFF Upgrade](http://zeltser.com/remnux/remnux4-installation-notes.html)
 
 	`wget http://remnux.org/mastiff-upgrade.zip`
