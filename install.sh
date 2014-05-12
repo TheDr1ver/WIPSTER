@@ -120,7 +120,7 @@ if (( "$remv"==5 )); then
 	# Change Mastiff Config Lines
 	sed -i -e "s/\$mastiffConf = '\/usr\/local\/etc\/mastiff\.conf';.*/#\$mastiffConf = '\/usr\/local\/etc\/mastiff\.conf';/g" /var/www/func/config.php
 	sed -i -e "s/#\$mastiffConf = '\/usr\/local\/mastiff\/mastiff\.conf';.*/\$mastiffConf = '\/usr\/local\/mastiff\/mastiff\.conf';/g" /var/www/func/config.php
-	sed -i -e "s/\$mastiffPy = '\/usr\/local\/etc\/mas\.py';.*/#\$mastiffPy = '\/usr\/local\/etc\/mas\.py';/g" /var/www/func/config.php
+	sed -i -e "s/\$mastiffPy = '\/usr\/local\/bin\/mas\.py';.*/#\$mastiffPy = '\/usr\/local\/bin\/mas\.py';/g" /var/www/func/config.php
 	sed -i -e "s/#\$mastiffPy = '\/usr\/local\/mastiff\/mas\.py';.*/\$mastiffPy = '\/usr\/local\/mastiff\/mas\.py';/g" /var/www/func/config.php
 	# Change trID line
 	sed -i -e "s/\$tridLoc = '\/usr\/local\/lib\/triddefs.trd';.*/#\$tridLoc = '\/usr\/local\/lib\/triddefs.trd';/g" /var/www/func/config.php
