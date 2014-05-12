@@ -17,7 +17,7 @@
 	#REMnux v 5 Beta
 		#$mastiffPy = '/usr/local/mastiff/mas.py';
 	#REMnux v4
-		$mastiffPy = '/usr/local/etc/mas.py';
+		$mastiffPy = '/usr/local/bin/mas.py';
 
 ##################
 ##### ANUBIS #####
