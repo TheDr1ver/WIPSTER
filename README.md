@@ -31,12 +31,14 @@ REMnux (http://zeltser.com/remnux).
 	
 	cd ~
 	
-	wget https://raw.githubusercontent.com/TheDr1ver/WIPSTER/master/install.sh
+	wget https://raw.githubusercontent.com/TheDr1ver/WIPSTER/master/install.sh --no-check-certificate
 	
 	chmod +x ./install.sh
 	
 	sudo ./install.sh
 	
+(Remember the default password for REMnux is **malware**) 
+
 This will install all the necessary software for WIPSTER to work properly. For manual installation, follow these steps:
 
 1. **REMnux v4 ONLY:** Install [MASTIFF Upgrade](http://zeltser.com/remnux/remnux4-installation-notes.html)
