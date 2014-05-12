@@ -26,7 +26,7 @@ REMnux (http://zeltser.com/remnux).
 	- TCP Streams from PCAPs
  
 ### OPTIONAL
-* anubis login credentials (Request account at https://anubis.iseclab.org/?action=register)
+* Anubis login credentials (Request account at https://anubis.iseclab.org/?action=register)
 * MyWOT API Key (https://www.mywot.com/en/signup?destination=profile/api)
 * VirusTotal API Key (https://www.virustotal.com/en/#dlg-join)
 * Google SafeBrowsing API Key (http://www.google.com/safebrowsing/key_signup.html)
@@ -38,13 +38,13 @@ REMnux (http://zeltser.com/remnux).
 
 **NOTE:** For automatic installation, simply run the following commands from the REMnux command prompt:
 	
-	cd ~
-	
-	wget https://raw.githubusercontent.com/TheDr1ver/WIPSTER/master/install.sh --no-check-certificate
-	
-	chmod +x ./install.sh
-	
-	sudo ./install.sh
+`cd ~`
+
+`wget https://raw.githubusercontent.com/TheDr1ver/WIPSTER/master/install.sh --no-check-certificate`
+
+`chmod +x ./install.sh`
+
+`sudo ./install.sh`
 	
 (Remember the default password for REMnux is **malware**) 
 
