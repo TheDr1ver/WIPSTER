@@ -24,6 +24,15 @@ REMnux (http://zeltser.com/remnux).
 	- sqlite3
 * tcpick (http://tcpick.sourceforge.net) - for extracting
 	- TCP Streams from PCAPs
+ 
+### OPTIONAL
+* anubis login credentials (Request account at https://anubis.iseclab.org/?action=register)
+* MyWOT API Key (https://www.mywot.com/en/signup?destination=profile/api)
+* VirusTotal API Key (https://www.virustotal.com/en/#dlg-join)
+* Google SafeBrowsing API Key (http://www.google.com/safebrowsing/key_signup.html)
+* Google Custom Search Engine for searching PasteBin-like sites (https://www.google.com/cse/all)
+* Twitter App API Keys for streaming feed of #0Day (https://dev.twitter.com/apps/new)
+
 
 ## INSTALLATION
 
