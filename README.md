@@ -28,8 +28,11 @@ REMnux (http://zeltser.com/remnux).
 ## INSTALLATION
 
 **NOTE:** For automatic installation, simply download install.sh to your home directory in REMnux and run:
+	
 	`cd ~`
+	
 	`chmod +x ./install.sh`
+	
 	`sudo ./install.sh`
 	
 For manual installation, follow these steps:
