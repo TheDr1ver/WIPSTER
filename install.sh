@@ -3,7 +3,7 @@
 # Intro
 echo "This script will install WIPSTER on your version of REMnux."
 # Press any key to continue
-
+read -p "Press any key to continue..."
 
 ROOT_UID=0 	# Only users with $UID 0 have root privileges
 
