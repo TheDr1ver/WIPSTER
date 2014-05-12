@@ -35,7 +35,7 @@ REMnux (http://zeltser.com/remnux).
 	
 	sudo ./install.sh
 	
-For manual installation, follow these steps:
+This will install all the necessary software for WIPSTER to work properly. For manual installation, follow these steps:
 
 1. **REMnux v4 ONLY:** Install [MASTIFF Upgrade](http://zeltser.com/remnux/remnux4-installation-notes.html)
 
@@ -59,13 +59,7 @@ For manual installation, follow these steps:
 
 	Check the install by browsing to server's IP, and look for **It Worked!**
 
-3. Install MySQL (probably not necessary since the backend runs on sqlite3, but I haven't tested it without)
-
-	`sudo apt-get install mysql-server libapache2-mod-auth-mysql php5-mysql`
-
-	Leave password blank (or don't) for all mysql setup prompts
-
-4. Install PHP
+3. Install PHP
 
 	`sudo apt-get install php5 libapache2-mod-php5 php5-mcrypt`
 
@@ -77,18 +71,13 @@ For manual installation, follow these steps:
     		DirectoryIndex index.php index.html index.cgi index.pl index.php index.xhtml index.htm
     	</IfModule>
 
-5. Install PHP modules
+4. Install PHP modules
 
-	curl:
+	curl and sqlite:
 
-	`sudo apt-get install php5-curl`
+	`sudo apt-get install php5-curl php5-sqlite`
 
-	sqlite:
-
-	`sudo apt-get install php5-sqlite`
-
-
-6. Configure PHP max upload size
+5. Configure PHP max upload size
 
 	`sudo nano /etc/php5/apache2/php.ini`
 
@@ -100,11 +89,11 @@ For manual installation, follow these steps:
 
 	CTRL+X Y [Enter] To save and quit Nano
 
-7. **REMnux v4 ONLY:** Install [tcpick](http://tcpick.sourceforge.net/?t=1&p=INSTALL)
+6. **REMnux v4 ONLY:** Install [tcpick](http://tcpick.sourceforge.net/?t=1&p=INSTALL)
 
 	`sudo apt-get install tcpick`
 
-8. Install WIPSTER (assuming WIPSTER-master.zip is in your home directory)
+7. Install WIPSTER (assuming WIPSTER-master.zip is in your home directory)
 
 	`sudo cp ~/WIPSTER-master.zip /var/www/`
 
@@ -118,15 +107,15 @@ For manual installation, follow these steps:
 	
 	`sudo rm -rf ./WIPSTER-master/`
 
-9. Set permissions
+8. Set permissions
 
 	`sudo chown -R www-data:www-data /var/www/`
 
-10. Restart Apache
+9. Restart Apache
 
 	`sudo service apache2 restart`
 
-11. Modify mastiff.conf 
+10. Modify mastiff.conf 
 
     *REMnux v4:* /usr/local/etc/mastiff.conf
 
@@ -138,11 +127,11 @@ For manual installation, follow these steps:
 
     **NOTE:** You can input your VirusTotal API here too if you want to auto-check VirusTotal
 
-12. Open /var/www/func/config.php and edit it to include your specific login info and/or API keys
+11. Open /var/www/func/config.php and edit it to include your specific login info and/or API keys
 
-13. Browse to the IP of your REMnux box to get the WIPSTER start page
+12. Browse to the IP of your REMnux box to get the WIPSTER start page
 
-14. If you wish to run pastebin searches automatically every hour:
+13. If you wish to run pastebin searches automatically every hour:
 
     `cd /etc/cron.d/ `
 
