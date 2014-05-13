@@ -3,10 +3,11 @@
 	border-top-color:darkblue;
 	border-top-width:3px;
 	background-color:white;
-	padding-top:20px;
+	padding-top:10px;
 	position:fixed;
 	bottom:0px;
-	width:1900px;
+	width:100%;
+	min-width:1024px;
 	z-index:99999;
 	vertical-align:middle;
 	
@@ -15,6 +16,7 @@
 #footer p{
 	margin-top:0px;
 	margin-bottom:5px;
+	float:left;
 }
 
 #footcontent .one{
@@ -27,16 +29,21 @@
 
 #footcontent #right{
 	margin-right:15px;
-	position:absolute;
-	bottom:0;
-	right:0;
+	margin-left:auto;
+	display:inline-block;
+	vertical-align:top;
 }
 
 #footcontent #left{
 	display:inline-block;
 	margin-right:50px;
+	margin-left:auto;
+	vertical-align:top;
 }
 
 #footcontent #center{
 	display:inline-block;
+	margin-left:auto;
+	margin-right:15px;
+	margin-bottom:5px;
 }
