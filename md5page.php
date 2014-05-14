@@ -244,7 +244,9 @@ echo '<html>';
 					else{
 						foreach($fileArrays['b64'] as $key=>$val){
 							
-							echo $pcapFormat['block'][0];
+							#echo "<div id='base64block>";
+							#echo $pcapFormat['block'][0];
+							#echo "</div>";
 							
 							echo '<a href="./mastiff/'.$idmd5.'/'.$val.'">Download '.$val.'</a><br/>';
 							
