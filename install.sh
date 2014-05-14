@@ -3,7 +3,7 @@
 # Intro
 echo "This script will install WIPSTER on your version of REMnux."
 # Press any key to continue
-read -p "Press any key to continue..."
+read -p "Press [ENTER] to continue..."
 
 ROOT_UID=0 	# Only users with $UID 0 have root privileges
 
@@ -146,7 +146,7 @@ echo "Setup your config.php file and then browse to your local IP to access WIPS
 
 
 # Prompt - Press any key to edit config.php with SciTE
-read -p "Press any key to edit /var/www/func/config.php..."
+read -p "Press [ENTER] to edit /var/www/func/config.php..."
 
 gksu scite /var/www/func/config.php
 
