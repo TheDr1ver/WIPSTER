@@ -44,6 +44,7 @@ if(isset($_GET['url'])){
 	$_POST['ipvoidChk'] = TRUE;
 	$_POST['rexChk'] = TRUE;
 	$_POST['urlqChk'] = TRUE;
+	$_POST['qtraChk'] = TRUE;
 	
 	$_POST['duckChk'] = TRUE;
 	$_POST['startChk'] = TRUE;
@@ -216,6 +217,7 @@ else{
 						<div class="osCheckbox"><input type="checkbox" name="ipvoidChk" id="ipvoidChk" value="true" checked>IPVoid</div>
 						<div class="osCheckbox"><input type="checkbox" name="rexChk" id="rexChk" value="true" checked>RexSwain</div>
 						<div class="osCheckbox"><input type="checkbox" name="urlqChk" id="urlqChk" value="true" checked>URLQuery</div>
+						<div class="osCheckbox"><input type="checkbox" name="qtraChk" id="qtraChk" value="true" checked>Quttera</div>
 					</div>
 					
 					<div id="browsers">
@@ -698,6 +700,20 @@ else{
 			echo '</div>';
 		}
 		
+		###########################
+		### QUTTERA SECTION
+		###########################
+		
+		if(isset($_POST['qtraChk'])){
+			echo '<div id="quttera">';
+				echo '<h2>Quttera</h2>';
+				
+				echo '<div id="qtrashowhide" class="shframe">Show/Hide Frame</div>';
+				
+				echo '<iframe id="qtraframe" style="display:none;" width="90%" height="500px" src="http://quttera.com/detailed_report/'.$urlArray['host'].'"></iframe>';
+			echo '</div>';
+		}
+		
 
 	echo '</div>';		#END SUMMARY SECTION
 
@@ -787,6 +803,10 @@ else{
 			$("#urlframe").toggle();
 		});
 		
+		$("#qtrashowhide").click(function(){
+			$("#qtraframe").toggle();
+		});
+		
 		$("#duckshowhide").click(function(){
 			$("#duckframe").toggle();
 		});
@@ -833,7 +853,10 @@ else{
 			checkChkBox('#rexChk','#rexswain');
 		});
 		$('#urlqChk').change(function(){
-			checkChkBox('#urlChk','#urlquery');
+			checkChkBox('#urlqChk','#urlquery');
+		});
+		$('#qtraChk').change(function(){
+			checkChkBox('#qtraChk','#quttera');
 		});
 		
 		$('#duckChk').change(function(){
