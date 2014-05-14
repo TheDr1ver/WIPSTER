@@ -258,6 +258,14 @@ if($yara){
 	}
 }
 
+if(strpos($type,'PDF') != false){
+	$peepdf = shell_exec('peepdf "/var/www/mastiff/'.$md5.'/'.$filename.'"');
+	if (!is_null($peepdf)){
+		echo "\n".'##### PEEPDF RESULTS #####'."\n";
+		echo $peepdf;
+	}
+}
+
 $pdfid = @file('./mastiff/'.$md5.'/pdfid.txt');
 if($pdfid){
 	echo "\n".'##### PDFID #####'."\n";
