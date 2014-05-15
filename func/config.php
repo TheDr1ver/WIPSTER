@@ -4,6 +4,9 @@
 ##### Set the below variables to your specific credentials and API keys #####
 #############################################################################
 
+#REMnux version
+$remver = '4';
+
 ###################
 ##### MASTIFF #####
 ###################
@@ -18,6 +21,16 @@
 		#$mastiffPy = '/usr/local/mastiff/mas.py';
 	#REMnux v4
 		$mastiffPy = '/usr/local/bin/mas.py';
+
+#######################
+##### TRid Location
+#######################
+
+#REMnux v5 BETA
+#$tridLoc = '/usr/local/TrID/triddefs.trd';
+
+#REMnux v4
+$tridLoc = '/usr/local/lib/triddefs.trd';
 
 ##################
 ##### ANUBIS #####
@@ -85,14 +98,6 @@ $twitterQuery = '#0Day -RT filter:links';	#Searches for #0Day, ignoring Re-Tweet
 $twitterConSec = 'Twitter Consumer Secret';
 $twitterOAuthSec = 'Twitter Access Token Secret';
 
-#######################
-##### TRid Location
-#######################
 
-#REMnux v5 BETA
-#$tridLoc = '/usr/local/TrID/triddefs.trd';
-
-#REMnux v4
-$tridLoc = '/usr/local/lib/triddefs.trd';
 
 ?>
