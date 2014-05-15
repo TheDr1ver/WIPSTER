@@ -274,6 +274,17 @@ if($pdfid){
 	}
 }
 
+if ((strpos($type,'EXE') != false)&&($remver=='5')){
+	
+	chdir('/usr/local/peframe/');
+	$peframe = shell_exec('python ./peframe.py "/var/www/mastiff/'.$md5.'/'.$filename.'"');
+	chdir('/var/www/');
+	if (!is_null($peframe)){
+		echo "\n".'##### PESCANNER RESULTS #####'."\n";
+		echo $peframe;
+	}
+}
+
 $pescan = @file('./mastiff/'.$md5.'/peinfo-quick.txt');
 if($pescan){
 	echo "\n".'##### PESCANNER RESULTS #####'."\n";
