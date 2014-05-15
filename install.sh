@@ -137,6 +137,8 @@ if (( "$remv"==5 )); then
 	sed -i -e "s/#\$tridLoc = '\/usr\/local\/TrID\/triddefs.trd';.*/\$tridLoc = '\/usr\/local\/TrID\/triddefs.trd';/g" /var/www/func/config.php
 	# Change footer
 	sed -i -e "s/REMNUX 4/REMNUX 5/g" /var/www/footer.php
+	# Change REMnux Version
+	sed -i -e "s/\$remver=4;/\$remver=5;/g" /var/www/func/config.php
 else
 	apt-get install tcpick	# Install tcpick for REMnux v4
 fi
