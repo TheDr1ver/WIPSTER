@@ -5,10 +5,10 @@
 	echo '<div id="footer">';
 	
 		echo '<div id="footcontent">';
-				
+				echo "<div id='collapseBtn'>Hide/Show Footer</div>";
 				echo '<div id="left">';
 				echo '<p class="one"><a href="./">WIPSTER v0.2 Beta</a> (C) Nick Driver (<a href="https://www.twitter.com/TheDr1ver">@TheDr1ver</a>) - '.date("Y").'</p>';
-				echo '<p class="two">Operating on <a href="http://zeltser.com/remnux/">REMNUX 4</a>, running Apache with PHP version '.phpversion().'.</p>';
+				echo '<p class="two">Operating on <a href="http://zeltser.com/remnux/">REMNUX 5</a>, running Apache with PHP version '.phpversion().'.</p>';
 				echo '</div>';
 				
 				echo '<div id="center">';
@@ -37,3 +37,36 @@
 
 
 ?>
+
+<script src="/var/www/scripts/jquery-1.11.0.min.js"></script>
+<script>
+$(document).ready(function(){
+	if($(window).width()<1080){
+		$("#footcontent").animate({
+			height:'30px'
+			},600);
+		$toggle = 'show';
+	}
+	else{
+		$toggle = 'hide';
+	}
+	
+	$("#collapseBtn").click(function(){
+		if($toggle=='hide'){
+			$("#footcontent").animate({
+			height:'30px'
+			},600);
+			$toggle = 'show';
+		}
+		
+		else{
+			$("#footcontent").animate({
+			height:'auto'
+			},600);
+			$toggle = 'hide';
+		}
+		
+		
+	});
+});
+</script>
