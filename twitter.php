@@ -3,6 +3,8 @@
 require './func/config.php';
 
 $time = time();
+# Note that if your system time is incorrect, you may need to update it using this command:
+# sudo ntpdate [your ntp server] && sudo hwclock -w
 $httpmethod = 'GET';
 $baseUrl = 'https://api.twitter.com/1.1/search/tweets.json';
 
