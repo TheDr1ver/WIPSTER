@@ -280,7 +280,7 @@ if ((strpos($type,'EXE') != false)&&($remver=='5')){
 	$peframe = shell_exec('python ./peframe.py "/var/www/mastiff/'.$md5.'/'.$filename.'"');
 	chdir('/var/www/');
 	if (!is_null($peframe)){
-		echo "\n".'##### PESCANNER RESULTS #####'."\n";
+		echo "\n".'##### PEFRAME RESULTS #####'."\n";
 		echo $peframe;
 	}
 }
