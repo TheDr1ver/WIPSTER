@@ -258,7 +258,7 @@ echo '<a href="./mastiffResults.php">View List of All MASTIFF Results</a>';
 <script>
 setTimeout(function(){
 	window.location.assign("./md5page.php?idmd5=<? echo $md5hash;?>");
-}, 5000);
+}, 2500);
 </script>
 
 <?php
