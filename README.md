@@ -31,8 +31,6 @@ http://i.imgur.com/N1r9jOe.png
 
 http://i.imgur.com/jkKQohb.png
 
-http://i.imgur.com/N1r9jOe.png
-
 http://i.imgur.com/CtilD3N.png
 
 http://i.imgur.com/q7OBTsE.png
