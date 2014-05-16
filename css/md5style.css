@@ -24,16 +24,16 @@ h3{
 }
 
 #bottomcontent{
-	
+	display:flex;
 }
 
 #browser{
 	margin-left:auto;
-	/*margin-right:auto;*/
+	margin-right:auto;
 	padding:10px;
 	margin-top:50px;
 	/*float:right;*/
-	width:700px;
+	width:600px;
 	background-color:blanchedalmond;
 }
 
@@ -87,12 +87,12 @@ h3{
 }
 
 #files{
-	/*margin-left:auto;*/
+	margin-left:auto;
 	float:left;
-	margin-right:auto;
-	width:700px;
+	/*margin-right:auto*/;
+	width:600px;
 	padding:10px;
-	/*margin-top:50px;*/
+	margin-top:50px;
 	background-color:lightgoldenrodyellow;
 }
 
@@ -110,8 +110,9 @@ h3{
 }
 
 #opensource{
-	width:700px;
+	width:600px;
 	margin-left:auto;
+	margin-right:auto;
 	background-color:aliceblue;
 	padding:10px;
 	/*height:100%;*/
@@ -133,8 +134,9 @@ h3{
 }
 
 #summary{
-	width:700px;
+	width:600px;
 	float:left;
+	margin-left:auto;
 	background-color:aliceblue;
 	padding:10px;
 	/*height:100%;*/
