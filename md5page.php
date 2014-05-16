@@ -208,12 +208,14 @@ echo '<html>';
 		### EXPORT ALL TEXT
 		###########################
 		
+		/*
 		echo '<div id="txtall">';
 			
 				echo '<h2>Results from MASTIFF Analysis</h2>';
 				echo '<a href="./txtdump.php?idmd5='.$idmd5.'" target="_blank">Open in new Tab</a></h2>';
 			
 		echo '</div>';
+		*/
 		
 		
 		###########################
@@ -806,7 +808,7 @@ echo '<html>';
 		
 		echo '<h2>DuckDuckGo</h2>';
 		
-		echo '<iframe width="90%" height="500px" src="http://www.duckduckgo.com/?q=%22'.$idmd5.'%22"></iframe>';
+		echo '<iframe width="100%" height="500px" src="http://www.duckduckgo.com/?q=%22'.$idmd5.'%22"></iframe>';
 
 		echo '<br/>';
 		echo '<br/>';
@@ -817,7 +819,7 @@ echo '<html>';
 		
 		echo '<h2>StartPage</h2>';
 		
-		echo '<iframe width="90%" height="500px" src="https://www.startpage.com/do/metasearch.pl?q=%22'.$idmd5.'%22"></iframe>';
+		echo '<iframe width="100%" height="500px" src="https://www.startpage.com/do/metasearch.pl?q=%22'.$idmd5.'%22"></iframe>';
 
 		echo '<br/>';
 		echo '<br/>';
@@ -828,7 +830,7 @@ echo '<html>';
 		
 		echo '<h2>ThreatExpert</h2>';
 		
-		echo '<iframe name="threatexpert" width="90%" height="500px" src="http://www.threatexpert.com/report.aspx?md5='.$idmd5.'"></iframe>';
+		echo '<iframe name="threatexpert" width="100%" height="500px" src="http://www.threatexpert.com/report.aspx?md5='.$idmd5.'"></iframe>';
 
 		echo '<br/>';
 		
