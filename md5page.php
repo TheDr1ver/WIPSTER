@@ -348,6 +348,44 @@ echo '<html>';
 		echo '</div>';
 		
 		###########################
+		### STRINGS
+		###########################
+		
+		echo '<div id ="strings">';
+			echo '<h2>Strings</h2>';
+			echo '<a href="./mastiff/'.$idmd5.'/strings.txt" target="_blank">View all strings</a><br/>';
+				
+				$stringsfile=file('./mastiff/'.$idmd5.'/strings.txt');
+				
+				echo '<div id="xorhttp">';
+				
+					echo '<h3>Strings with "HTTP":</h3>';
+					foreach($stringsfile as $line_no=>$line){
+						$search = strstr($line, 'http');
+						if($search!=FALSE){
+							echo htmlentities($line);
+							echo '<br/>';
+						}
+					}
+					
+				echo '</div>';
+				
+				echo '<div id="xorprog">';	
+				
+					echo '<h3>Strings with "Program":</h3>';
+					foreach($stringsfile as $line_no=>$line){
+						$search = strstr($line, 'program');
+						if($search!=FALSE){
+							echo htmlentities($line);
+							echo '<br/>';
+						}
+					}
+				
+				echo '</div>';
+							
+		echo '</div>';
+		
+		###########################
 		### DE-XOR
 		###########################
 		
