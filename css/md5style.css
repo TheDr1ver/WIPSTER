@@ -46,8 +46,6 @@ h3{
 	max-height:300px;
 	margin-top:10px;
 	width:90%;
-	/*border-style:solid;
-	padding:10px;*/
 	overflow-y:auto;
 	overflow-x:auto;
 }
@@ -135,6 +133,14 @@ h3{
 
 #samples{
 	
+}
+
+#strings{
+	max-height:300px;
+	margin-top:10px;
+	width:90%;
+	overflow-y:auto;
+	overflow-x:auto;
 }
 
 #summary{
