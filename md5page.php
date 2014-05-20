@@ -118,7 +118,7 @@ echo '<html>';
 		}
 		
 		echo '<br/>';
-		echo '<span id="emailformat"><a href="./ticketgen.php" target="_blank">Email TEXT Format</a></span>';
+		echo '<span id="emailformat"><a href="./ticketgen.php" target="_blank">View Results in Plain Text</a></span>';
 		#echo ' | <a href="./xor.php">De-XOR</a>';
 	
 	echo '</div>';
@@ -306,6 +306,48 @@ echo '<html>';
 		}
 		
 		###########################
+		### ANALYZE FUZZY HASH
+		###########################
+		
+		echo '<div id="fuzzy">';
+			
+				$fuzzyOut = shell_exec('grep -e "[0-9a-f]\{32\}" ./mastiff/'.$idmd5.'/fuzzy.txt');
+								 
+				echo '<h2>Fuzzy Hash (SSDeep) Results</h2>';
+				
+				if (isset($fuzzyOut))
+				{
+					$regPattern = '/[0-9a-f]{32}/i';
+												
+					echo '<pre>';
+					
+						echo 'MD5                                      Percentage Match';
+						echo '<br/><br/>';
+						
+						$fuzzySplit = preg_split("/((\r?\n)|(\r\n?))/", $fuzzyOut);
+						array_pop($fuzzySplit);	#Removes last entry, which is blank
+														
+						foreach($fuzzySplit as $line)
+						{
+							preg_match($regPattern,$line,$match);
+							$replacement = '<a href="./md5page.php?idmd5='.$match[0].'">'.$match[0].'</a>';
+							$output = preg_replace($regPattern, $replacement, $line);
+							$output.='<br/>';
+							echo $output;
+
+						}
+					
+					echo '</pre>';
+				}
+				
+				else
+				{
+					echo 'No similar files were previously analyzed by MASTIFF';
+				}
+			
+		echo '</div>';
+		
+		###########################
 		### DE-XOR
 		###########################
 		
@@ -355,47 +397,7 @@ echo '<html>';
 			}
 		echo '</div>';
 		
-		###########################
-		### ANALYZE FUZZY HASH
-		###########################
 		
-		echo '<div id="fuzzy">';
-			
-				$fuzzyOut = shell_exec('grep -e "[0-9a-f]\{32\}" ./mastiff/'.$idmd5.'/fuzzy.txt');
-								 
-				echo '<h2>Fuzzy Hash (SSDeep) Results</h2>';
-				
-				if (isset($fuzzyOut))
-				{
-					$regPattern = '/[0-9a-f]{32}/i';
-												
-					echo '<pre>';
-					
-						echo 'MD5                                      Percentage Match';
-						echo '<br/><br/>';
-						
-						$fuzzySplit = preg_split("/((\r?\n)|(\r\n?))/", $fuzzyOut);
-						array_pop($fuzzySplit);	#Removes last entry, which is blank
-														
-						foreach($fuzzySplit as $line)
-						{
-							preg_match($regPattern,$line,$match);
-							$replacement = '<a href="./md5page.php?idmd5='.$match[0].'">'.$match[0].'</a>';
-							$output = preg_replace($regPattern, $replacement, $line);
-							$output.='<br/>';
-							echo $output;
-
-						}
-					
-					echo '</pre>';
-				}
-				
-				else
-				{
-					echo 'No similar files were previously analyzed by MASTIFF';
-				}
-			
-		echo '</div>';
 		
 	echo '</div>'; #End Summary Section
 	
