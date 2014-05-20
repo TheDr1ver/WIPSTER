@@ -28,11 +28,11 @@ h3{
 }
 
 #browser{
+	display:inline-block;
 	margin-left:auto;
 	margin-right:auto;
 	padding:10px;
 	margin-top:50px;
-	/*float:right;*/
 	width:600px;
 	background-color:blanchedalmond;
 }
@@ -87,9 +87,11 @@ h3{
 }
 
 #files{
+	display:inline-block;
+	vertical-align:top;
 	margin-left:auto;
-	float:left;
-	/*margin-right:auto*/;
+	/*float:left;*/
+	margin-right:10px;
 	width:600px;
 	padding:10px;
 	margin-top:50px;
@@ -139,7 +141,7 @@ h3{
 	display:inline-block;
 	width:600px;
 	/*float:left;*/
-	margin-right:30px;
+	margin-right:10px;
 	margin-left:auto;
 	background-color:aliceblue;
 	padding:10px;
