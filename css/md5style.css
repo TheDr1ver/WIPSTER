@@ -63,7 +63,7 @@ h3{
 	padding:5px;
 	border-color:darkgreen;
 	background-color:lightgreen;
-	display:block;
+	display:inline-block;
 	width:250px;
 	margin-left:auto;
 	margin-right:auto;
@@ -158,6 +158,9 @@ h3{
 	display:flex;
 }
 
+#topbuttons{
+}
+
 #txtall{
 	border-top-style:solid;
 	border-bottom-style:solid;
@@ -177,7 +180,7 @@ h3{
 	padding:5px;
 	border-color:darkgreen;
 	background-color:yellow;
-	display:block;
+	display:inline-block;
 	width:250px;
 	margin-left:auto;
 	margin-right:auto;
@@ -240,4 +243,186 @@ h3{
 .httpreq{
 	margin-top:10px;
 	margin-bottom:10px;
+}
+
+/*THREATANALYZER STYLES*/
+
+#taPage{
+	display:none;
+}
+
+#taButton{
+	font-weight:bold;
+	font-size:x-large;
+	margin-top:10px;
+	border-style:solid;
+	padding:5px;
+	border-color:black;
+	background-color:aliceblue;
+	display:inline-block;
+	width:250px;
+	margin-left:10px;
+	margin-right:10px;
+	cursor:pointer;
+}
+
+#taButton a:link{
+	text-decoration:none;
+	color:black;
+}
+
+#taButton a:visited{
+	text-decoration:none;
+	color:black;
+}
+
+#taButton a:hover{
+	text-decoration:none;
+	color:red;
+}
+
+#taButtonSubmit{
+	font-weight:bold;
+	font-size:x-large;
+	margin-top:10px;
+	border-style:solid;
+	padding:5px;
+	border-color:black;
+	background-color:aliceblue;
+	display:inline-block;
+	width:250px;
+	margin-left:10px;
+	margin-right:10px;
+	cursor:pointer;
+}
+
+#taButtonSubmit a:link{
+	text-decoration:none;
+	color:black;
+}
+
+#taButtonSubmit a:visited{
+	text-decoration:none;
+	color:black;
+}
+
+#taButtonSubmit a:hover{
+	text-decoration:none;
+	color:red;
+}
+
+#remButton{
+	font-weight:bold;
+	font-size:x-large;
+	margin-top:10px;
+	border-style:solid;
+	padding:5px;
+	border-color:black;
+	background-color:orange;
+	display:inline-block;
+	width:250px;
+	margin-left:10px;
+	margin-right:10px;
+	cursor:pointer;
+}
+
+#remButton a:link{
+	text-decoration:none;
+	color:black;
+}
+
+#remButton a:visited{
+	text-decoration:none;
+	color:black;
+}
+
+#remButton a:hover{
+	text-decoration:none;
+	color:red;
+}
+
+#taContent{
+		width:100%;
+		height:100%;
+}
+#taSummary{
+	width:1000px;
+	margin-left:auto;
+	margin-right:auto;
+}
+#analysisTable{
+	/*content-align:center;*/
+	display:table;
+}
+.taHead{
+	display:table-header-group;
+	font-weight:bold;
+	padding:5px;
+}
+.tahCell{
+	display:table-cell;
+	padding-right:5px;
+}
+.taRowEv{
+	background-color:aliceblue;
+}
+.taRowOd{
+	background-color:white;
+}
+.taCell{
+	display:table-cell;
+	padding:5px;
+}
+.taRow{
+	display:table-row;
+}
+.blink{
+	animation: blink 1s steps(5, start) infinite;
+	-webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink{
+	to {visibility:hidden;}
+}
+@-webkit-keyframes blink{
+	to {visibility:hidden;}
+}
+.calloutVal{
+	margin:5px;
+}
+.callData{
+	display:inline-block;
+	height:250px;
+	width:300px;
+	overflow-x:auto;
+	overflow-y:auto;
+	vertical-align:top;
+	margin-right:15px;
+	border-style:solid;
+	border-color:black;
+}
+#ipCallouts{
+	display:inline-block;
+	height:350px;
+	width:300px;
+	vertical-align:top;
+	margin-right:5px;
+}
+#dnsCallouts{
+	display:inline-block;
+	height:350px;
+	width:300px;
+	vertical-align:top;
+	margin-right:5px;
+}
+#calloutCmd{
+	display:inline-block;
+	height:350px;
+	width:300px;
+	vertical-align:top;
+}
+#calloutCmd .callData{
+	white-space:pre;
+}
+#calloutCmd .calloutVal{
+	margin-bottom:15px;
 }
