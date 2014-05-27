@@ -251,7 +251,8 @@ foreach($connectionDumps as $key=>$val){
 			#Get IP Direct Connection
 			if($conVal['@sandbox_action']=='FAIL'){
 				if(!in_array($conVal['@remote_ip'],$ipCallouts)){
-					$ipCallouts[$conKey]=$conVal['@remote_ip'];
+					#$ipCallouts[$conKey]=$conVal['@remote_ip'];
+					$ipCallouts[]=$conVal['@remote_ip'];
 				}
 				
 			}
@@ -263,7 +264,8 @@ foreach($connectionDumps as $key=>$val){
 			#Get HTTP Headers
 			if(array_key_exists('http_command',$conVal)){
 				foreach($conVal['http_command'] as $httpComKey=>$httpComVal){
-					$calloutCommands[$conKey]=$httpComVal['@method'].": ".$httpComVal['@url'];
+					#$calloutCommands[$conKey]=$httpComVal['@method'].": ".$httpComVal['@url'];
+					$calloutCommands[]=$httpComVal['@method'].": ".$httpComVal['@url'];
 				}
 			}
 			
@@ -271,10 +273,12 @@ foreach($connectionDumps as $key=>$val){
 				foreach($conVal['http_header'] as $headKey=>$headVal){
 					#echo '#@header: '.$headVal['@header'].'<br/>';
 					if(strpos($headVal['@header'],'User-Agent')!==false){
-						$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
+						#$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
+						$calloutCommands[]=end($calloutCommands)."\r\n".$headVal['@header'];
 					}
 					if(strpos($headVal['@header'],'Host')!==false){
-						$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
+						#$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
+						$calloutCommands[]=end($calloutCommands)."\r\n".$headVal['@header'];
 					}
 				}
 			}
