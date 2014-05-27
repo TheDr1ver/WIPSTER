@@ -9,7 +9,7 @@
 session_start();
 
 #error_reporting(E_ALL); ini_set('display_errors',1);
-
+require('./func/config.php');
 
  
 #Get MD5 Variable from URL
@@ -71,6 +71,79 @@ $_SESSION['link'] = isset($url) ? $url : FALSE;
 
 $_SESSION['anubis'] = isset($anubis) ? $anubis : FALSE;
 
+#Submit to ThreatAnalyzer
+
+#cURL wrapper
+function callTA($command,$threatAPI,$threatPage,$threatArgs,$tapost,$postArray){
+	#echo '<p>Command: '.$command.'</p>';
+	$target=$threatPage.$command."?api_token=".$threatAPI."&".$threatArgs;
+	#echo '<p>URL sent: '.$target.'</p>';
+	$ch=curl_init();
+	curl_setopt($ch, CURLOPT_URL, $target);
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	curl_setopt($ch, CURLOPT_HTTPGET, 1);
+
+	if(isset($tapost)){
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $postArray);
+	}
+	$result = curl_exec($ch);
+	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	$results=array($result,$httpCode);
+	return $results;
+}
+
+if($threatAnalyzerPlugin===True){
+	
+	#Check for submission argument
+	if(isset($_GET['tasub'])){
+		
+		# Copy file to temporary directory
+		$taCommand[]='cp /var/www/mastiff/'.$idmd5.'/'.$fileArrays['vir'][0].' /var/www/upload/malware/';
+		#Rename the file
+		$taFile=substr($fileArrays['vir'][0],0,-4);	#Strip .VIR (4 chars)
+		$taCommand[]='mv /var/www/upload/malware/'.$fileArrays['vir'][0].' /var/www/upload/malware/'.$taFile;
+		#Run the above commands
+		foreach($taCommand as $key=>$val){
+			shell_exec($val);
+		}
+		# Set full path of file upload
+		$taFile='@/var/www/upload/malware/'.$taFile;
+		
+		
+		$command='/submissions';
+		$threatArgs='';
+		
+		
+		#most vars set in config.php
+		$postArray=array(
+			'submission[file]'=>$taFile,
+			'submission[priority]'=>$taSubPriority,
+			'submission[sandbox][group_option]'=>'custom',
+			'submission[sandbox][custom_sandbox][]'=>$taSubSandbox,
+			'submission[submission_type]'=>'file',
+			'submission[reanalyze]'=>$taSubReanalyze
+		);
+		
+		if (isset($taSubCustomName)){
+			$custNamePost = 'custom_param['.$taSubCustomName.']';
+			$postArray[$custNamePost]=$taSubCustomVal;
+			}
+		
+		$submission=@callTA($command,$threatAPI,$threatPage,$threatArgs,1,$postArray);	#1 means POST
+		$threatArgs='';
+		
+		shell_exec('rm -r /var/www/upload/malware/*');	#Clean up  uploaded files
+		#echo '<p>HTTP Response: '.$response[1].'</p>';
+		$submissionResp = json_decode($submission[0], true);
+		#echo '<pre>';
+		#var_dump($submission);
+		#echo '</pre>';
+	}
+	
+}
+
 
 /*
 echo '<pre>';
@@ -95,6 +168,7 @@ echo '<html>';
 	
 		echo '<title>'.$idmd5.'</title>';
 		echo '<LINK href="./css/md5style.css" rel="stylesheet" type="text/css">';
+		echo '<script src="./scripts/jquery-1.11.0.min.js"></script>';
 		
 	echo '</head>';
 	
@@ -112,13 +186,104 @@ echo '<html>';
 		echo '<br/>';
 		echo '<br/>';
 		echo '<a href="./mastiff/'.$idmd5.'/">View Directory for '.$idmd5.'</a> ';
+		echo '<div id="topbuttons">';
 		if((isset($fileArrays['xor'])) && (empty($fileArrays['xor']))){
 			echo '<br/>';
-			echo '<span id="xorbutton"><a href="./xor.php">Run NoMoreXOR</a></span>';
+			echo '<div id="xorbutton"><a href="./xor.php">Run NoMoreXOR</a></div>';
 		}
 		
-		echo '<br/>';
-		echo '<span id="emailformat"><a href="./ticketgen.php" target="_blank">View Results in Plain Text</a></span>';
+		##### ThreatAnalyzer Check
+		
+		
+		
+		if($threatAnalyzerPlugin==True){
+			#Get all analyses
+			$command='/analyses';
+			$threatArgs='md5='.$idmd5;
+			$response=@callTA($command,$threatAPI,$threatPage,$threatArgs);
+			$threatArgs='';
+			#echo '<p>HTTP Response: '.$response[1].'</p>';
+			#$analyses = json_decode($response[0], true);
+			#echo '<pre>';
+			#var_dump($analyses);
+			#echo '</pre>';
+		}
+		
+		
+		if( ($threatAnalyzerPlugin==True)&&($response[1]!='404') || (isset($_GET['tasub'])) ){
+			#echo '<br/>';
+			echo '<div id="taButton">ThreatAnalyzer Details</div>';
+			echo '<div id="remButton">REMnux Details</div>';
+		}
+		elseif(($threatAnalyzerPlugin==True)&&($response[1]=='404')){
+			#echo '<br/>';
+			echo '<div id="taButtonSubmit"><a href="http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'&tasub=1">Send to ThreatAnalyzer</a></div>';
+		}
+		
+#		echo '<br/>';
+		echo '<div id="emailformat"><a href="./ticketgen.php" target="_blank">View Results in Plain Text</a></div>';
+		echo '</div>';#End topbuttons div
+		
+		#Show status of file submission
+		if( (isset($_GET['tasub'])) && ($threatAnalyzerPlugin==True) ){
+			
+			echo '<div id="subStatus">';
+			if($submission[1]=='200'){
+				
+				$command='/submissions/'.$submission[1]['id'];
+				$threatArgs='';
+				$subResp=@callTA($command,$threatAPI,$threatPage,$threatArgs);
+				$threatArgs='';
+				$subDetails = json_decode($subResp[0], true);
+				/*
+				 * Example JSON Response (Not used right now, but could be useful later):
+				 * submission
+				 * 		id:31,
+				 * 		state: "hash_worker_started",
+				 * 		created_at:"time",
+				 * 		updated_at:"time",
+				 * 		samples:
+				 * 			id
+				 * 			md5
+				 * 			sha1
+				 * 			file_location
+				 * 			sha256
+				 * 			known_filenames:
+				 * 				pic.jpg
+				 * 			ssdeep
+				 * 			last_analyzed_at
+				 * 			is_file
+				 * 			is_url
+				 * 			analyses:
+				 * 				analysis_id
+				 * 				sandbox_mac_address
+				 * 				etc.... Same as Analyses call from earlier
+				 */
+				
+				echo '<div id="subSent">';
+					echo '<b>File submission successful! Status: </b>'.$submissionResp['state'].' <b>Please wait for analysis to complete, then refresh this page.</b>';
+				echo '</div>';
+				
+				#Consider JQuery to check status of analysis every 5 seconds, then replace subSent DIV with
+				# this DIV, and refresh page when complete.
+				echo '<div id="subDone">';	#Style:display=none
+					#echo '<b>ANALYSIS COMPLETE! Refreshing Page.</b>';
+				echo '</div>';
+				
+			}
+			else{
+				echo '<div id="subError"><b>ERROR: </b>'.$submission[1].'<br/>';
+				foreach($submission[0] as $key=>$val){
+					echo $key.': '.$val.'<br/>';
+				}
+				echo '</div>';
+			}
+				
+			
+			echo '</div>';#End subStatus
+		}
+		
+		
 		#echo ' | <a href="./xor.php">De-XOR</a>';
 	
 	echo '</div>';
@@ -128,6 +293,12 @@ echo '<html>';
 	###########################
 	
 	echo '<div id="mainContent">';
+	
+	if(($threatAnalyzerPlugin===True)&&($response[1]!='404')){
+		echo '<div id="taPage">';
+		include('./threatanalyzer.php');
+		echo "</div><!--END taPage-->\r\n";
+	}
 	
 	echo '<div id="topcontent">';
 		
@@ -394,7 +565,7 @@ echo '<html>';
 			if((isset($fileArrays['xor'][0])) && ($fileArrays['xor'][0]!='')){
 				$nomorexor = false;
 				foreach($fileArrays['xor'] as $xval){
-					echo '<a href="./mastiff/'.$idmd5.'/xor/'.$xval.'" target="_blank">View all strings</a><br/>';
+					echo '<a href="./mastiff/'.$idmd5.'/xor/'.$xval.'" target="_blank">View all De-Xor\'d strings</a><br/>';
 				}
 				
 				
@@ -901,9 +1072,33 @@ echo '<html>';
 	###########################
 	
 	include './footer.php';
-	
-echo '</body>';
-echo '</html>';
-
-
 ?>
+
+<script>
+	$(document).ready(function(){
+
+		// Hide/Unhide ThreatAnalyzer Data
+		$("#remButton").toggle();
+		
+		$("#taButton").click(function(){
+			$("#taPage").toggle();
+			$("#topcontent").toggle();
+			$("#bottomcontent").toggle();
+			$("#taButton").toggle();
+			$("#remButton").toggle();
+		});
+		
+		$("#remButton").click(function(){
+			$("#taPage").toggle();
+			$("#topcontent").toggle();
+			$("#bottomcontent").toggle();
+			$("#taButton").toggle();
+			$("#remButton").toggle();
+		});
+		
+	});
+</script>
+	
+</body>
+</html>
+
