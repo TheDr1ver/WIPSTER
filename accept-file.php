@@ -22,6 +22,8 @@ else
 }
 
 
+
+
 //if notes provided, set $notes variable
 if(isset($_POST['notes']))
 {
@@ -58,6 +60,63 @@ if($_FILES['malware']['name'])
             //move it to where we want it to be
             move_uploaded_file($_FILES['malware']['tmp_name'], './upload/malware/'.$new_file_name);
             $message = 'Congratulations!  Your file was accepted.';
+            
+            #############################################
+            //Process ThreatAnalyzer Upload
+            //if ThreatAnalyzer Checkbox ticked
+            #############################################
+			if(isset($_POST['taSubChk'])){
+				
+				#cURL WRAPPER
+				function callTA($command,$threatAPI,$threatPage,$threatArgs,$tapost,$postArray){
+					#echo '<p>Command: '.$command.'</p>';
+					$target=$threatPage.$command."?api_token=".$threatAPI."&".$threatArgs;
+					#echo '<p>URL sent: '.$target.'</p>';
+					$ch=curl_init();
+					curl_setopt($ch, CURLOPT_URL, $target);
+					curl_setopt($ch, CURLOPT_HEADER, false);
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+					curl_setopt($ch, CURLOPT_HTTPGET, 1);
+
+					if(isset($tapost)){
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $postArray);
+					}
+					$result = curl_exec($ch);
+					$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+					$results=array($result,$httpCode);
+					return $results;
+				}
+				
+				$taFile='@/var/www/upload/malware/'.$new_file_name;
+												
+				$command='/submissions';
+				$threatArgs='';
+				
+				$postArray=array(
+					'submission[file]'=>$taFile,
+					'submission[priority]'=>$taSubPriority,
+					'submission[sandbox][group_option]'=>'custom',
+					'submission[sandbox][custom_sandbox][]'=>$taSubSandbox,
+					'submission[submission_type]'=>'file',
+					'submission[reanalyze]'=>$taSubReanalyze
+				);
+				if (isset($taSubCustomName)){
+					$custNamePost = 'custom_param['.$taSubCustomName.']';
+					$postArray[$custNamePost]=$taSubCustomVal;
+					}
+				
+				$response=@callTA($command,$threatAPI,$threatPage,$threatArgs,1,$postArray);	#1 means POST
+				$threatArgs='';
+				if($response[1]=='200'){
+					$message = 'Congratulations!  Your file was accepted and successfully submitted to ThreatAnalyzer.<br/><br/><b>RESPONSE: </b>'.$response[0];
+				}
+				else{
+					$message = 'Your file was accepted, but we were unable to successfully submit it to ThreatAnalyzer.<br/><br/><b>ERROR: </b>'.$response[0];
+				}
+				
+				
+			}
         }
     }
     //if there is an error...
