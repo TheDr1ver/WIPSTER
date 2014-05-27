@@ -58,6 +58,14 @@ http://i.imgur.com/fOOajGt.png
 
 ## INSTALLATION
 
+**UPDATE:** WIPSTER installation is now included in the latest release of REMnux v5. Make sure your REMnux box can connect to the Internet, then simply run the following from your REMnux v5 console and WIPSTER should automatically install:
+
+`/usr/local/sbin/install-wipster`
+
+**Previous Installation Steps:**
+
+
+
 **NOTE:** For automatic installation, simply run the following commands from the REMnux command prompt:
 	
 `cd ~`
@@ -186,6 +194,8 @@ WIPSTER currently allows for:
 - Local conversion of various strings between multiple formats (/convert.php)
 - Searching various PasteBin-like sites for content, manually or automatically
 - Streaming a Twitter feed in the footer of most pages based on a keyword search
+- Submit files directly to ThreatAnalyzer via the API if you have a network-accessible copy installed
+- View ThreatAnalyzer analysis summary for each uploaded file
 
 MASTIFF allows for the uploading of any filetype for analysis, including
 password-protected .zip files that use the password "infected".
