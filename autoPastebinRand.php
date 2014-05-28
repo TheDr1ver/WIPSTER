@@ -8,8 +8,8 @@ require '/var/www/func/config.php';
 $opts=array(
 	'http'=>array(
 		'method'=>"GET",
-		'header'=>["Accept-language: en\r\n",
-				"Referer: https://www.google.com/\r\n"],
+		'header'=>"Accept-language: en\r\n".
+				"Referer: https://www.google.com/\r\n",
 		'user_agent'=>$autopbUA
 	)
 );
