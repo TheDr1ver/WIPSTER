@@ -256,16 +256,14 @@ foreach($connectionDumps as $key=>$val){
 				}
 				
 			}
-			
-			#if($conVal['@remote_hostname']!=''){
-			#	$dnsCallouts[$conKey]=$conVal['@remote_hostname'];
-			#}
-			
+
 			#Get HTTP Headers
+			# For each connection, get the method and URL
+			# Add a new line, get the useragent
+			# Add a new line, get the hostname
 			if(array_key_exists('http_command',$conVal)){
 				foreach($conVal['http_command'] as $httpComKey=>$httpComVal){
-					#$calloutCommands[$conKey]=$httpComVal['@method'].": ".$httpComVal['@url'];
-					$calloutCommands[]=$httpComVal['@method'].": ".$httpComVal['@url'];
+					$calloutCommands[$conKey]=$httpComVal['@method'].": ".$httpComVal['@url'];
 				}
 			}
 			
@@ -273,12 +271,10 @@ foreach($connectionDumps as $key=>$val){
 				foreach($conVal['http_header'] as $headKey=>$headVal){
 					#echo '#@header: '.$headVal['@header'].'<br/>';
 					if(strpos($headVal['@header'],'User-Agent')!==false){
-						#$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
-						$calloutCommands[]=end($calloutCommands)."\r\n".$headVal['@header'];
+						$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
 					}
 					if(strpos($headVal['@header'],'Host')!==false){
-						#$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
-						$calloutCommands[]=end($calloutCommands)."\r\n".$headVal['@header'];
+						$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
 					}
 				}
 			}
