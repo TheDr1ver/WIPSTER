@@ -61,6 +61,15 @@ if($_FILES['malware']['name'])
             move_uploaded_file($_FILES['malware']['tmp_name'], './upload/malware/'.$new_file_name);
             $message = 'Congratulations!  Your file was accepted.';
             
+             #############################################
+            //Process Malwr.com Upload
+            //if Malwr Checkbox ticked
+            #############################################
+            $idmd5=md5_file('./upload/malware/'.$new_file_name);
+            if(isset($_POST['malwrSubChk'])){
+				include('/var/www/func/malwr.php');
+			}
+            
             #############################################
             //Process ThreatAnalyzer Upload
             //if ThreatAnalyzer Checkbox ticked
