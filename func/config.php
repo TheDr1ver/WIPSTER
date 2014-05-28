@@ -33,6 +33,13 @@ $remver='4';
 $tridLoc = '/usr/local/lib/triddefs.trd';
 
 #################################
+##### Malwr.com Integration
+#################################
+#Sign up at https://malwr.com/account/signup/
+$malwrPlugin=False;	#Set to True to use the plugin
+$malwrAPI = 'Your Malwr.com API';
+
+#################################
 ##### ThreatAnalyzer Integration
 #################################
 
