@@ -669,6 +669,47 @@ echo '<html>';
 			echo '</div>';
 		}
 		
+		#######################
+		##### Malwr.com Check
+		#######################
+		
+		if($malwrPlugin==True){
+			
+			echo '<div id="malwr">';
+			echo '<h2>Malwr.com Submission</h2>';
+			$malwrUUID=malwrDBCheck($idmd5);
+			#echo "<pre>";
+			#echo "\$malwrUUID: ";
+			#var_dump($malwrUUID);
+			#echo "</pre>";
+			
+			#if UUID found in malwr sqlite db
+			if(isset($malwrUUID['uuid'])){
+				$response=malwrStatus($malwrAPI,$malwrUUID['uuid']);
+				$malwrSubResp = json_decode($response[0], true);
+				echo '<b>Status:</b> '.$malwrSubResp['status'];
+				echo '<br/>';
+				echo '<a href="https://malwr.com/analysis/'.$malwrUUID['uuid'].'" target="_blank">View Malwr.com Results</a>';
+			}
+			elseif(isset($malwrSubmission[1])){
+				if($malwrSubmission[1]=='400'){
+					echo '<b>Error 400:</b> '.$malwrSubmission[0];
+					echo '<br/>';
+					echo 'It\'s possible that someone else has previously submitted this sample to Malwr.com. Until the API gets an update, you\'ll unfortunately have to go to <a href="https://malwr.com/analysis/search/" target="_blank">Malwr.com</a> and search manually.';
+				}
+			}
+			else{
+				#elif UUID NOT found in malwr sqlite db
+				echo '<a href="http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'&malsub=1" onclick="return confirm(\'Are you sure you want to submit to Malwr.com?\')">Submit Sample to Malwr.com</a>';
+			}
+			
+			
+			
+			
+			
+			echo '</div>';#End malwr Div
+		}
+		
 		###########################
 		### ANUBIS
 		###########################
