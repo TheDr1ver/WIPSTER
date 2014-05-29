@@ -3,6 +3,7 @@
 	echo '<LINK href="./css/footer.css" rel="stylesheet" type="text/css">';
 
 	echo '<div id="footer">';
+	#Testing Update comment
 	
 		echo '<div id="footcontent">';
 				echo "<div id='collapseBtn'>Hide/Show Footer</div>";
