@@ -129,7 +129,8 @@ echo "Putting the finishing touches on the configurations..."
 
 if (( "$remv"==4 )); then
 	apt-get install tcpick	# Install tcpick for REMnux v4
-	sqlite3 /var/www/admin/admin.db "UPDATE admin SET mastiffconf='/usr/local/mastiff/mastiff.conf',mastiffpy='/usr/local/mastiff/mas.py',tridloc='/usr/local/TrID/triddefs.trd',remver='5';"
+	sqlite3 /var/www/admin/admin.db "UPDATE admin SET mastiffconf='/usr/local/etc/mastiff.conf',mastiffpy='/usr/local/bin/mas.py',tridloc='/usr/local/lib/triddefs.trd',remver='4';"
+	
 else
 :<<'COMMENT'
 	# Change Mastiff Config Lines
@@ -144,9 +145,12 @@ else
 	# Change REMnux Version
 	sed -i -e "s/\$remver='4';/\$remver='5';/g" /var/www/func/config.php
 COMMENT
-	sqlite3 /var/www/admin/admin.db "UPDATE admin SET mastiffconf='/usr/local/etc/mastiff.conf',mastiffpy='/usr/local/bin/mas.py',tridloc='/usr/local/lib/triddefs.trd',remver='4';"
+	sqlite3 /var/www/admin/admin.db "UPDATE admin SET mastiffconf='/usr/local/mastiff/mastiff.conf',mastiffpy='/usr/local/mastiff/mas.py',tridloc='/usr/local/TrID/triddefs.trd',remver='5';"
 	# Change footer
 	sed -i -e "s/REMNUX 4/REMNUX 5/g" /var/www/footer.php
+	# Cleanup
+	rm -rf /home/remnux/WIPSTER-master/
+	rm -rf /home/remnux/master.zip
 	echo "Done."
 fi
 
