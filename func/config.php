@@ -1,11 +1,74 @@
 <?php
 
+############################
+##### Get Variables from DB
+#############################
+if(!function_exists('getSettings')){
+	function getSettings(){
+		$db = new SQLite3('/var/www/admin/admin.db');
+		$result = $db->query('SELECT * FROM admin WHERE id = 1');
+		
+		if(isset($result))
+		{
+			while ($res=$result->fetchArray()){
+				#$_SESSION['size']=$res['size'];
+				#$malwrRes['uuid']=$res['uuid'];
+				$settingRes=array();
+				$settingRes=$res;
+				/*	remver
+				 * 	mastiffconf
+				 * 	mastiffpy
+				 * 	tridloc
+				 * 	malwrPlugin
+				 * 	malwrAPI
+				 * 	threatanalyzerplugin
+				 * 	threatapi
+				 * 	threatbase
+				 * 	threatpage
+				 * 	threatargs
+				 * 	tasubpriority
+				 * 	tasubsandbox
+				 * 	tasubreanalyze
+				 * 	anubisuser
+				 * 	anubispass
+				 * 	wotapi
+				 * 	vtapi
+				 * 	googapi
+				 * 	gcsekey
+				 * 	gcsesig
+				 * 	gcsecx
+				 * 	gcsequery
+				 * 	autopbua
+				 * 	twitterapi
+				 * 	twittertoken
+				 * 	twitterquery
+				 * 	twitterconsec
+				 * 	twitteroauthsec
+				 */
+				
+			}
+		}
+		if(!$result){
+			$settingRes['db']=$db->lastErrorMsg();
+		}
+		else{
+			$settingRes['db']=$db->changes().' Record updated successfully.';
+		}
+		$db->close();
+		return $settingRes;
+	}#end getsettings function
+	$settingRes=getSettings();
+}#end getsettings exist check
+
+
+
+
 #############################################################################
 ##### Set the below variables to your specific credentials and API keys #####
 #############################################################################
 
 #REMnux version
-$remver='4';
+$remver=$settingRes['remver'];	#REMnux version - set to 4 or 5
 
 ###################
 ##### MASTIFF #####
@@ -15,12 +78,14 @@ $remver='4';
 	#REMnux v5 Beta
 		#$mastiffConf = '/usr/local/mastiff/mastiff.conf';
 	#REMnux v4
-		$mastiffConf = '/usr/local/etc/mastiff.conf';
+		#$mastiffConf = '/usr/local/etc/mastiff.conf';
+	$mastiffConf = $settingRes['mastiffconf'];
 # Location of the Mastiff script
 	#REMnux v 5 Beta
 		#$mastiffPy = '/usr/local/mastiff/mas.py';
 	#REMnux v4
-		$mastiffPy = '/usr/local/bin/mas.py';
+		#$mastiffPy = '/usr/local/bin/mas.py';
+	$mastiffPy = $settingRes['mastiffpy'];
 
 #######################
 ##### TRid Location
@@ -30,62 +95,78 @@ $remver='4';
 #$tridLoc = '/usr/local/TrID/triddefs.trd';
 
 #REMnux v4
-$tridLoc = '/usr/local/lib/triddefs.trd';
+#$tridLoc = '/usr/local/lib/triddefs.trd';
+
+$tridLoc = $settingRes['tridloc'];
 
 #################################
 ##### Malwr.com Integration
 #################################
+
 #Sign up at https://malwr.com/account/signup/
-$malwrPlugin=False;	#Set to True to use the plugin
-$malwrAPI = 'Your Malwr.com API';
+
+if($settingRes['malwrPlugin']===1){
+	$malwrPlugin=True;	#Set True if you wish to use the malwr.com plugin
+}
+else{
+	$malwrPlugin=False;	
+}
+
+$malwrAPI=$settingRes['malwrAPI'];
 
 #################################
 ##### ThreatAnalyzer Integration
 #################################
 
-$threatAnalyzerPlugin=False;	#False by default - set TRUE to upload & run files with ThreatAnalyzer using WIPSTER
+if($settingRes['threatanalyzerplugin']===1){
+	$threatAnalyzerPlugin=True;	#Set True if you wish to use a network-accessible version of ThreatAnalyzer
+}
+else{
+	$threatAnalyzerPlugin=False;
+}
 
 #Vars
-$threatAPI = '';	#ThreatAnalyzer API grabbed from ThreatAnalyzer Admin console
-$threatBase = '';	#IP address of your ThreatAnalyzer Server (ex. 192.168.1.100)
-$threatPage = 'http://'.$threatBase.'/api/v1';	#Leave this alone
-$threatArgs = '';	#Leave blank unless specifically adding additional arguments to the API call (ex. 'md5=[md5]&setting=whatever')
+$threatAPI = $settingRes['threatapi'];
+$threatBase = $settingRes['threatbase'];
+$threatPage = $settingRes['threatpage'];
+$threatArgs = $settingRes['threatargs'];
 
 #Submission Variables
 
-$taSubPriority = 'high';	# Submission priority (ex. high, medium, low)
-$taSubSandbox = '';	#MAC address of Sandbox to submit file to (ex: 00:11:22:33:44:55)
-$taSubReanalyze = 'false';	# Reanalyze files that have previously been submitted
+$taSubPriority = $settingRes['tasubpriority'];	# Submission priority
+$taSubSandbox = $settingRes['tasubsandbox'];	#Sandbox for submission
+$taSubReanalyze = $settingRes['tasubreanalyze'];	# Reanalyze files that have previously been submitted
 
-#UnComment the following lines if you want to run a custom action:
-#$taSubCustomName = 'ActionAfterAnalysis';	#Custom Action name
-#$taSubCustomVal = 'revert';	#Custom Action value
-	#Additional Custom actions can be added manually in $postArray on md5page.php and accept-file.php
+#Comment the following out if you don't want to run a custom action
+$taSubCustomName = $settingRes['tasubcustomname'];	#Custom Action name
+$taSubCustomVal = $settingRes['tasubcustomval'];	#Custom Action value
+#Additional Custom actions can be added manually in $postArray on md5page.php and accept-file.php
 
 ##################
 ##### ANUBIS #####
 ##################
 
 # Request account at https://anubis.iseclab.org/?action=register
-$anubisUser = 'username';
-$anubisPass = 'password';
+
+$anubisUser = $settingRes['anubisuser'];
+$anubisPass = $settingRes['anubispass'];
 
 $apis=array();
-
 #################
 ##### MyWOT #####
 #################
 
 # Request API Key at https://www.mywot.com/en/signup?destination=profile/api
 
-$apis['wot']='Your MyWOT API';
+$apis['wot']=$settingRes['wotapi'];
+
 ######################
 ##### VirusTotal #####
 ######################
 
 # Request API Key at https://www.virustotal.com/en/#dlg-join
 
-$apis['vt']='Your VirusTotal API';
+$apis['vt']=$settingRes['vtapi'];
 
 ###############################
 ##### Google SafeBrowsing #####
@@ -93,35 +174,36 @@ $apis['vt']='Your VirusTotal API';
 
 # Request API Key at http://www.google.com/safebrowsing/key_signup.html
 
-$apis['goog']='Your Google SafeBrowsing API';
+$apis['goog']=$settingRes['googapi'];
 
 #######################################
 ##### Google Custom Search Engine #####
 #######################################
-#Set up your custom search at https://www.google.com/cse/all
-
 #CSE API Key
-$gcseKey = 'Your Custom Search Engine API';
-
+$gcseKey = $settingRes['gcsekey'];
 #CSE Signature
-$gcseSig = 'Your Custom Search Engine Signature Key';
-
+$gcseSig = $settingRes['gcsesig'];
 #Custom Search Engine ID
-$gcseCx = 'Your Custom Search Engine ID'; 
+$gcseCx = $settingRes['gcsecx']; 
 
-	##### AutoPastebin
-	$gcseQuery = 'SearchTerm';	#Whatever default search term you want to search pastebin for automatically
-	$autopbUA = 'AutoPastebinSearch';	#Set to whatever useragent you want to use for the pastebin searching
+##### AutoPastebin
+$gcseQuery = $settingRes['gcsequery'];
+$autopbUA = $settingRes['autopbua'];
 
 ##########################
 ##### Twitter Widget #####
 ##########################
-# Set up your twitter application to get API keys at https://dev.twitter.com/apps/new
 
-$twitterAPI = 'Twitter API Key';
-$twitterToken = 'Twitter Access Token';
-$twitterQuery = '#0Day -RT filter:links';	#Searches for #0Day, ignoring Re-Tweets, and showing only posts with links
-$twitterConSec = 'Twitter Consumer Secret';
-$twitterOAuthSec = 'Twitter Access Token Secret';
+
+$twitterAPI = $settingRes['twitterapi'];
+$twitterToken = $settingRes['twittertoken'];
+$twitterQuery = $settingRes['twitterquery'];
+$twitterConSec = $settingRes['twitterconsec'];
+$twitterOAuthSec = $settingRes['twitteroauthsec'];
+
+##### Dump to page for debugging
+#echo "<pre>";
+#print_r(get_defined_vars());
+#echo "</pre>";
 
 ?>

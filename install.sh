@@ -123,10 +123,15 @@ else
 	echo "# 00 * * * *	www-data	/usr/bin/php5 /var/www/autoPastebinRand.php"
 fi
 
-# Set vars based on REM version
-echo "Putting the finishing touches on config.php..."
 
-if (( "$remv"==5 )); then
+# Set vars based on REM version
+echo "Putting the finishing touches on the configurations..."
+
+if (( "$remv"==4 )); then
+	apt-get install tcpick	# Install tcpick for REMnux v4
+	sqlite3 /var/www/admin/admin.db "UPDATE admin SET mastiffconf='/usr/local/mastiff/mastiff.conf',mastiffpy='/usr/local/mastiff/mas.py',tridloc='/usr/local/TrID/triddefs.trd',remver='5';"
+else
+:<<'COMMENT'
 	# Change Mastiff Config Lines
 	sed -i -e "s/\$mastiffConf = '\/usr\/local\/etc\/mastiff\.conf';.*/#\$mastiffConf = '\/usr\/local\/etc\/mastiff\.conf';/g" /var/www/func/config.php
 	sed -i -e "s/#\$mastiffConf = '\/usr\/local\/mastiff\/mastiff\.conf';.*/\$mastiffConf = '\/usr\/local\/mastiff\/mastiff\.conf';/g" /var/www/func/config.php
@@ -135,22 +140,24 @@ if (( "$remv"==5 )); then
 	# Change trID line
 	sed -i -e "s/\$tridLoc = '\/usr\/local\/lib\/triddefs.trd';.*/#\$tridLoc = '\/usr\/local\/lib\/triddefs.trd';/g" /var/www/func/config.php
 	sed -i -e "s/#\$tridLoc = '\/usr\/local\/TrID\/triddefs.trd';.*/\$tridLoc = '\/usr\/local\/TrID\/triddefs.trd';/g" /var/www/func/config.php
-	# Change footer
-	sed -i -e "s/REMNUX 4/REMNUX 5/g" /var/www/footer.php
+	
 	# Change REMnux Version
 	sed -i -e "s/\$remver='4';/\$remver='5';/g" /var/www/func/config.php
-else
-	apt-get install tcpick	# Install tcpick for REMnux v4
+COMMENT
+	sqlite3 /var/www/admin/admin.db "UPDATE admin SET mastiffconf='/usr/local/etc/mastiff.conf',mastiffpy='/usr/local/bin/mas.py',tridloc='/usr/local/lib/triddefs.trd',remver='4';"
+	# Change footer
+	sed -i -e "s/REMNUX 4/REMNUX 5/g" /var/www/footer.php
+	echo "Done."
 fi
 
 echo "Installation finished!"
-echo "Setup your config.php file and then browse to your local IP to access WIPSTER."
+echo "Setup your configurations (http://localhost/admin.php) file and then go to http://localhost/ to access WIPSTER."
 
 
 # Prompt - Press any key to edit config.php with SciTE
-read -p "Press [ENTER] to edit /var/www/func/config.php..."
+#read -p "Press [ENTER] to edit /var/www/func/config.php..."
 
-gksu scite /var/www/func/config.php
+#gksu scite /var/www/func/config.php
 
 # Launch Firefox
-su - remnux -c "firefox localhost" &
+su - remnux -c "firefox localhost/admin.php" &
