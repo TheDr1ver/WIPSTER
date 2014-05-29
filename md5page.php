@@ -231,11 +231,11 @@ echo '<html>';
 		}
 		
 #		echo '<br/>';
-		echo '<div id="emailformat"><a href="./ticketgen.php" target="_blank">Email TEXT Format</a></div>';
+		echo '<div id="emailformat"><a href="./ticketgen.php" target="_blank">View Results in Plain Text</a></div>';
 		echo '</div>';#End topbuttons div
 		
 		#Show status of file submission
-		if(isset($_GET['tasub'])){
+		if( (isset($_GET['tasub'])) && ($threatAnalyzerPlugin==True) ){
 			
 			echo '<div id="subStatus">';
 			if($submission[1]=='200'){
