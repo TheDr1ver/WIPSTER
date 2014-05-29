@@ -71,7 +71,9 @@ $_SESSION['link'] = isset($url) ? $url : FALSE;
 
 $_SESSION['anubis'] = isset($anubis) ? $anubis : FALSE;
 
-#Submit to ThreatAnalyzer
+################################
+##### Submit to ThreatAnalyzer
+################################
 
 #cURL wrapper
 function callTA($command,$threatAPI,$threatPage,$threatArgs,$tapost,$postArray){
@@ -144,6 +146,13 @@ if($threatAnalyzerPlugin===True){
 	
 }
 
+###########################
+##### Submit to Malwr.com
+###########################
+if($malwrPlugin===True){
+	include('/var/www/func/malwr.php');
+}
+
 
 /*
 echo '<pre>';
@@ -192,9 +201,10 @@ echo '<html>';
 			echo '<div id="xorbutton"><a href="./xor.php">Run NoMoreXOR</a></div>';
 		}
 		
+		
+		
+		
 		##### ThreatAnalyzer Check
-		
-		
 		
 		if($threatAnalyzerPlugin==True){
 			#Get all analyses
@@ -221,11 +231,11 @@ echo '<html>';
 		}
 		
 #		echo '<br/>';
-		echo '<div id="emailformat"><a href="./ticketgen.php" target="_blank">View Results in Plain Text</a></div>';
+		echo '<div id="emailformat"><a href="./ticketgen.php" target="_blank">Email TEXT Format</a></div>';
 		echo '</div>';#End topbuttons div
 		
 		#Show status of file submission
-		if( (isset($_GET['tasub'])) && ($threatAnalyzerPlugin==True) ){
+		if(isset($_GET['tasub'])){
 			
 			echo '<div id="subStatus">';
 			if($submission[1]=='200'){
@@ -286,7 +296,7 @@ echo '<html>';
 		
 		#echo ' | <a href="./xor.php">De-XOR</a>';
 	
-	echo '</div>';
+	echo '</div>';#End mainHead
 	
 	###########################
 	### BODY
@@ -668,7 +678,6 @@ echo '<html>';
 				
 			echo '</div>';
 		}
-		
 		#######################
 		##### Malwr.com Check
 		#######################
