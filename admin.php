@@ -243,7 +243,7 @@ if(isset($_GET['configs'])){
 		<div id="container">
 			<div id="header">
 					<h1>WIPSTER Administration Console</h1>
-					<p><a href="./admin.php?backup=1">Backup WIPSTER (This may take a while)</a> | <a href="./admin.php?configs=1">Download Configs</a> | <a href="./?update=1" onclick="return confirm(\'Are you sure you want to update all files in the WIPSTER framework? Your configurations and existing files will be saved.\')">Update WIPSTER (Saves configs and downloads most recent files from GitHub)</a></p>
+					<p><a href="./admin.php?backup=1">Backup WIPSTER (This may take a while)</a> | <a href="./admin.php?configs=1">Download Configs</a> | <a href="./admin.php?update=1" onclick="return confirm(\'Are you sure you want to update all files in the WIPSTER framework? Your configurations and existing files will be saved.\')">Update WIPSTER (Saves configs and downloads most recent files from GitHub)</a></p>
 			</div><!--end header-->
 			<div id="maincontent">
 				
