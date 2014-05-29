@@ -143,7 +143,7 @@ $settingRes=getSettings();
 
 if(isset($_GET['update'])){
 	$command[]="cd /var/www/";
-	$command[]="mkdir tmpupdatebackup";
+	$command[]="mkdir /var/www/tmpupdatebackup";
 	$command[]="cd /var/www/tmpupdatebackup/";
 	#Backup DB's
 	$command[]="cp /var/www/admin/admin.db /var/www/tmpupdatebackup";
@@ -153,9 +153,9 @@ if(isset($_GET['update'])){
 	$command[]="cp /var/www/mastiff/mastiff.db /var/www/tmpupdatebackup";
 	$command[]="cp /var/www/twitter/twitter.db /var/www/tmpupdatebackup";
 	#Get new WIPSTER files
-	$command[]="wget https://github.com/TheDr1ver/WIPSTER/archive/master.zip";
-	$command[]="unzip ./master.zip";
-	$command[]="/bin/cp -rf ./WIPSTER-master/* /var/www/";
+	$command[]="wget -P /var/www/tmpupdatebackup/ https://github.com/TheDr1ver/WIPSTER/archive/master.zip";
+	$command[]="unzip /var/www/tmpupdatebackup/master.zip -d /var/www/tmpupdatebackup/";
+	$command[]="/bin/cp -rf /var/www/tmpupdatebackup/WIPSTER-master/* /var/www/";
 	#Restore DB's
 	$command[]="mv -f /var/www/tmpupdatebackup/admin.db /var/www/admin/admin.db";
 	$command[]="mv -f /var/www/tmpupdatebackup/urls.db /var/www/urls/urls.db";
