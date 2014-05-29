@@ -38,7 +38,7 @@
 
 ?>
 
-<script src="/var/www/scripts/jquery-1.11.0.min.js"></script>
+<script src="./scripts/jquery-1.11.0.min.js"></script>
 <script>
 $(document).ready(function(){
 	if($(window).width()<1080){
