@@ -47,28 +47,29 @@ $analyses = json_decode($response[0], true);
 $taTable=array();
 #echo '$analyses[0]: ';
 #print_r($analyses['analyses'][0]['analysis_id']);
+$tai=0;
 foreach($analyses as $innerArray){
 	if(is_array($innerArray)){
 		foreach($innerArray as $key=>$var){
-			$taTable[$key]['id']=$var['analysis_id'];	#Analysis ID
+			$taTable[$tai]['id']=$var['analysis_id'];	#Analysis ID
 			
 			$macInfo=macInfo($threatAPI,$threatPage,$threatArgs,$var['sandbox_mac_address']);
-			$taTable[$key]['sandbox_name']=$macInfo['name'];		#Sandbox Name
-			$taTable[$key]['sandbox_attr']=$macInfo['attr'];		#Attributes
+			$taTable[$tai]['sandbox_name']=$macInfo['name'];		#Sandbox Name
+			$taTable[$tai]['sandbox_attr']=$macInfo['attr'];		#Attributes
 			
-			$taTable[$key]['sandbox_mac']=$var['sandbox_mac_address'];		#Sandbox MAC
+			$taTable[$tai]['sandbox_mac']=$var['sandbox_mac_address'];		#Sandbox MAC
 			
-			$taTable[$key]['status']=$var['status'];#Status
-			$taTable[$key]['filename']=$var['filename'][0];#Filename
-			$taTable[$key]['md5']=$var['md5'];#MD5
-			$taTable[$key]['time']=$var['created_at'];#Time
+			$taTable[$tai]['status']=$var['status'];#Status
+			$taTable[$tai]['filename']=$var['filename'][0];#Filename
+			$taTable[$tai]['md5']=$var['md5'];#MD5
+			$taTable[$tai]['time']=$var['created_at'];#Time
 			if(isset($var['pcap_url'])){
-				$taTable[$key]['pcap']=$var['pcap_url'];#PCAP URL - /api/v1/analyses/40/downloads/pcap
+				$taTable[$tai]['pcap']=$var['pcap_url'];#PCAP URL - /api/v1/analyses/40/downloads/pcap
 			}
 			else{
-				$taTable[$key]['pcap']='Unavailable';
+				$taTable[$tai]['pcap']='Unavailable';
 			}
-			
+			$tai++;
 		}
 	}
 }
@@ -256,11 +257,12 @@ foreach($connectionDumps as $key=>$val){
 				}
 				
 			}
-
+			
+			#if($conVal['@remote_hostname']!=''){
+			#	$dnsCallouts[$conKey]=$conVal['@remote_hostname'];
+			#}
+			
 			#Get HTTP Headers
-			# For each connection, get the method and URL
-			# Add a new line, get the useragent
-			# Add a new line, get the hostname
 			if(array_key_exists('http_command',$conVal)){
 				foreach($conVal['http_command'] as $httpComKey=>$httpComVal){
 					$calloutCommands[$conKey]=$httpComVal['@method'].": ".$httpComVal['@url'];
@@ -297,7 +299,101 @@ echo '</pre>';
 
 
 ?>
-
+<!--BEGIN TEMPORARY HEADERS-->
+<!--
+<html>
+<head>
+<style>
+	#taContent{
+		width:100%;
+		height:100%;
+	}
+	#taSummary{
+		width:1000px;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	#analysisTable{
+		/*content-align:center;*/
+		display:table;
+	}
+	.taHead{
+		display:table-header-group;
+		font-weight:bold;
+		padding:5px;
+	}
+	.tahCell{
+		display:table-cell;
+		padding-right:5px;
+	}
+	.taRowEv{
+		background-color:aliceblue;
+	}
+	.taRowOd{
+		background-color:white;
+	}
+	.taCell{
+		display:table-cell;
+		padding:5px;
+	}
+	.taRow{
+		display:table-row;
+	}
+	.blink{
+		animation: blink 1s steps(5, start) infinite;
+		-webkit-animation: blink 1s steps(5, start) infinite;
+	}
+	@keyframes blink{
+		to {visibility:hidden;}
+	}
+	@-webkit-keyframes blink{
+		to {visibility:hidden;}
+	}
+	.calloutVal{
+		margin:5px;
+	}
+	.callData{
+		display:inline-block;
+		height:250px;
+		width:300px;
+		overflow-x:auto;
+		overflow-y:auto;
+		vertical-align:top;
+		margin-right:15px;
+		border-style:solid;
+		border-color:black;
+	}
+	#ipCallouts{
+		display:inline-block;
+		height:350px;
+		width:300px;
+		vertical-align:top;
+		margin-right:5px;
+	}
+	#dnsCallouts{
+		display:inline-block;
+		height:350px;
+		width:300px;
+		vertical-align:top;
+		margin-right:5px;
+	}
+	#calloutCmd{
+		display:inline-block;
+		height:350px;
+		width:300px;
+		vertical-align:top;
+	}
+	#calloutCmd .callData{
+		white-space:pre;
+	}
+	#calloutCmd .calloutVal{
+		margin-bottom:15px;
+	}
+	
+</style>
+</head>
+-->
+<!--END TEMP HEADERS-->
 
 <div id="taContent">
 	<div id="taSummary">
@@ -384,11 +480,14 @@ echo '</pre>';
 				echo "<div id='ipCallouts'>";
 					echo "<h3>IPs</h3>";
 					echo "<div class='callData'>";
+					$_SESSION['taIP']='';
 					foreach($ipCallouts as $key=>$val){
 						echo "<div class='calloutVal'>";
 						echo $val;
 						echo "</div>";
+						$_SESSION['taIP']=$val.' '.$_SESSION['taIP'];
 					}
+					$_SESSION['taIP']=rtrim($_SESSION['taIP'], ' ');
 					echo "</div>";
 				echo "</div>";
 			}
@@ -396,11 +495,18 @@ echo '</pre>';
 				echo "<div id='dnsCallouts'>";
 					echo "<h3>Domains</h3>";
 					echo "<div class='callData'>";
+						$_SESSION['taDNS']='';
 						foreach($dnsCallouts as $key=>$val){
 								echo "<div class='calloutVal'>";
 								echo $val;
 								echo "</div>";
+								$valPattern = '/^([a-zA-Z0-9\.\-]*)\.([a-z]*\/*.*)$/';
+								$valReplace = '$1[.]$2';
+								$val = preg_replace($valPattern, $valReplace, $val);
+								$_SESSION['taDNS']=$val.' '.$_SESSION['taDNS'];
 							}
+						$_SESSION['taDNS']=rtrim($_SESSION['taDNS'], ' ');
+						#echo $_SESSION['taDNS'];
 					echo "</div>";
 				echo "</div>";
 			}
