@@ -80,7 +80,7 @@ For automatic installation, simply run the following commands from the REMnux co
 
 This will install all the necessary software for WIPSTER to work properly.
 
-For manual installation, see MANUALINSTALL.md.
+For manual installation, see [MANUALINSTALL.md](https://github.com/TheDr1ver/WIPSTER/blob/master/MANUALINSTALL.md).
 		
 ## USAGE
 
