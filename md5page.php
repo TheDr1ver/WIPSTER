@@ -314,6 +314,7 @@ echo '<html>';
 				
 				echo '<div id="subSent">';
 					echo '<b>File submission successful! Status: </b>'.$submissionResp['state'].' <b>Please wait for analysis to complete, then refresh this page.</b>';
+					echo "<script>setTimeout('window.location.href=\"http://".$_SERVER['SERVER_NAME']."/md5page.php?idmd5=".$idmd5."\"', 3000);</script>";
 				echo '</div>';
 				
 				#Consider JQuery to check status of analysis every 5 seconds, then replace subSent DIV with
