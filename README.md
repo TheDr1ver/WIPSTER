@@ -78,7 +78,9 @@ For automatic installation, simply run the following commands from the REMnux co
 	
 (Remember the default password for REMnux is **malware**) 
 
-This will install all the necessary software for WIPSTER to work properly. 
+This will install all the necessary software for WIPSTER to work properly.
+
+For manual installation, see MANUALINSTALL.md.
 		
 ## USAGE
 
