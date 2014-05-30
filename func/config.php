@@ -137,6 +137,11 @@ $taSubPriority = $settingRes['tasubpriority'];	# Submission priority
 $taSubSandbox = $settingRes['tasubsandbox'];	#Sandbox for submission
 $taSubReanalyze = $settingRes['tasubreanalyze'];	# Reanalyze files that have previously been submitted
 
+#New
+
+$taSubGroupOpt = $settingRes['tasubgroupopt'];	#custom | for_any_group | for_all_group
+$taSubGroup = $settingRes['tasubgroup'];		# Group ID#
+
 #Comment the following out if you don't want to run a custom action
 $taSubCustomName = $settingRes['tasubcustomname'];	#Custom Action name
 $taSubCustomVal = $settingRes['tasubcustomval'];	#Custom Action value
