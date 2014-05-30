@@ -228,11 +228,13 @@ else{
 				</div>
 				
 				<div id="optional">
+					<div class="hidden">
 					<div class="attribute">VirusTotal API:</div> <input id="vtapi" type="text" name="vtapi" size="25" value="<?php echo $apis['vt'];?>" required />
 					<br/>
 					<div class="attribute">WOT API:</div> <input id="wotapi" type="text" name="wotapi" size="25" value="<?php echo $apis['wot'];?>" required />
 					<br/>
 					<div class="attribute">Google SafeBrowsing API:</div> <input id="googapi" type="text" name="googapi" size="25" value="<?php echo $apis['goog'];?>" required />
+					</div><!--end hidden class-->
 					<br/>
 					Notes:
 					<br/>
