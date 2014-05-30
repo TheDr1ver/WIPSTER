@@ -141,9 +141,42 @@ function getSettings(){
 
 $settingRes=getSettings();
 
+#Add columns to settings DB if not already there
+# 5/30/14 -	tasubgroupopt	#custom | for_any_group | for_all_group
+#			tasubgroup		# Group ID#
+function addColumn($settingRes,$newColName,$newColVal){
+	if(!isset($settingRes[$newColName])){
+		$db=new SQLite3('./admin/admin.db');
+		$altercmd = 'ALTER TABLE admin ADD COLUMN '.$newColName.' TEXT';
+		$result = $db->exec($altercmd);
+		if(!$result){
+			$settingRes['dbmod']=$db->lastErrorMsg();
+		}
+		else{
+			$settingRes['dbmod']=$db->changes().' Record updated successfully.';
+		}
+		
+		#Add initial data
+		$update = $newColName."='".$newColVal."'";
+		$result = $db->exec('UPDATE admin SET '.$update.' WHERE id=1');
+		if(!$result){
+			$addcolRes['dbset']=$db->lastErrorMsg();
+		}
+		else{
+			$addcolRes['dbset']=$db->changes().' Record updated successfully.';
+		}
+		
+		$db->close();
+		return $addcolRes;
+	}
+}
+$addcolRes = addColumn($settingRes,'tasubgroupopt','custom');
+$addcolRes = addColumn($settingRes,'tasubgroup','1');
+
+
 if(isset($_GET['update'])){
 	$command[]="cd /var/www/";
-	$command[]="mkdir /var/www/tmpupdatebackup";
+	$command[]="mkdir tmpupdatebackup";
 	$command[]="cd /var/www/tmpupdatebackup/";
 	#Backup DB's
 	$command[]="cp /var/www/admin/admin.db /var/www/tmpupdatebackup";
@@ -152,10 +185,11 @@ if(isset($_GET['update'])){
 	$command[]="cp /var/www/malwr/malwr.db /var/www/tmpupdatebackup";
 	$command[]="cp /var/www/mastiff/mastiff.db /var/www/tmpupdatebackup";
 	$command[]="cp /var/www/twitter/twitter.db /var/www/tmpupdatebackup";
+	$command[]="cp /var/www/ticketgen.php /var/www/tmpupdatebackup";
 	#Get new WIPSTER files
-	$command[]="wget -P /var/www/tmpupdatebackup/ https://github.com/TheDr1ver/WIPSTER/archive/master.zip";
-	$command[]="unzip /var/www/tmpupdatebackup/master.zip -d /var/www/tmpupdatebackup/";
-	$command[]="/bin/cp -rf /var/www/tmpupdatebackup/WIPSTER-master/* /var/www/";
+	$command[]="wget https://github.com/TheDr1ver/WIPSTER/archive/master.zip";
+	$command[]="unzip ./master.zip";
+	$command[]="/bin/cp -rf ./WIPSTER-master/* /var/www/";
 	#Restore DB's
 	$command[]="mv -f /var/www/tmpupdatebackup/admin.db /var/www/admin/admin.db";
 	$command[]="mv -f /var/www/tmpupdatebackup/urls.db /var/www/urls/urls.db";
@@ -163,6 +197,7 @@ if(isset($_GET['update'])){
 	$command[]="mv -f /var/www/tmpupdatebackup/malwr.db /var/www/malwr/malwr.db";
 	$command[]="mv -f /var/www/tmpupdatebackup/mastiff.db /var/www/mastiff/mastiff.db";
 	$command[]="mv -f /var/www/tmpupdatebackup/twitter.db /var/www/twitter/twitter.db";
+	$command[]="mv -f /var/www/tmpupdatebackup/ticketgen.php /var/www/ticketgen.php";
 	#Set permissions
 	$command[]="chown -R www-data:www-data /var/www/";
 	$command[]="cd /var/www/";
@@ -243,7 +278,7 @@ if(isset($_GET['configs'])){
 		<div id="container">
 			<div id="header">
 					<h1>WIPSTER Administration Console</h1>
-					<p><a href="./admin.php?backup=1">Backup WIPSTER (This may take a while)</a> | <a href="./admin.php?configs=1">Download Configs</a> | <a href="./admin.php?update=1" onclick="return confirm('Are you sure you want to update all files in the WIPSTER framework? Your configurations and existing files will be saved.')">Update WIPSTER (Saves configs and downloads most recent files from GitHub)</a></p>
+					<p><a href="./admin.php?backup=1">Backup WIPSTER (This may take a while)</a> | <a href="./admin.php?configs=1">Download Configs</a> | <a href="./?update=1" onclick="return confirm('Are you sure you want to update all files in the WIPSTER framework? Your configurations and existing files will be saved.')">Update WIPSTER (Saves configs and downloads most recent files from GitHub)</a></p>
 			</div><!--end header-->
 			<div id="maincontent">
 				
@@ -310,7 +345,11 @@ if(isset($_GET['configs'])){
 					<input type="text" name="threatbase" size="25" value="<?echo $settingRes['threatbase'];?>" />
 					<p>ThreatAnalyzer Submission Priority: </p>
 					<input type="text" name="tasubpriority" size="25" value="<?echo $settingRes['tasubpriority'];?>" />
-					<p>ThreatAnalyzer Sandbox for Submission: </p>
+					<p>ThreatAnalyzer Sandbox Group Option <br/>(custom | for_any_group | for_all_group): </p>
+					<input type="text" name="tasubgroupopt" size="25" value="<?echo $settingRes['tasubgroupopt'];?>" />	
+					<p>ThreatAnalyzer Sandbox Group for Submission <br/>(Only used if Group Option != 'custom'): </p>
+					<input type="text" name="tasubgroup" size="25" value="<?echo $settingRes['tasubgroup'];?>" />	
+					<p>ThreatAnalyzer Sandbox for Submission <br/>(Only used if Group Option == 'custom'): </p>
 					<input type="text" name="tasubsandbox" size="25" value="<?echo $settingRes['tasubsandbox'];?>" />
 					<p>ThreatAnalyzer Custom Action Name: </p>
 					<input type="text" name="tasubcustomname" size="25" value="<?echo $settingRes['tasubcustomname'];?>" />
