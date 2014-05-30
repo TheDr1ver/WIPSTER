@@ -128,6 +128,10 @@ iframe{
 .data{
 }
 
+.hidden{
+	display:none;
+}
+
 .ip{
 	float:left;
 	margin-right:20px;
