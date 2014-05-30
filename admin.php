@@ -170,7 +170,7 @@ function addColumn($settingRes,$newColName,$newColVal){
 		return $addcolRes;
 	}
 }
-$addcolRes = addColumn($settingRes,'tasubgroupopt','custom');
+$addcolRes = addColumn($settingRes,'tasubgroupopt','for_all_group');
 $addcolRes = addColumn($settingRes,'tasubgroup','1');
 
 
