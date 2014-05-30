@@ -117,21 +117,63 @@ if($threatAnalyzerPlugin===True){
 		$command='/submissions';
 		$threatArgs='';
 		
-		
 		#most vars set in config.php
 		$postArray=array(
 			'submission[file]'=>$taFile,
 			'submission[priority]'=>$taSubPriority,
-			'submission[sandbox][group_option]'=>'custom',
-			'submission[sandbox][custom_sandbox][]'=>$taSubSandbox,
+			#'submission[sandbox][group_option]'=>'custom',
+			#'submission[sandbox][custom_sandbox][]'=>$taSubSandbox,
 			'submission[submission_type]'=>'file',
 			'submission[reanalyze]'=>$taSubReanalyze
 		);
 		
+		
+		#Find group & options
+		$postArray['submission[sandbox][group_option]'] = $taSubGroupOpt;
+		if($taSubGroupOpt=='custom'){
+			
+			
+			$taSubSandbox = explode(",",$taSubSandbox);
+			$sandboxArray=array();
+			foreach($taSubSandbox as $key=>$val){
+				$val = trim($val);
+				$postkey = 'submission[sandbox][custom_sandbox][]';
+				$postArray[$postkey] = $val;
+				
+				#NOTE: I never did figure out how to pass more than one MAC correctly...
+				
+				#$sandboxArray[]=$val;
+				
+				#$postkey = 'submission[sandbox][custom_sandbox][]['.$val.']';
+				#$postArray[$postkey] = $val;
+				
+				#$postkey = 'submission[sandbox][custom_sandbox][]['.$key.']';
+				#$postArray[$postkey] = $val;
+			}
+			
+			
+			#$postkey = 'submission[sandbox][custom_sandbox][]';
+			#$postkey = 'submission[sandbox][custom_sandbox]';
+			
+			#$postArray[$postkey] = '['.$taSubSandbox.']';
+			#$postArray[$postkey] = $taSubSandbox;
+			#$postArray[$postkey] = $sandboxArray;
+			
+		}
+		else{
+			$sandboxString='submission[sandbox]['.$taSubGroupOpt.'_id]';
+			$postArray[$sandboxString] = $taSubGroup;
+		}
+		
+		#Set custom params
 		if (isset($taSubCustomName)){
 			$custNamePost = 'custom_param['.$taSubCustomName.']';
 			$postArray[$custNamePost]=$taSubCustomVal;
 			}
+			
+		#echo "<pre>";
+		#var_dump($postArray);
+		#echo "</pre>";
 		
 		$submission=@callTA($command,$threatAPI,$threatPage,$threatArgs,1,$postArray);	#1 means POST
 		$threatArgs='';
