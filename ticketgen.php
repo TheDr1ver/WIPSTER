@@ -119,7 +119,15 @@ Reason for Ticket/Alert			:
 						}
 						
 					}
-					
+					#If callouts found in ThreatAnalyzer
+					if(isset($_SESSION['taIP'])){
+						$ipStr = $_SESSION['taIP'];#.' '.$ipStr;
+						$ipStr = rtrim($ipStr, ' ');
+					}
+					if(isset($_SESSION['taDNS'])){
+						$dnsStr = $_SESSION['taDNS'];#.' '.$dnsStr;
+						$dnsStr = rtrim($dnsStr, ' ');
+					}
 					
 				?>
 DNS Callout				:	<? echo $dnsStr; ?>
