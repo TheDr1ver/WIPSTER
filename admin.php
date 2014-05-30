@@ -176,7 +176,7 @@ $addcolRes = addColumn($settingRes,'tasubgroup','1');
 
 if(isset($_GET['update'])){
 	$command[]="cd /var/www/";
-	$command[]="mkdir tmpupdatebackup";
+	$command[]="mkdir /var/www/tmpupdatebackup";
 	$command[]="cd /var/www/tmpupdatebackup/";
 	#Backup DB's
 	$command[]="cp /var/www/admin/admin.db /var/www/tmpupdatebackup";
@@ -187,9 +187,9 @@ if(isset($_GET['update'])){
 	$command[]="cp /var/www/twitter/twitter.db /var/www/tmpupdatebackup";
 	$command[]="cp /var/www/ticketgen.php /var/www/tmpupdatebackup";
 	#Get new WIPSTER files
-	$command[]="wget https://github.com/TheDr1ver/WIPSTER/archive/master.zip";
-	$command[]="unzip ./master.zip";
-	$command[]="/bin/cp -rf ./WIPSTER-master/* /var/www/";
+	$command[]="wget -P /var/www/tmpupdatebackup/ https://github.com/TheDr1ver/WIPSTER/archive/master.zip";
+	$command[]="unzip /var/www/tmpupdatebackup/master.zip -d /var/www/tmpupdatebackup/";
+	$command[]="/bin/cp -rf /var/www/tmpupdatebackup/WIPSTER-master/* /var/www/";
 	#Restore DB's
 	$command[]="mv -f /var/www/tmpupdatebackup/admin.db /var/www/admin/admin.db";
 	$command[]="mv -f /var/www/tmpupdatebackup/urls.db /var/www/urls/urls.db";
@@ -278,7 +278,7 @@ if(isset($_GET['configs'])){
 		<div id="container">
 			<div id="header">
 					<h1>WIPSTER Administration Console</h1>
-					<p><a href="./admin.php?backup=1">Backup WIPSTER (This may take a while)</a> | <a href="./admin.php?configs=1">Download Configs</a> | <a href="./?update=1" onclick="return confirm('Are you sure you want to update all files in the WIPSTER framework? Your configurations and existing files will be saved.')">Update WIPSTER (Saves configs and downloads most recent files from GitHub)</a></p>
+					<p><a href="./admin.php?backup=1">Backup WIPSTER (This may take a while)</a> | <a href="./admin.php?configs=1">Download Configs</a> | <a href="./admin.php?update=1" onclick="return confirm('Are you sure you want to update all files in the WIPSTER framework? Your configurations and existing files will be saved.')">Update WIPSTER (Saves configs and downloads most recent files from GitHub)</a></p>
 			</div><!--end header-->
 			<div id="maincontent">
 				
