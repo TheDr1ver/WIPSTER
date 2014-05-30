@@ -273,7 +273,7 @@ echo '<html>';
 		}
 		
 #		echo '<br/>';
-		echo '<div id="emailformat"><a href="./ticketgen.php" target="_blank">View Results in Plain Text</a></div>';
+		echo '<div id="emailformat"><a href="./ticketgen.php" target="_blank">View in Plain Text</a></div>';
 		echo '</div>';#End topbuttons div
 		
 		#Show status of file submission
