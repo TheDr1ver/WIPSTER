@@ -102,14 +102,40 @@ if($_FILES['malware']['name'])
 				$command='/submissions';
 				$threatArgs='';
 				
+				#most vars set in config.php
 				$postArray=array(
 					'submission[file]'=>$taFile,
 					'submission[priority]'=>$taSubPriority,
-					'submission[sandbox][group_option]'=>'custom',
-					'submission[sandbox][custom_sandbox][]'=>$taSubSandbox,
+					#'submission[sandbox][group_option]'=>'custom',
+					#'submission[sandbox][custom_sandbox][]'=>$taSubSandbox,
 					'submission[submission_type]'=>'file',
 					'submission[reanalyze]'=>$taSubReanalyze
 				);
+				
+				
+				#Find group & options
+				$postArray['submission[sandbox][group_option]'] = $taSubGroupOpt;
+				if($taSubGroupOpt=='custom'){
+					
+					
+					$taSubSandbox = explode(",",$taSubSandbox);
+					$sandboxArray=array();
+					foreach($taSubSandbox as $key=>$val){
+						$val = trim($val);
+						$postkey = 'submission[sandbox][custom_sandbox][]';
+						$postArray[$postkey] = $val;
+						
+						#NOTE: I never did figure out how to pass more than one MAC correctly...
+						
+					}
+					
+				}
+				else{
+					$sandboxString='submission[sandbox]['.$taSubGroupOpt.'_id]';
+					$postArray[$sandboxString] = $taSubGroup;
+				}
+				
+				#Set custom params
 				if (isset($taSubCustomName)){
 					$custNamePost = 'custom_param['.$taSubCustomName.']';
 					$postArray[$custNamePost]=$taSubCustomVal;
