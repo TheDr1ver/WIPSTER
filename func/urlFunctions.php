@@ -220,7 +220,7 @@ function checkMLD($text,$url)
 	
 	$i=0;
 	
-	$pattern='/.*'.$url.'.*/';
+	$pattern='~.*'.$url.'.*~';
 	
 	foreach($text as $line)
 	{
