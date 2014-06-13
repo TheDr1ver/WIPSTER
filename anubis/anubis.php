@@ -8,7 +8,7 @@
 
 #Anubis-specific Variables - set these to your Anubis Account
 #If you do not have an Anubis account, request one at https://anubis.iseclab.org/?action=register
-include ('../func/config.php');
+include ('/var/www/func/config.php');
 
  
 #Get Variables from URL
