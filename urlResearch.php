@@ -201,7 +201,10 @@ else{
 					<br/>
 					<br/>
 					<div class="attribute">Ticket #: </div>
-					<input id="ticket" type="text" name="ticket" pattern="\d{7,12}" size="25" required />
+					<input id="ticket" type="text" name="ticket" size="25" required />
+					<!-- Uncomment below line & remove line above to force pattern matching -->
+					<!-- <input id="ticket" type="text" name="ticket" pattern="\d{7,12}" size="25" required /> -->
+					
 					<br/>
 				</div>
 				
