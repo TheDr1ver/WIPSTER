@@ -13,11 +13,19 @@
 			</div>
 			<div id="content">
 				<div id="mastiff">
-					<h1>MASTIFF</h1>
+					<h1>WIPSTER</h1>
 					<ul>
-						<li><a href="./mastiffResults.php">View MASTIFF Results Dashboard</a></li>
-						<li><a href="./upload2.html">Submit files to MASTIFF</a><br/></li>
-						<li><a href="./search.php">Search MASTIFF Database</a></li>
+						<li><a href="./mastiffResults.php">View WIPSTER Results Dashboard</a></li>
+						<?
+						require('./func/config.php');
+						if($critsPlugin==True){
+							echo "<li><a href='./crits-upload.php'>Submit files to WIPSTER</a><br/></li>";
+						}
+						else{
+							echo "<li><a href='./upload2.html'>Submit files to WIPSTER</a><br/></li>";
+						}
+						?>
+						<li><a href="./search.php">Search WIPSTER Database</a></li>
 					</ul>
 				</div>
 				<div id="urls">

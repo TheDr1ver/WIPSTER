@@ -21,6 +21,9 @@ if(!function_exists('getSettings')){
 				 * 	tridloc
 				 * 	malwrPlugin
 				 * 	malwrAPI
+				 *  critsPlugin
+				 *  critsPage
+				 *  critsLogin
 				 * 	threatanalyzerplugin
 				 * 	threatapi
 				 * 	threatbase
@@ -113,6 +116,20 @@ else{
 }
 
 $malwrAPI=$settingRes['malwrAPI'];
+
+#################################
+##### CRITs Integration
+#################################
+if($settingRes['critsPlugin']=='1'){
+	$critsPlugin=True;
+}
+else{
+	$critsPlugin=False;
+}
+
+$critsPage = $settingRes['critsPage'];
+$critsLogin = $settingRes['critsLogin'];
+
 
 #################################
 ##### ThreatAnalyzer Integration

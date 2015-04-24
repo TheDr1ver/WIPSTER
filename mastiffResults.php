@@ -2,6 +2,8 @@
 
 $db = new SQLite3('./mastiff/mastiff.db');
 $row = array();
+require('./func/config.php');
+
 
 ###########################
 /*
@@ -77,9 +79,15 @@ echo '<div id="container">';
 		echo '<div id="header">';
 
 			echo '<header>';
-			echo '<title>MASTIFF Results Dashboard</title>';
-			echo '<h1>MASTIFF Results Dashboard</h1>';
-			echo '<a href="./upload2.html">Submit Files</a> | <a href="./search.php">Search</a>';
+			echo '<title>WIPSTER Results Dashboard</title>';
+			echo '<h1>WIPSTER Results Dashboard</h1>';
+			if ($critsPlugin==True){
+				echo '<a href="./crits-upload.php">Submit Files</a>';
+			}
+			else{
+				echo '<a href="./upload2.html">Submit Files</a>';
+			}
+			echo ' | <a href="./search.php">Search</a>';
 			echo '</header>';
 		
 		echo '</div>';

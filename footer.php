@@ -29,7 +29,7 @@
 					echo '<p><a href="./autoPastebin.php"><span style="color:red;font-weight:bold;">NOTICE:</span> New '.$gcseQuery.' data found today on a PasteBin site.</a></p>';
 				}
 				
-				echo '<p><a href="./mastiffResults.php">MASTIFF Analysis</a> | <a href="./urlResearch.php">URL Research</a> | <a href="./convert.php">Text Conversion</a> | <a href="./pastebinsearch.php">Pastebin Search</a></p>';
+				echo '<p><a href="./mastiffResults.php">WIPSTER Analysis</a> | <a href="./urlResearch.php">URL Research</a> | <a href="./convert.php">Text Conversion</a> | <a href="./pastebinsearch.php">Pastebin Search</a></p>';
 				echo '</div>';
 				
 		echo '</div>';

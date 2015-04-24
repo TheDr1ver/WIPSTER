@@ -20,6 +20,10 @@ if(isset($_POST['remver'])){
 		$newSettings['malwrPlugin']='false';
 	}
 	
+	if(!isset($newSettings['critsPlugin'])){
+		$newSettings['critsPlugin']='false';
+	}
+	
 	if(!isset($newSettings['threatanalyzerplugin'])){
 		$newSettings['threatanalyzerplugin']='false';
 	}
@@ -102,6 +106,9 @@ function getSettings(){
 			 * 	tridloc
 			 * 	malwrplugin
 			 * 	malwrapi
+			 *  critsPlugin
+			 *  critsPage
+			 *  critsLogin
 			 * 	threatanalyzerplugin
 			 * 	threatapi
 			 * 	threatbase
@@ -144,6 +151,9 @@ $settingRes=getSettings();
 #Add columns to settings DB if not already there
 # 5/30/14 -	tasubgroupopt	#custom | for_any_group | for_all_group
 #			tasubgroup		# Group ID#
+# 4/24/15 - critsPlugin		# 1 for activate CRITs, 0 for no CRITs
+#			critsPage		# IP address/hostname of CRITs instance API
+#			critsLogin		# username=<username>&api_key=<apikey>
 function addColumn($settingRes,$newColName,$newColVal){
 	if(!isset($settingRes[$newColName])){
 		$db=new SQLite3('./admin/admin.db');
@@ -172,6 +182,9 @@ function addColumn($settingRes,$newColName,$newColVal){
 }
 $addcolRes = addColumn($settingRes,'tasubgroupopt','for_all_group');
 $addcolRes = addColumn($settingRes,'tasubgroup','1');
+$addcolRes = addColumn($settingRes,'critsPlugin','0');
+$addcolRes = addColumn($settingRes,'critsPage','https://192.168.1.131/api/v1/');
+$addcolRes = addColumn($settingRes,'critsLogin','username=<username>&api_key=<apikey>');
 
 
 if(isset($_GET['update'])){
@@ -367,6 +380,21 @@ if(isset($_GET['configs'])){
 					Reanalyze previously submitted files</p>
 					
 				</div><!--end threatanalyzer-->
+				<div id ="crits" class="box">
+					<h2>CRITs Settings</h2>
+					<?
+					if($settingRes['critsPlugin']=='1'){
+						echo '<input type="checkbox" name="critsPlugin" id="critsPlugin" value="true" checked/>Use CRITs';
+					}
+					else{
+						echo '<input type="checkbox" name="critsPlugin" id="critsPlugin" value="true"/>Use CRITs';
+					}
+					?>
+					<p>CRITs Instance Location: </p>
+					<input type="text" name="critsPage" size="25" value="<?echo $settingRes['critsPage'];?>" />
+					<p>CRITs Login:</p>
+					<input type="text" name="critsLogin" size="25" value="<?echo $settingRes['critsLogin'];?>" />
+				</div>
 				<div id="anubis" class="box">
 					<h2>Anubis Settings</h2>
 					<p>Anubis Username: </p>

@@ -171,52 +171,145 @@ foreach($taTable as $key=>$val){
 }
 
 # GET FULL JSON DUMPS
-$jsonDumps=array();
-foreach($analysesIDs as $key=>$val){
-	$command='/analyses/'.$val.'/archive_browser/get_file';
+#$jsonDumps=array();
+$critsCon=array();
+$critsCon['uri']=array();
+$critsCon['useragent']=array();
+
+foreach($analysesIDs as $anKey=>$anVal){
+	$jsonDumps = array();
+	$connectionDumps=array();
+	$netOpDumps=array();
+	$ipCallouts=array();
+	$dnsCallouts=array();
+	$calloutCommands=array();
+	#$conHeaders=array();
+	
+	
+	$command='/analyses/'.$anVal.'/archive_browser/get_file';
 	$threatArgs='archive_file=Analysis/analysis.json';
 	$response=@callTA($command,$threatAPI,$threatPage,$threatArgs);
 	$threatArgs='';
 	#echo '<p>HTTP Response: '.$response[1].'</p>';
 	$jsonDumps[] = json_decode($response[0], true);
+	
+	
+	
+	# GET CONNECTION SECTIONS
+
+	foreach($jsonDumps as $key=>$val){
+		#if( (array_key_exists('analysis',$val)) && (array_key_exists('processes',$val['analysis'])) && (array_key_exists('process',$val['analysis']['processes'])) && (array_key_exists('connection_section',$val['analysis']['processes']['process']))){
+		if($val!=NULL){
+			if(array_key_exists('analysis',$val)){
+				#echo 'Analysis '.$key.': $val["analysis"] EXISTS!';
+				if(array_key_exists('processes',$val['analysis'])){
+					#echo 'Analysis '.$key.': $val["analysis"]["processes"] EXISTS!';
+					if(array_key_exists('process',$val['analysis']['processes'])){
+						#echo 'Analysis '.$key.': $val["analysis"]["processes"]["process"] EXISTS!';
+						foreach($val['analysis']['processes']['process'] as $prokey=>$proval){
+							#echo "<br/>looking at ".$key."['analysis']['processes']['process']['".$prokey."']<br/>";
+							#echo '$proval '.$prokey.':<br/><br/>';
+							#echo '<pre>';
+							#var_dump($proval);
+							#echo '</pre>';
+							if(array_key_exists('connection_section',$proval)){
+								#echo 'Analysis '.$key.': $val["analysis"]["processes"]["process"]["'.$prokey.'"]["connection_section"] EXISTS!<br/>';
+								$connectionDumps[]=$proval['connection_section'];
+								
+								# GET CALLOUTS
+																
+								foreach($connectionDumps as $condumpkey=>$condumpval){
+									if(array_key_exists('connection',$condumpval)){
+										foreach($condumpval['connection'] as $conKey=>$conVal){
+											$critsConTemp=array();
+											#Get IP Direct Connection
+											if($conVal['@sandbox_action']=='FAIL'){
+												if(!in_array($conVal['@remote_ip'],$ipCallouts)){
+													#$ipCallouts[$conKey]=$conVal['@remote_ip'];
+													$ipCallouts[]=$conVal['@remote_ip'];
+												}
+												
+											}
+											
+											#if($conVal['@remote_hostname']!=''){
+											#	$dnsCallouts[$conKey]=$conVal['@remote_hostname'];
+											#}
+											
+											#Get HTTP Headers
+											if(array_key_exists('http_command',$conVal)){
+												foreach($conVal['http_command'] as $httpComKey=>$httpComVal){
+													$calloutCommands[$conKey]=$httpComVal['@method'].": ".$httpComVal['@url'];
+													$critsConTemp['method']=$httpComVal['@method'];
+													$critsConTemp['uri']=$httpComVal['@url'];
+												}
+											}
+											
+											if(array_key_exists('http_header',$conVal)){
+												foreach($conVal['http_header'] as $headKey=>$headVal){
+													#echo '#@header: '.$headVal['@header'].'<br/>';
+													if(strpos($headVal['@header'],'User-Agent')!==false){
+														$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
+														$critsConTemp['useragent']=$headVal['@header'];
+													}
+													if(strpos($headVal['@header'],'Host')!==false){
+														$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
+														$critsConTemp['host']=$headVal['@header'];
+													}
+												}
+											}
+											#Build the full request for crits
+											if(!empty($critsConTemp['method']) || !empty($critsConTemp['host']) || !empty($critsConTemp['uri'])){
+												$critsConTemp['request']=$critsConTemp['method']." ".$critsConTemp['host'].$critsConTemp['uri'];
+											}
+											
+											#If not already in the crits array, add it
+											if(!in_array($critsConTemp['request'],$critsCon['uri']) && !empty($critsConTemp['request'])){
+												$critsCon['uri'][]=$critsConTemp['request'];
+											}
+											if(!in_array($critsConTemp['useragent'],$critsCon['useragent']) && !empty($critsConTemp['useragent'])){
+												$critsCon['useragent'][]=$critsConTemp['useragent'];
+												/*
+												echo "$critsConTemp[useragent] Added.";
+												echo "<pre>";
+												print_r($critsCon);
+												echo "</pre>";
+												*/
+											}
+											$critsConTemp=array();
+										}
+									}
+								}
+							}
+							if(array_key_exists('networkoperation_section',$proval)){
+								$netOpDumps[]=$proval['networkoperation_section'];
+								# GET CALLOUTS
+								foreach($netOpDumps as $netKey=>$netVal){
+									if(array_key_exists('dns_request_by_name',$netVal)){
+										foreach($netVal['dns_request_by_name'] as $dnsKey=>$dnsVal){
+											if(array_key_exists('@request_name',$dnsVal)){
+												if(!in_array($dnsVal['@request_name'],$dnsCallouts)){
+													$dnsCallouts[]=$dnsVal['@request_name'];
+												}
+											}
+											
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+	}
 }
 
 #echo '<pre>';
 #var_dump($jsonDumps);
 #echo '</pre>';
 
-# GET CONNECTION SECTIONS
-$connectionDumps=array();
-$netOpDumps=array();
-foreach($jsonDumps as $key=>$val){
-	#if( (array_key_exists('analysis',$val)) && (array_key_exists('processes',$val['analysis'])) && (array_key_exists('process',$val['analysis']['processes'])) && (array_key_exists('connection_section',$val['analysis']['processes']['process']))){
-	if($val!=NULL){
-		if(array_key_exists('analysis',$val)){
-			#echo 'Analysis '.$key.': $val["analysis"] EXISTS!';
-			if(array_key_exists('processes',$val['analysis'])){
-				#echo 'Analysis '.$key.': $val["analysis"]["processes"] EXISTS!';
-				if(array_key_exists('process',$val['analysis']['processes'])){
-					#echo 'Analysis '.$key.': $val["analysis"]["processes"]["process"] EXISTS!';
-					foreach($val['analysis']['processes']['process'] as $prokey=>$proval){
-						#echo "<br/>looking at ".$key."['analysis']['processes']['process']['".$prokey."']<br/>";
-						#echo '$proval '.$prokey.':<br/><br/>';
-						#echo '<pre>';
-						#var_dump($proval);
-						#echo '</pre>';
-						if(array_key_exists('connection_section',$proval)){
-							#echo 'Analysis '.$key.': $val["analysis"]["processes"]["process"]["'.$prokey.'"]["connection_section"] EXISTS!<br/>';
-							$connectionDumps[]=$proval['connection_section'];
-						}
-						if(array_key_exists('networkoperation_section',$proval)){
-							$netOpDumps[]=$proval['networkoperation_section'];
-						}
-					}
-				}
-			}
-		}
-	}
-	
-}
+
 
 #echo '<pre>';
 #echo '##### $connectionDumps:';
@@ -228,62 +321,7 @@ foreach($jsonDumps as $key=>$val){
 #var_dump($netOpDumps);
 #echo '</pre>';
 
-# GET CALLOUTS
-$ipCallouts=array();
-$dnsCallouts=array();
-$calloutCommands=array();
-#$conHeaders=array();
 
-foreach($netOpDumps as $key=>$val){
-	if(array_key_exists('dns_request_by_name',$val)){
-		foreach($val['dns_request_by_name'] as $dnsKey=>$dnsVal){
-			if(array_key_exists('@request_name',$dnsVal)){
-				if(!in_array($dnsVal['@request_name'],$dnsCallouts)){
-					$dnsCallouts[]=$dnsVal['@request_name'];
-				}
-			}
-			
-		}
-	}
-}
-foreach($connectionDumps as $key=>$val){
-	if(array_key_exists('connection',$val)){
-		foreach($val['connection'] as $conKey=>$conVal){
-			#Get IP Direct Connection
-			if($conVal['@sandbox_action']=='FAIL'){
-				if(!in_array($conVal['@remote_ip'],$ipCallouts)){
-					#$ipCallouts[$conKey]=$conVal['@remote_ip'];
-					$ipCallouts[]=$conVal['@remote_ip'];
-				}
-				
-			}
-			
-			#if($conVal['@remote_hostname']!=''){
-			#	$dnsCallouts[$conKey]=$conVal['@remote_hostname'];
-			#}
-			
-			#Get HTTP Headers
-			if(array_key_exists('http_command',$conVal)){
-				foreach($conVal['http_command'] as $httpComKey=>$httpComVal){
-					$calloutCommands[$conKey]=$httpComVal['@method'].": ".$httpComVal['@url'];
-				}
-			}
-			
-			if(array_key_exists('http_header',$conVal)){
-				foreach($conVal['http_header'] as $headKey=>$headVal){
-					#echo '#@header: '.$headVal['@header'].'<br/>';
-					if(strpos($headVal['@header'],'User-Agent')!==false){
-						$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
-					}
-					if(strpos($headVal['@header'],'Host')!==false){
-						$calloutCommands[$conKey]=$calloutCommands[$conKey]."\r\n".$headVal['@header'];
-					}
-				}
-			}
-			
-		}
-	}
-}
 
 /*
 echo '<pre>';

@@ -11,6 +11,7 @@ session_start();
 #error_reporting(E_ALL); ini_set('display_errors',1);
 require('./func/config.php');
 
+
  
 #Get MD5 Variable from URL
 if(isset($_GET['idmd5'])){
@@ -233,7 +234,14 @@ echo '<html>';
 		echo '<br/>';
 		echo '<a href="./mastiffResults.php">MASTIFF Results Dashboard</a> | ';
 		echo '<a href="./search.php">Search</a> | ';
-		echo '<a href="./upload2.html">Submit Files</a>';
+		
+		if ($critsPlugin==True){
+			echo '<a href="./crits-upload.php">Submit Files</a>';
+		}
+		else{
+			echo '<a href="./upload2.html">Submit Files</a>';
+		}
+		
 		echo '<br/>';
 		echo '<br/>';
 		echo '<a href="./mastiff/'.$idmd5.'/">View Directory for '.$idmd5.'</a> ';
@@ -271,6 +279,13 @@ echo '<html>';
 			#echo '<br/>';
 			echo '<div id="taButtonSubmit"><a href="http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'&tasub=1">Send to ThreatAnalyzer</a></div>';
 		}
+		
+		
+		if($critsPlugin==True){
+			echo "<div id='critsButton'>Submit info to CRITs</div>";
+			echo "<div id='remButton2'>REMnux Details</div>";
+		}
+		
 		
 #		echo '<br/>';
 		echo '<div id="emailformat"><a href="./ticketgen.php" target="_blank">View in Plain Text</a></div>';
@@ -313,7 +328,7 @@ echo '<html>';
 				 */
 				
 				echo '<div id="subSent">';
-					echo '<b>File submission successful! Status: </b>'.$submissionResp['state'].' <b>Please wait for analysis to complete, then refresh this page.</b>';
+					echo '<b>File submission successful! Status: </b>'.$submissionResp['state'].' <b>This page will automatically refresh in 3 seconds.</b>';
 					echo "<script>setTimeout('window.location.href=\"http://".$_SERVER['SERVER_NAME']."/md5page.php?idmd5=".$idmd5."\"', 3000);</script>";
 				echo '</div>';
 				
@@ -351,6 +366,12 @@ echo '<html>';
 		echo '<div id="taPage">';
 		include('./threatanalyzer.php');
 		echo "</div><!--END taPage-->\r\n";
+	}
+	
+	if($critsPlugin===True){
+		echo "<div id='critsPage'>";
+		include('./critsform.php');
+		echo "</div><!--END critsPage-->\r\n";
 	}
 	
 	echo '<div id="topcontent">';
@@ -1158,6 +1179,21 @@ echo '<html>';
 	echo '</pre>';
 	*/
 	
+	###############	
+	##### DEBUG
+	###############
+	
+	
+	if(isset($_GET['debug'])){
+		echo "<pre>";
+		print_r(get_defined_vars());
+		echo "</pre>";
+	}
+	
+	
+	
+	
+	
 	echo '</div>'; #END CONTAINER
 	
 	###########################
@@ -1172,6 +1208,7 @@ echo '<html>';
 
 		// Hide/Unhide ThreatAnalyzer Data
 		$("#remButton").toggle();
+		$("#remButton2").toggle();
 		
 		$("#taButton").click(function(){
 			$("#taPage").toggle();
@@ -1189,9 +1226,29 @@ echo '<html>';
 			$("#remButton").toggle();
 		});
 		
+		$("#critsButton").click(function(){
+			$("#critsPage").toggle();
+			$("#topcontent").toggle();
+			$("#bottomcontent").toggle();
+			$("#critsButton").toggle();
+			$("#remButton2").toggle();
+		});
+		
+		$("#remButton2").click(function(){
+			$("#critsPage").toggle();
+			$("#topcontent").toggle();
+			$("#bottomcontent").toggle();
+			$("#critsButton").toggle();
+			$("#remButton2").toggle();
+		});
+		
+		
 	});
 </script>
 	
 </body>
+
+
+
 </html>
 
