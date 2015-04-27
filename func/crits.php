@@ -10,8 +10,7 @@ $not_domain=array(
 );
 
 $not_ip=array(
-	'192.168.1.124',
-	'192.168.1.188'
+	''
 );
 
 $not_uri=array(
