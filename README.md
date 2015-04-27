@@ -99,6 +99,9 @@ password-protected .zip files that use the password "infected".
 
 The URL checker currently only allows for http sites (not https).
 
+<b>NOTE:</b> For CRITs implementation, the user whose API key is being used for
+submissions must have access to a custom CRITs source named "WIPSTER".
+
 ## LICENSE
 
 Web Interface Portal & Security Threat Engine for REMnux (WIPSTER) is licensed 
