@@ -221,6 +221,7 @@ function dataBuild($type, $new_file_name, $_POST, $_FILES=NULL, $critsPage=NULL,
 	
 	#Set parameters unique to emails
 	if($type=='email'){
+		unset($data['ticket']);	#CRITs API does not currently handle ticket #'s for emails
 		$filedata="@/var/www/upload/malware/".$new_file_name;
 		$data['filedata']=$filedata;
 		#Get the file extension of the uploaded email
