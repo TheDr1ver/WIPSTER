@@ -39,15 +39,10 @@ sed -i -e 's/^log_dir.*/log_dir = \/var\/www\/mastiff/g' /usr/config/mastiff.con
 mkdir /opt/remnux-wipster/
 cd /opt/remnux-wipster/
 git clone -b remnux-v6 --single-branch https://github.com/TheDr1ver/WIPSTER.git
-cp -R /opt/remnux-wipster/WIPSTER/.* /var/www/ -y
+cp -rf /opt/remnux-wipster/WIPSTER/.* /var/www/
 chown -R www-data:www-data /var/www/
 service nginx start
 service php5-fpm restart
-
-
-
-#Updating DB with new defaults
-sqlite3 /var/www/admin/admin.db "UPDATE admin SET mastiffconf='/usr/config/mastiff.conf',mastiffpy='/usr/bin/mas.py',tridloc='/opt/remnux-trid/triddefs.trd';"
 
 
 #Launching config page
