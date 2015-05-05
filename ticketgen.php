@@ -267,7 +267,7 @@ if($yara){
 }
 
 if(strpos($type,'PDF') != false){
-	$peepdf = shell_exec('peepdf "/var/www/mastiff/'.$md5.'/'.$filename.'"');
+	$peepdf = shell_exec('/opt/remnux-peepdf/peepdf.py -fg "/var/www/mastiff/'.$md5.'/'.$filename.'"');
 	if (!is_null($peepdf)){
 		echo "\n".'##### PEEPDF RESULTS #####'."\n";
 		echo $peepdf;
