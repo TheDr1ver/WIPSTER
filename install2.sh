@@ -31,6 +31,7 @@ sed -i "65s/#//" /etc/nginx/sites-enabled/default
 sed -i "56s/^/\t\ttry_files \$uri =404;\r\n/" /etc/nginx/sites-enabled/default
 
 sed -i -e 's/short_open_tag = Off/short_open_tag = On/g' /etc/php5/fpm/php.ini
+sed -i -e 's/max_execution_time = 30/max_execution_time = 300/g' /etc/php5/fpm/php.ini
 
 sed -i -e 's/^log_dir.*/log_dir = \/var\/www\/mastiff/g' /usr/config/mastiff.conf
 
