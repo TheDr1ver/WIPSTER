@@ -302,15 +302,15 @@ if(isset($_GET['configs'])){
 				<?
 				if ($settingRes['remver']=='4'){
 					echo '<input type="radio" name="remver" value="4" checked/>REMnux v4';
-					echo '<input type="radio" name="remver" value="5" />REMnux v5';
+					echo '<input type="radio" name="remver" value="5" />REMnux v5/v6';
 				}
 				elseif($settingRes['remver']=='5'){
 					echo '<input type="radio" name="remver" value="4" />REMnux v4';
-					echo '<input type="radio" name="remver" value="5" checked/>REMnux v5';
+					echo '<input type="radio" name="remver" value="5" checked/>REMnux v5/v6';
 				}
 				else{
 					echo '<input type="radio" name="remver" value="4"/>REMnux v4';
-					echo '<input type="radio" name="remver" value="5"/>REMnux v5';
+					echo '<input type="radio" name="remver" value="5"/>REMnux v5/v6';
 				}
 				?>
 				</div><!--end remver-->
