@@ -22,13 +22,13 @@ apt-get install php5-fpm php5-mcrypt php5-curl php5-sqlite -y
 echo "Modifying nginx and mastiff configs..."
 sed -i -e 's/index index\.html.*/index index.php index.html index.htm/g' /etc/nginx/sites-enabled/default
 
-sed -i "55s/#//" /etc/nginx/sites-enabled/default
-sed -i "56s/#//" /etc/nginx/sites-enabled/default
-sed -i "62s/#//" /etc/nginx/sites-enabled/default
-sed -i "63s/#//" /etc/nginx/sites-enabled/default
-sed -i "64s/#//" /etc/nginx/sites-enabled/default
-sed -i "65s/#//" /etc/nginx/sites-enabled/default
-sed -i "56s/^/\t\ttry_files \$uri =404;\r\n/" /etc/nginx/sites-enabled/default
+sed -i -e '/#location.*php\$.*/s/#//g' /etc/nginx/sites-enabled/default
+sed -i -e '/location.*php\$.*/a \\ \t\ttry_files \$uri =404;' /etc/nginx/sites-enabled/default
+sed -i -e '/fastcgi_split_path_info.*php.*/s/#//g' /etc/nginx/sites-enabled/default
+sed -i -e '/fastcgi_pass.*php.*/s/#//g' /etc/nginx/sites-enabled/default
+sed -i -e '/fastcgi_index.*php.*/s/#//g' /etc/nginx/sites-enabled/default
+sed -i -e '/include fastcgi_params.*/s/#//g' /etc/nginx/sites-enabled/default
+sed -i -e '/include fastcgi_params.*/a \\ \n\t}' /etc/nginx/sites-enabled/default
 
 sed -i -e 's/short_open_tag = Off/short_open_tag = On/g' /etc/php5/fpm/php.ini
 sed -i -e 's/max_execution_time = 30/max_execution_time = 300/g' /etc/php5/fpm/php.ini
