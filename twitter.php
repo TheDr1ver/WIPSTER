@@ -202,22 +202,27 @@ echo '</pre>';
 
 $tweets = array();
 # Print the results
-foreach($searchResult['statuses'] as $key=>$val){
-	$tweets[$key]['created_at'] = $val['created_at'];
-	$tweets[$key]['text'] = $val['text'];
-	$tweets[$key]['id_str'] = $val['id_str'];
-	$tweets[$key]['user'] = $val['user'];
-	if(isset($val['entities']['urls'])){
-		$tweets[$key]['urls']=$val['entities']['urls'];
+if(isset($searchResult['statuses'])){
+
+	foreach($searchResult['statuses'] as $key=>$val){
+		$tweets[$key]['created_at'] = $val['created_at'];
+		$tweets[$key]['text'] = $val['text'];
+		$tweets[$key]['id_str'] = $val['id_str'];
+		$tweets[$key]['user'] = $val['user'];
+		if(isset($val['entities']['urls'])){
+			$tweets[$key]['urls']=$val['entities']['urls'];
+		}
+		if(isset($val['entities']['hashtags'])){
+			$tweets[$key]['hashtags']=$val['entities']['hashtags'];
+		}
+		
+		#echo '<b><a href="https://twitter.com/'.$val["user"]["screen_name"].'" target="_blank">@'.$val["user"]["screen_name"].'</a>:</b> '.$val["text"];
+		#echo ' - <a href="https://twitter.com/'.$val["user"]["screen_name"].'/statuses/'.$val["id_str"].'" target="_blank">View Tweet</a>';
+		#echo '<br/>';
 	}
-	if(isset($val['entities']['hashtags'])){
-		$tweets[$key]['hashtags']=$val['entities']['hashtags'];
-	}
-	
-	#echo '<b><a href="https://twitter.com/'.$val["user"]["screen_name"].'" target="_blank">@'.$val["user"]["screen_name"].'</a>:</b> '.$val["text"];
-	#echo ' - <a href="https://twitter.com/'.$val["user"]["screen_name"].'/statuses/'.$val["id_str"].'" target="_blank">View Tweet</a>';
-	#echo '<br/>';
+
 }
+
 
 #echo '<div id="debug" style="visibility:hidden;"><pre>';
 #var_dump($searchResult);
