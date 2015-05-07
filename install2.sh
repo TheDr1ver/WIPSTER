@@ -33,7 +33,7 @@ sed -i -e '/include fastcgi_params.*/a \\ \n\t}' /etc/nginx/sites-enabled/defaul
 sed -i -e 's/short_open_tag = Off/short_open_tag = On/g' /etc/php5/fpm/php.ini
 sed -i -e 's/max_execution_time = 30/max_execution_time = 300/g' /etc/php5/fpm/php.ini
 
-sed -i -e 's/^log_dir.*/log_dir = \/var\/www\/mastiff/g' /usr/config/mastiff.conf
+sed -i -e 's/^log_dir.*/log_dir = \/var\/www\/mastiff/g' /etc/mastiff/mastiff.conf
 
 #Downloading and installing WIPSTER
 
