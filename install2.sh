@@ -42,12 +42,13 @@ cd /opt/remnux-wipster/
 git clone -b remnux-v6 --single-branch https://github.com/TheDr1ver/WIPSTER.git
 cp -rf /opt/remnux-wipster/WIPSTER/.* /var/www/
 chown -R www-data:www-data /var/www/
+service nginx stop
 service nginx start
 service php5-fpm restart
 
 
 #Launching config page
-firefox -new-window http://127.0.0.1/admin.php
+echo "WIPSTER installed successfully! To configure, visit http://127.0.0.1/admin.php"
 
 #Remove install Dir
 rm -r /opt/remnux-wipster/
