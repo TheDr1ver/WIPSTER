@@ -42,6 +42,7 @@ cd /opt/remnux-wipster/
 git clone -b remnux-v6 --single-branch https://github.com/TheDr1ver/WIPSTER.git
 cp -rf /opt/remnux-wipster/WIPSTER/.* /var/www/
 chown -R www-data:www-data /var/www/
+rm -r /opt/remnux-wipster/
 service nginx start
 service php5-fpm restart
 
