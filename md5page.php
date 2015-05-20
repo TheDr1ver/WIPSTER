@@ -11,7 +11,8 @@ session_start();
 #error_reporting(E_ALL); ini_set('display_errors',1);
 require('./func/config.php');
 
-
+$_SESSION['taIP']='';
+$_SESSION['taDNS']='';
  
 #Get MD5 Variable from URL
 if(isset($_GET['idmd5'])){
