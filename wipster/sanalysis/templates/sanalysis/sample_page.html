@@ -1,0 +1,215 @@
+{% extends 'sanalysis/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    {% for s in sample %}
+        {% if forloop.first %}
+        <div class="tabs">
+            <div class="tab-links">
+                <li class="active"><a href="#summary">Summary</a></li>
+                <li><a href="#metadata">Metadata</a></li>
+                <li><a href="#stringdata">String Data</a></li>
+                {% if s.peframe or s.pescanner %}
+                <li><a href="#exe">EXE Analysis</a></li>
+                {% endif %}
+                {% if s.pdfid or peepdf %}
+                <li><a href="#pdf">PDF Analysis</a></li>
+                {% endif %}
+                {% if s.oleid or s.rtfobj %}
+                <li><a href="#document">Document Analysis</a></li>
+                {% endif %}
+                {% comment "Add these later when functionality is added" %}
+                <li><a href="#threatanalyzer">ThreatAnalyzer</a></li>
+                <li><a href="#crits">CRITs</a></li>
+                <li><a href="#web">Web Searches</a></li>
+                {% endcomment %}
+                <li><a href="#plaintext">Plain Text</a></li>
+            </div><!--end tab-links class-->
+            <div class="tab-data">
+                <div class="sample">
+	  	    <h3>Basic Info</h3>
+                    <div id="summary" class="tab active">
+                        <div class="basic-info">
+                            <div class="filename"><b>Filename</b></div>
+                            <div class="ticket"><b>Ticket No.</b></div>
+                            <div class="created"><b>Uploaded</b></div>
+            {% endif %}<!--end forloop.first-->
+                        {% if s.filename %}
+                            <div class="one-file">
+                                <div class="filename">
+                                    <p><a href="{% static savename %}">{{ s.filename }}</a></p>
+                                </div>
+                                <div class = "ticket">
+                                    <p>{{ s.ticket }}</p>
+                                </div>
+                                <div class = "created">
+                                    <p>{{ s.created }}</p>
+                                </div>
+                            </div>
+                        
+                        {% endif %}
+                        
+                        {% if forloop.last %}
+                        </div><!--end basic-info class-->
+                        <div class="size">
+                            <p><b>Size:</b> {{ s.size }}</p>
+                        </div>
+                        <div class="hashes">
+                            <p><b>MD5:</b> {{ s.md5 }}</p>
+                            <p><b>SHA1:</b> {{ s.sha1 }}</p>
+                            <p><b>SHA256:</b> {{ s.sha256 }}</p>
+                            <p><b>FUZZY:</b> {{ s.fuzzy }}</p>
+                        </div>
+                        </div><!--end summary id-->
+                        
+                        <div id="metadata" class="tab">
+                    
+                        {% if s.exif %}
+                             <div class="exif">
+                                <p><h3>EXIF</h3> <pre>{{ s.exif }}</pre></p>
+                             </div>
+                        {% endif %}
+                         
+                        {% if s.trid %}
+                            <div class="trid">
+                                <p><h3>TRiD</h3> <pre>{{ s.trid }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        </div><!--end metadata class-->
+                        <div id="stringdata" class="tab">
+                        
+                        {% if s.balbuzard %}
+                            <div class = "balbuzard">
+                                <p><h3>Balbuzard</h3> <pre>{{ s.balbuzard }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if s.strings %}
+                            <div class = "strings">
+                                <p><h3>Strings</h3> <pre>{{ s.strings }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        </div><!--end stringdata class-->
+                        <div id="exe" class="tab">
+                        
+                        {% if s.peframe %}
+                            <div class="peframe">
+                                <p><h3>PEFRAME</h3> <pre>{{ s.peframe }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if s.pescanner %}
+                            <div class="pescanner">
+                                <p><h3>PEScanner</h3> <pre>{{ s.pescanner }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        </div><!--end exe class-->
+                        <div id="pdf" class="tab">
+                        
+                        {% if s.pdfid %}
+                            <div class = "pdfid">
+                                <p><h3>PDFiD</h3> <pre>{{ s.pdfid }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if s.peepdf %}
+                            <div class="peepdf">
+                                <p><h3>PEEPDF</h3> <pre>{{ s.peepdf }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        </div><!--end pdf class-->
+                        <div id="document" class="tab">
+                        
+                        {% if s.oleid %}
+                            <div class="oleid">
+                                <p><h3>OLEID</h3> <pre>{{ s.oleid }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if s.olemeta %}
+                            <div class="olemeta">
+                                <p><h3>OLEMeta</h3> <pre>{{ s.olemeta }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if s.olevba %}
+                            <div class="olevba">
+                                <p><h3>OLEVBA</h3> <pre>{{ s.olevba }}</pre></p>
+                            </div>
+                        {% endif %}
+                         
+                         {% if s.rtfobj %}
+                             <div class = "rtfobj">
+                             <p><h3>RTFOBJ</h3> <pre>{{ s.rtfobj }}</pre></p>
+                             </div>
+                         {% endif %}
+                         
+                         </div><!--end document class-->
+                         <div id="plaintext" class="tab">
+                            <div class="plaintext">
+                                <p>
+                                    <h3>Plaintext Results</h3>
+                                    <textarea>
+Filename:   {{ s.filename }}
+Ticket #:    {{ s.ticket }}
+Uploaded:  {{ s.created }}
+Size:          {{ s.size }}
+MD5:          {{ s.md5 }}
+SHA1:         {{ s.sha1 }}
+SHA256:     {{ s.sha256 }}
+SHA512:     {{ s.sha512 }}
+FUZZY:       {{ s.fuzzy }}
+
+#### EXIF Data ####
+{{ s.exif }}
+
+#### TRiD ####
+{{ s.trid }}
+
+#### PEFRAME ####
+{{ s.peframe }}
+
+#### PEScanner ####
+{{ s.pescanner }}
+
+#### PDFiD ####
+{{ s.pdfid }}
+
+#### PEEPDF ####
+{{ s.peepdf }}
+
+#### OLEID ####
+{{ s.oleid }}
+
+#### OLEMeta ####
+{{ s.olemeta }}
+
+#### OLEVBA ####
+{{ s.olevba }}
+
+#### RTFOBJ ####
+{{ s.rtfobj }}
+
+#### Balbuzard ####
+{{ s.balbuzard }}
+
+#### Strings ####
+{{ s.strings }}
+
+                                    </textarea>
+                                </p>
+                            </div><!--end plaintext class-->
+                         </div><!--end plaintext id-->
+                         {% endif %}<!--end lastloop-->
+                    
+                    
+    {% endfor %}<!--end sample loop-->
+                </div><!--end sample class-->
+            </div><!--end tab-data class-->
+        </div><!--end tabs class-->
+
+{% endblock %}

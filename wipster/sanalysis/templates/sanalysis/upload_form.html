@@ -1,0 +1,30 @@
+{% extends 'sanalysis/base.html' %}
+
+{% block content %}
+<div class="upload-content">
+	<h2>Upload Sample to WIPSTER</h2>
+	<div id="form">
+		<form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit" class="save btn btn-default">Save</button>
+		</form>
+	</div><!--end form class-->
+	<div class="recent-samples">
+		<!--Table of Recent Samples to go here-->
+		<div class="row">
+			<span class="col-item col-head">Filename</span>
+			<span class="col-item col-head md5">MD5</span>
+			<span class="col-item col-head ticket">Ticket No.</span>
+			<span class="col-item col-head">Uploaded</span>
+		</div>
+		{% for s in sample reversed %}
+			<div class="row">
+				<span class="col-item"><a href="./md5/{{ s.md5 }}/">{{ s }}</a></span>
+				<span class="col-item md5">{{ s.md5 }}</span>
+				<span class="col-item ticket">{{ s.ticket }}</span>
+				<span class="col-item">{{ s.created }}</span>
+			</div>
+		{% endfor %}
+	</div><!--end recent-samples class-->
+</div><!--end upload-content class-->
+{% endblock content %}

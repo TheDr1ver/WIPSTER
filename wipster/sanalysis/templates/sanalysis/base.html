@@ -1,0 +1,33 @@
+{% load staticfiles %}
+<html>
+	<head>
+		<title>WIPSTER - Sample Analysis</title>
+		<link rel="stylesheet" href="{% static 'css/base.css' %}">
+		<link rel="stylesheet" href="{% static 'css/sample_page.css' %}">
+		<link rel="stylesheet" href="{% static 'css/upload_form.css' %}">
+		
+		<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+		<script src="{% static 'js/tab-functions.js' %}"></script>
+	</head>
+	<body>
+		<div class="page-header">
+			<h1><a href="/sanalysis">WIPSTER - Sample Analysis</a></h1>
+{% comment %}
+			<div class="menu-container">
+				<div id="link1" class="menu-item">Link 1</div>
+				<div id="link2" class="menu-item">Link 2</div>
+				<div id="link3" class="menu-item">Link 3</div>
+			</div>
+{% endcomment %}
+		</div>
+
+		<div class="content container">
+			<div class="row">
+				<div class="col-md-8">
+				{% block content %}
+				{% endblock %}
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

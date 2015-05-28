@@ -1,0 +1,138 @@
+.basic-info{
+	display:inline-block;
+	width:100%;
+	margin-bottom:10px;
+}
+
+#summary{
+	padding:5px;
+	border-style:solid;
+	border-width:3px;
+	border-color:#7FB5DA;
+	background-color:#fff;
+}
+
+.one-file{
+	display:inline-block;
+	border-width:3px;
+	width:100%;
+	height:25px;
+}
+
+.filename{
+	display:inline-block;
+	width:33%;
+	float:left;
+}
+
+.ticket{
+	display:inline-block;
+	width:33%;
+	float:left;
+}
+
+.created{
+	display:inline-block;
+	width:33%;
+	float:left;
+}
+
+/*---- Tab CSS borrowed from inspirationalpixels.com----*/
+/*---- Tabs ----*/
+.tabs {
+	width:100%;
+	display:inline-block;
+}
+
+	/*---- Tab Links ----*/
+	/*---- Clearfix ----*/
+	.tab-links:after{
+		display:block;
+		clear:both;
+		content:'';
+	}
+	
+	.tab-links li{
+		margin:0px 5px;
+		float:left;
+		list-style:none;
+	}
+	
+		.tab-links a{
+			padding: 9px 15px;
+			display:inline-block;
+			border-radius: 3px 3px 0px 0px;
+			background:#7FB5DA;
+			font-size:16px;
+			font-weight:600;
+			color:#4c4c4c;
+			text-decoration:none;
+			transition:all linear 0.15s;
+		}
+		
+		.tab-links a:hover{
+			background:#a7cce5;
+			text-decoration:none;
+		}
+		
+	li.active a, li.active a:hover{
+		background:#FF9933;
+		color:#fff;
+		text-decoration:none;
+	}
+	
+	/*---- Content of Tabs ----*/
+	.tab-content{
+		padding:15px;
+		border-radius:3px;
+		box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+		background:#fff;
+	}
+	
+		.tab{
+			display:none;
+		}
+		
+		.tab.active{
+			display:block;
+		}
+		
+	/*---- Page Data ----*/
+	.tab-data{
+		border-style:solid;
+		border-width:3;
+		padding:25px;
+		border-color:#7FB5DA;
+		background-color:#FFFFF5;
+	}
+	
+	.tab-data h3{
+		margin-bottom:0px;
+		background-color:#7FB5DA;
+		color:#fff;
+		padding-left:10px;
+	}
+	
+	.tab-data pre{
+		margin-top:0px;
+		border-style:solid;
+		border-color:#7FB5DA;
+		border-width:3px;
+		padding:10px;
+		overflow-x:auto;
+		max-height:700px;
+		background-color:#fff;
+	}
+
+	 .tab-data textarea{
+                margin-top:0px;
+                border-style:solid;
+                border-color:#7FB5DA;
+                border-width:3px;
+                padding:10px;
+                overflow-x:auto;
+                height:700px;
+		width: 100%;
+                background-color:#fff;
+        }
+
