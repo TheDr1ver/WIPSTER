@@ -16,10 +16,12 @@
 .page-header .menu-container{
 	width:100%;
 	display:inline-block;
+    text-align:center;
 }
 
+
 .page-header .menu-item{
-	width: 75px;
+	width: 10%;
 	display:inline-block;
 	margin-left:auto;
 	margin-right:auto;

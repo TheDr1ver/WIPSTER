@@ -1,0 +1,65 @@
+{% extends 'sanalysis/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="search_form" >
+        <h2>Search Analyses</h2>
+        <form method="POST" class="post-form">{% csrf_token %}
+			<input id="search_term" name="search_term" type="text"><br/><br/>
+			<button type="submit" class="save btn btn-default">Search</button>
+		</form>
+        <div id="search_help">
+            <pre>
+                Prefix your search with the following to search specific fields:
+                
+                sha1::      SHA1 Hash
+                sha256::    SHA256 Hash
+                file::      Filename
+                ticket::    Ticket Number
+                vt::        VirusTotal Results
+                string::    Strings
+                balbuz::    Balbuzard Results
+                exif::      EXIF Data
+                olemeta::   OLE-Meta Results
+                vba::       OLE-VBA Results
+                rtf::       RTF-Object Results
+                
+                If no prefix is added, search is for MD5 by default
+                
+                Example:    vt::Symantec
+            </pre>
+        </div>
+    </div><!--end search_form class-->
+    {% if search_results.hits %}
+    <br/><br/>
+    <div class="search_form">
+        <h2>Search Results</h2>
+        <div class="row">
+            <span class="col-item col-head">MD5</span>
+            <span class="col-item col-head">{{ search_results.field }} Hits</span>
+        </div>
+        {% for hit in search_results.hits %}
+        <div class="row">
+            <span class="col-item">
+                <!--Filename and link to Result Page-->
+                <a href="../md5/{{ hit.md5 }}/" title="{{ hit.filename }}">{{ hit.md5 }}</a>
+            </span>
+            <span class="col-item result">
+                {{ hit.result|truncatechars:64 }}
+                <!--DB column found in: Search hit (truncated)-->
+            </span>
+        </div>
+        {% comment %}{{ search_results }}{% endcomment %}
+        {% endfor %}<!-- end search_results loop -->
+    </div>
+    {% elif search_results %}
+    <br/><br/>
+    <div class="search_form">
+        <h2>Search Results</h2>
+        <div class="row">
+            <pre>{{ search_results }}</pre>
+        </div>
+    </div>
+    {% endif %}
+    
+{% endblock content %}

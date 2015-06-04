@@ -19,7 +19,7 @@
 		</div>
 		{% for s in sample reversed %}
 			<div class="row">
-				<span class="col-item"><a href="./md5/{{ s.md5 }}/">{{ s }}</a></span>
+				<span class="col-item"><a href="./md5/{{ s.md5 }}/" title="{{ s }}">{{ s|truncatechars:27 }}</a></span>
 				<span class="col-item md5">{{ s.md5 }}</span>
 				<span class="col-item ticket">{{ s.ticket }}</span>
 				<span class="col-item">{{ s.created }}</span>

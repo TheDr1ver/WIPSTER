@@ -5,18 +5,15 @@ faster, leaner, and damn-sexier manner, utilizing the Django framework.
 
 This is completely in its alpha stages, but the raw base functionality currently works.
 
-Just install Django, customize settings.py, python manage.py runserver 0.0.0.0:8000,
+Just install Django, customize settings.py to your liking, run 
+python manage.py runserver 0.0.0.0:8000 from the /wipster/ base directory,
 point your browser to <your-ip>:8000/sanalysis, and you're off and running.
 
-(Long) To-Do List:
-- Fuzzy hash comparison
-- Search capabilities
+To-Do List:
+
 - Main landing page
-- VirusTotal integration
 - Yara integration
 - Post-rtfobj.py strings automation
-- CRITs integration
-- ThreatAnalyzer integration
 - Twitter marquee
 - Pastebin-checker
 - URL-Checking Tools app

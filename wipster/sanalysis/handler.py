@@ -2,10 +2,11 @@
 # add important information to the database
 
 import hashlib, os, string, time, magic, pydeep, exiftool, subprocess
-import re, sys, binascii
+import re, sys, binascii, simplejson, urllib, urllib2, json
 #from django.utils import timezone
 
 from sanalysis.settings import *
+from .models import Sample
 
 def handle_uploaded_file(f):
 #    with open('/home/remnux/test.txt', 'wb+') as destination:
@@ -241,12 +242,120 @@ def get_rtfobj(f):
     # Code modified from decalage oletools rtfobj script to
     # save in the appropriate directory
     rtfobj_res = ''
+    rtflist = []
 
     for index, data in rtf_iter_objects(f.name):
         rtfobj_res += 'found object size %d at index %08X \r\n' % (len(data), index)
         fname, junk = os.path.split(f.name)
         fname += '/object_%08X.bin' % index
-        rtfobj_res += 'saving to file %s \r\n' %fname
+        rtflist.append(fname)
+#        rtfobj_res += 'saving to file %s \r\n' %fname
+        linkname = fname.split('/', 1)
+        rtfobj_res += "saving to file <a href='/{0}'>{1}</a>\r\n".format(linkname[1],fname)
         open(fname, 'wb').write(data)
 
-    return rtfobj_res
+    return rtfobj_res, rtflist
+
+def get_rtfobj_str(rtflist):
+
+    rtfobj_str_res = "#### ASCII ####\r\n"
+
+    for o in rtflist:
+        run = subprocess.Popen(["strings", o],
+                               stdout=subprocess.PIPE,
+                               stdin=subprocess.PIPE)
+
+        rtfobj_str_res += run.communicate()[0]
+
+    rtfobj_str_res = "\r\n#### UNICODE #### \r\n"
+    for o2 in rtflist:
+        run = subprocess.Popen(["strings", "-e", "l", o2],
+                               stdout=subprocess.PIPE,
+                               stdin=subprocess.PIPE)
+
+        rtfobj_str_res += run.communicate()[0]
+
+    return rtfobj_str_res
+
+def get_rtfobj_balbuz(rtflist):
+
+    rtfobj_balbuz_res = ''
+
+    for o in rtflist:
+        run = subprocess.Popen(["python",balbuzard_loc, o],
+                               stdout=subprocess.PIPE,
+                               stdin=subprocess.PIPE)
+
+        rtfobj_balbuz_res += run.communicate()[0]
+
+    return rtfobj_balbuz_res
+
+def ssdeep_compare(fuzzy, md5):
+    #Compare Fuzzy hash of file to all files in db
+    #fuzzy_threshold defined in settings.py - default = 10
+    all_samples = Sample.objects.all()
+    ssdeep_compare_res = ""
+    res_dict = {}
+
+    for sample in all_samples:
+        if sample.md5 != md5:
+            fuzzy_res = pydeep.compare(fuzzy,sample.fuzzy)
+            if fuzzy_res >= fuzzy_threshold:
+                res_dict[sample.md5] = str(fuzzy_res)
+
+    for k, v in res_dict.iteritems():
+        ssdeep_compare_res += "<a href='../"
+        ssdeep_compare_res += k
+        ssdeep_compare_res += "'>"
+        ssdeep_compare_res += k
+        ssdeep_compare_res += "</a>\t"
+        ssdeep_compare_res += v
+        ssdeep_compare_res += "\r\n"
+
+
+    return ssdeep_compare_res
+
+def get_vt(md5):
+    #Query VirusTotal for a given MD5
+    url = "https://www.virustotal.com/vtapi/v2/file/report"
+    parameters = {"resource": md5,
+                  "apikey": vt_key}
+    data = urllib.urlencode(parameters)
+    req = urllib2.Request(url, data)
+    vt_res = ""
+    vt_short_res = ""
+
+    if vt_use:
+        response = urllib2.urlopen(req)
+        json_resp = response.read().decode('utf-8')
+        vt_resp = json.loads(json_resp)
+        if vt_resp['response_code']:
+            if vt_resp['response_code']==1:
+
+                #handle json - return long list and short list
+        #        for k, v in vt_resp.iteritems():
+                text_results = "Results:\t"+str(vt_resp['positives'])+"/"+str(vt_resp['total'])+"\r\n"
+                vt_res += text_results
+                vt_short_res += text_results
+                text_results = "Scan Date:\t"+vt_resp['scan_date']+"\r\n"
+                vt_res += text_results
+                vt_short_res += text_results
+                vt_res += "Permalink:\t"+vt_resp['permalink']+"\r\n\r\n"
+                vt_short_res += "<a href='"+vt_resp['permalink']+"' target='_blank'>"
+                vt_short_res += vt_resp['permalink']+"</a>\r\n\r\n"
+                for vendor, details in vt_resp['scans'].iteritems():
+                    vt_res += str(vendor)+":\t"+str(details['result'])+"\r\n"
+                    if vendor in vt_short:
+                        vt_short_res += str(vendor)+":\t"+str(details['result'])+"\r\n"
+                
+            elif vt_resp['response_code']==0:
+                vt_res += "No VirusTotal Results Found."
+                vt_short_res += vt_res
+            else:
+                vt_res += "Something went wrong. Response Code: "+str(vt_resp['reponse_code'])
+                vt_short_res += vt_res
+        else:
+            vt_res += "No response code received from VirusTotal. Something is horribly wrong."
+            vt_short_res += vt_res
+
+    return vt_res, vt_short_res

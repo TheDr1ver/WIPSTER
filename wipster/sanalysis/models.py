@@ -38,8 +38,6 @@ class Sample(models.Model):
     fuzzy = models.TextField(default='')
     created = models.DateTimeField(
         default=timezone.now)
-#    trid = models.TextField(default='')
-#    vt = models.TextField()
 #    yara = models.TextField()
     exif = models.TextField(default='')
     strings = models.TextField(default='')
@@ -54,6 +52,13 @@ class Sample(models.Model):
     olemeta = models.TextField(default='')
     olevba = models.TextField(default='')
     rtfobj = models.TextField(default='')
+    rtfobj_str = models.TextField(default='')
+    rtfobj_balbuz = models.TextField(default='')
+
+    ssdeep_compare = models.TextField(default='')
+
+    vt = models.TextField(default='')
+    vt_short = models.TextField(default='')
     
 
     def __str__(self):

@@ -1,0 +1,59 @@
+.search_form {
+	border-style:solid;
+	border-width:3px;
+	border-color:#7FB5DA;
+	background-color:#FFFFF5;
+	padding-bottom:30px;
+}
+
+.search_form h2{
+	text-align:center;
+}
+
+.search_form .post-form{
+	width:300px;
+	margin-left:auto;
+	margin-right:auto;
+    text-align:center;
+}
+
+.search_form .post-form input[type="text"]{
+    width:300px;
+}
+
+.search_form .row {
+	width: 100%;
+	display:inline-block;
+    padding-left:10px;
+}
+
+.search_form .col-item{
+	width:30%;
+	float:left;
+}
+
+.search_form .md5{
+	width:30%;
+}
+
+.search_form .ticket{
+	width:20%;
+}
+
+.search_form .col-head{
+	font-weight: bold;
+}
+
+.recent-samples{
+	padding:10px;
+	background-color:#fff;
+	border-style:solid;
+	border-color:#7FB5DA;
+	border-width:3 0 3 0;
+}
+
+.btn{
+	margin-left:auto;
+	margin-right:auto;
+	display:block;
+}

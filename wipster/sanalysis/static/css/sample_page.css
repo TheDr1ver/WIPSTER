@@ -4,7 +4,7 @@
 	margin-bottom:10px;
 }
 
-#summary{
+.sample{
 	padding:5px;
 	border-style:solid;
 	border-width:3px;
@@ -35,6 +35,46 @@
 	display:inline-block;
 	width:33%;
 	float:left;
+}
+
+#ta_form{
+	text-align:center;
+	
+}
+
+#ta_button, #crits_button{
+	color:#FFF;
+	background:#FF9933;
+	border: 0;
+	cursor: pointer;
+	font-weight:bold;
+	padding:10px;
+	margin-top:10px;
+}
+
+#crits input.text{
+	display:block;
+	float:right;
+	width: 60%;
+}
+
+#crits label{
+	display:block;
+	float:left;
+}
+
+#crits input.checkbox{
+	display:block;
+	float:left;
+}
+
+#crits .input_block{
+	display:inline-block;
+	width:100%;
+}
+
+#crits_form form{
+	text-align:center;
 }
 
 /*---- Tab CSS borrowed from inspirationalpixels.com----*/
@@ -131,6 +171,7 @@
                 border-width:3px;
                 padding:10px;
                 overflow-x:auto;
+		word-wrap:normal;
                 height:700px;
 		width: 100%;
                 background-color:#fff;

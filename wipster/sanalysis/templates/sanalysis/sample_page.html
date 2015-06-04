@@ -18,17 +18,21 @@
                 {% if s.oleid or s.rtfobj %}
                 <li><a href="#document">Document Analysis</a></li>
                 {% endif %}
-                {% comment "Add these later when functionality is added" %}
+		{% if ta_use %}
                 <li><a href="#threatanalyzer">ThreatAnalyzer</a></li>
+		{% endif %}
+		{% if crits_use %}
                 <li><a href="#crits">CRITs</a></li>
+		{% endif %}
+                {% comment "Add these later when functionality is added" %}
                 <li><a href="#web">Web Searches</a></li>
                 {% endcomment %}
                 <li><a href="#plaintext">Plain Text</a></li>
             </div><!--end tab-links class-->
             <div class="tab-data">
-                <div class="sample">
+                <div id="summary" class="tab active">
 	  	    <h3>Basic Info</h3>
-                    <div id="summary" class="tab active">
+		    <div class="sample">
                         <div class="basic-info">
                             <div class="filename"><b>Filename</b></div>
                             <div class="ticket"><b>Ticket No.</b></div>
@@ -60,7 +64,33 @@
                             <p><b>SHA256:</b> {{ s.sha256 }}</p>
                             <p><b>FUZZY:</b> {{ s.fuzzy }}</p>
                         </div>
-                        </div><!--end summary id-->
+
+			</div><!--end sample wrapper-->
+			{% if s.ssdeep_compare %}
+			    <div class="ssdeep_compare">
+    			        <p>
+				<h3>SSDEEP Comparison</h3> 
+				{% autoescape off %}
+				<pre>{{ s.ssdeep_compare }}</pre>
+				{% endautoescape %}
+				</p>
+			    </div>
+			{% endif %}
+
+			{% if s.vt_short %}
+			    <div class="vt_short">
+			        <p>
+			        <h3>VirusTotal Results</h3>
+			        {% autoescape off %}
+			        <pre>{{ s.vt_short }}</pre>
+			        {% endautoescape %}
+				</p>
+			    </div>
+			{% endif %}
+
+
+                        </div><!--end summary class-->
+			
                         
                         <div id="metadata" class="tab">
                     
@@ -72,7 +102,7 @@
                          
                         {% if s.trid %}
                             <div class="trid">
-                                <p><h3>TRiD</h3> <pre>{{ s.trid }}</pre></p>
+                                <p><h3>TrID</h3> <pre>{{ s.trid }}</pre></p>
                             </div>
                         {% endif %}
                         
@@ -142,13 +172,250 @@
                             </div>
                         {% endif %}
                          
-                         {% if s.rtfobj %}
-                             <div class = "rtfobj">
-                             <p><h3>RTFOBJ</h3> <pre>{{ s.rtfobj }}</pre></p>
-                             </div>
-                         {% endif %}
+                        {% if s.rtfobj %}
+                            <div class = "rtfobj">
+                            <p>
+			    	<h3>RTFOBJ</h3> 
+				{% autoescape off %}
+			    	<pre>{{ s.rtfobj }}</pre>
+				{% endautoescape %}
+			    </p>
+                            </div>
+                        {% endif %}
+
+			{% if s.rtfobj_str %}
+				<div class = "rtfobj_str">
+				<p><h3>RTFOBJ Strings</h3><pre>{{ s.rtfobj_str }}</pre></p>
+				</div>
+			{% endif %}
+
+			{% if s.rtfobj_balbuz %}
+				<div class="rtfobj_balbuz">
+				<p><h3>RTFOBJ Balbuzard Results</h3><pre>{{ s.rtfobj_balbuz }}</pre></p>
+				</div>
+			{% endif %}
                          
                          </div><!--end document class-->
+
+			{% if ta_use %}
+			<div id="threatanalyzer" class="tab">
+			    {% comment "Take this off if we only one one submission per file" %}
+                            {% if "HTTP Error 404" in ta_analyses %}
+			    {% endcomment %}
+
+                            <div class="submit">
+                                <p>
+                                    <h3>Submit to ThreatAnalyzer</h3>
+
+                                    {% comment "Debugging Submissions" %}
+				    <pre>{{ ta_submit }}</pre>
+				    {% endcomment %}
+
+				    <div id="ta_form" class="sample">
+					<form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
+					    <input name="ta_submit" type="submit" value="Submit to ThreatAnalyzer" id="ta_button" />
+					</form>
+				    </div>
+                                </p>
+                            </div><!--end submit class-->
+			    {% comment "Take this off if we only one one submission per file" %}
+                            {% else %}
+			    {% endcomment %}
+			    <div class="analyses">
+				<p>
+				    <h3>Analyses</h3>
+				    {% autoescape off %}
+				    <pre>{{ ta_analyses }}</pre>
+				    {% endautoescape %}
+				</p>
+			    </div><!--end analyses class-->
+			    {% comment "Take this off if we only one one submission per file" %}
+                            {% endif %}<!--end 404 check-->
+			    {% endcomment %}
+
+                            {% if ta_risks %}
+			    <div class="risks">
+				<p>
+				    <h3>Risks</h3>
+				    <pre>{{ ta_risks }}</pre>
+				</p>
+			    </div><!--end risks class-->
+                            {% endif %}
+
+                            {% if ta_network %}
+                            <div class="network_error">
+                                <p>
+                                    <h3>Parsing Error</h3>
+                                    <pre>
+{{ ta_network }}
+{% if "No JSON object could be decoded" %}The above error likely means the analysis is incomplete at this time.{% endif %}
+				    </pre>
+                                </p>
+                            </div><!--end network_error class-->
+                            {% endif %}
+
+                            {% if ta_ips or ta_domains or ta_commands %}
+			    <div class="callouts">
+                                {% if ta_ips %}
+				<p>
+				    <h3>IPs</h3>
+				    <pre>
+{% for ip in ta_ips %}
+{{ ip }}
+{% endfor %}
+                                    </pre>
+				</p>
+                                {% endif %}
+                                {% if ta_domains %}
+                                <p>
+                                    <h3>Domains</h3>
+                                    <pre>
+{% for domain in ta_domains %}
+{{ domain }}
+{% endfor %}
+                                    </pre>
+                                </p>
+                                {% endif %}
+                                {% if ta_commands %}
+                                <p>
+                                    <h3>HTTP Commands</h3>
+                                    <pre>
+{% for command in ta_commands %}
+{{ command }}
+{% endfor %}
+                                    </pre>
+                                </p>
+                                {% endif %} 
+			    </div><!--end callouts class-->
+                            {% endif %}<!-- end ips domains or commands check-->
+
+			</div><!--end threatanalyzer id-->
+			{% endif %}<!-- end threatanalyzer div if ta_use -->
+
+
+
+
+
+			{% if crits_use %}
+			<div id="crits" class="tab">
+			    <div class="crits">
+				<p>
+				    <h3>Submit Info to CRITs</h3>
+				    <div id="crits_form" class="sample">
+				    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+					{% if crits.crits_ips %}
+					    {% for ip in crits.crits_ips %}
+					    <div class="input_block">
+						<input type="checkbox" name="ta_crits_ip_chk_{{ forloop.counter }}" checked class="checkbox">
+						<label>ThreatAnalyzer IP Callout</label>
+						<input type="text" name="ta_crits_ip_{{ forloop.counter }}" value="{{ ip }}" class="text">
+						<br/>
+					    </div>
+					    {% endfor %}<br/><br/>
+					{% endif %}<!--end crits_ips check-->
+
+					{% if crits.crits_domains %}
+					    {% for domain in crits.crits_domains %}
+					    <div class="input_block">
+						<input type="checkbox" name="ta_crits_domain_chk_{{ forloop.counter }}" checked class="checkbox">
+						<label>ThreatAnalyzer Domain Callout</label>
+						<input type="text" name="ta_crits_domain_{{ forloop.counter }}" value="{{ domain }}" class="text">
+						<br/>
+					    </div>
+					    {% endfor %}<br/>
+					{% endif %}<!--end crits_domains check-->
+
+					{% if crits.crits_uas %}
+					    {% for ua in crits.crits_uas %}
+					    <div class="input_block">
+						<input type="checkbox" name="ta_crits_ua_chk_{{ forloop.counter }}" checked class="checkbox">
+						<label>ThreatAnalyezr User-Agent</label>
+						<input type="text" name="ta_crits_ua_{{ forloop.counter }}" value="{{ ua }}" class="text">
+						<br/>
+					    </div>
+					    {% endfor %}<br/>
+					{% endif %}<!--end crits_uas check-->
+
+					{% if crits.crits_commands %}
+					    {% for command in crits.crits_commands %}
+					    <div class="input_block">
+						<input type="checkbox" name="ta_crits_command_chk_{{ forloop.counter }}" checked class="checkbox">
+						<label>ThreatAnalyzer HTTP Command</label>
+						<input type="text" name="ta_crits_command_{{ forloop.counter }}" value="{{ command }}" class="text">
+						<br/>
+					    </div>
+					    {% endfor %}
+					{% endif %}<!--end crits_commands check -->
+						<br/>
+					{% if crits.crits_vts %}
+					    {% for vt in crits.crits_vts %}
+					    <div class="input_block">
+						<input type="checkbox" name="crits_vt_chk_{{ forloop.counter }}" checked class="checkbox">
+						<label>VirusTotal Detection:</label>
+						<input type="text" name="crits_vt_{{ forloop.counter }}" value="{{ vt }}" class="text">
+						<br/>
+					    </div>
+					    {% endfor %}<!--end input_block class-->
+
+					{% endif %}<!--end crits_vts check-->
+
+   					    <div class="input_block">
+						<input type="checkbox" name="crits_ip_chk_1" class="checkbox">
+						<label>IP Callout</label>
+						<input type="text" name="crits_ip_1" value="" class="text">
+						<br/>
+					    </div><!--end input_block class-->
+
+					    <div class="input_block">
+						<input type="checkbox" name="crits_domain_chk_1" class="checkbox">
+						<label>Domain Callout</label>
+						<input type="text" name="crits_domain_1" value="" class="text">
+						<br/>
+					    </div><!--end input_block class-->
+
+					    <div class="input_block">
+						<input type="checkbox" name="crits_ua_chk_1" class="checkbox">
+						<label>User-Agent</label>
+						<input type="text" name="crits_ua_1" value="" class="text">
+						<br/>
+					    </div><!--end input_block class-->
+
+					    <div class="input_blocK">
+						<input type="checkbox" name="crits_command_chk_1" class="checkbox">
+						<label>HTTP Command</label>
+						<input type="text" name="crits_command_1" value="" class="text">
+						<br/>
+					    </div><!--end input_block class-->
+
+					    <div class="input_block">
+						<input type="checkbox" name="crits_vt_man_chk_1" class="checkbox">
+						<label>VirusTotal Detected</label>
+						<input type="text" name="crits_vt_man_1" value="" class="text">
+						<br/>
+					    </div><!--end input_block class-->
+
+					<input name="crits_submit" type="submit" value="Submit to CRITs" id="crits_button">
+
+					</form>
+					</div><!-- end #crits_form-->
+					{% if crits_submit %}
+					<h3>Submission Response</h3>
+					<pre>
+					{{ crits_submit }}
+					</pre><!--end #sub_resp-->
+					{% endif %}
+
+				</p>
+			    </div><!--end class=crits-->
+			</div><!--end id=crits-->
+			{% endif %}<!--end crits div if crits_use-->
+
+
+
+
+
+
+
                          <div id="plaintext" class="tab">
                             <div class="plaintext">
                                 <p>
@@ -164,35 +431,40 @@ SHA256:     {{ s.sha256 }}
 SHA512:     {{ s.sha512 }}
 FUZZY:       {{ s.fuzzy }}
 
+#### VirusTotal ####
+{{ s.vt }}
+
 #### EXIF Data ####
 {{ s.exif }}
 
 #### TRiD ####
 {{ s.trid }}
 
+{% if s.peframe %}
 #### PEFRAME ####
 {{ s.peframe }}
+{% endif %}
 
-#### PEScanner ####
-{{ s.pescanner }}
+{% if s.pescanner %}#### PEScanner ####
+{{ s.pescanner }}{% endif %}
 
-#### PDFiD ####
-{{ s.pdfid }}
+{% if s.pdfid %}#### PDFiD ####
+{{ s.pdfid }}{% endif %}
 
-#### PEEPDF ####
-{{ s.peepdf }}
+{% if s.peepdf %}#### PEEPDF ####
+{{ s.peepdf }}{% endif %}
 
-#### OLEID ####
-{{ s.oleid }}
+{% if s.oleid %}#### OLEID ####
+{{ s.oleid }}{% endif %}
 
-#### OLEMeta ####
-{{ s.olemeta }}
+{% if s.olemeta %}#### OLEMeta ####
+{{ s.olemeta }}{% endif %}
 
-#### OLEVBA ####
-{{ s.olevba }}
+{% if s.olevba %}#### OLEVBA ####
+{{ s.olevba }}{% endif %}
 
-#### RTFOBJ ####
-{{ s.rtfobj }}
+{% if s.rtfobj %}#### RTFOBJ ####
+{{ s.rtfobj }}{% endif %}
 
 #### Balbuzard ####
 {{ s.balbuzard }}
