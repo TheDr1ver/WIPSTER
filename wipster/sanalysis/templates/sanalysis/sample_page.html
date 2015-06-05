@@ -409,30 +409,70 @@
 			    </div><!--end class=crits-->
 			</div><!--end id=crits-->
 			{% endif %}<!--end crits div if crits_use-->
-
-
-
-
-
-
-
-                         <div id="plaintext" class="tab">
+            
+            <div id="plaintext" class="tab">
                             <div class="plaintext">
                                 <p>
                                     <h3>Plaintext Results</h3>
-                                    <textarea>
-Filename:   {{ s.filename }}
-Ticket #:    {{ s.ticket }}
-Uploaded:  {{ s.created }}
-Size:          {{ s.size }}
-MD5:          {{ s.md5 }}
-SHA1:         {{ s.sha1 }}
-SHA256:     {{ s.sha256 }}
-SHA512:     {{ s.sha512 }}
-FUZZY:       {{ s.fuzzy }}
 
-#### VirusTotal ####
-{{ s.vt }}
+                                    <textarea>
+{{ plaintext.ticket }}, Analysis Complete, Non-Incident
+{{ plaintext.ticket }}, Analysis Complete, SPAM
+{{ plaintext.ticket }}, Analysis Complete, AV-Detected
+{{ plaintext.ticket }}, Analysis Complete, Malcode Detected
+
+Reason for Ticket/Alert         :
+
+DNS Callout                     :    {% if ta_domains %}{% for domain in ta_domains %}{{ domain }}  {% endfor %}{% endif %}
+IP Callout                      :    {% if ta_ips %}{% for ip in ta_ips %}{{ ip }}  {% endfor %}{% endif %}
+Block/Blackhole                 :
+
+File                            :    {{ s.filename }}
+MD5                             :    {{ s.md5 }}
+SHA1                            :    {{ s.sha1 }}
+SHA256                          :    {{ s.sha256 }}
+FUZZY                           :    {{ s.fuzzy }}
+Size                            :    {{ s.size }}
+Path                            :
+Type                            :    {{ s.type }}
+Analyzed Date/Time              :    {{ s.created }}
+
+CVE                             :
+
+Link(s)                         :
+
+Caught by AV (YES/NO)           :    {% if plaintext.vt_short %}YES{% endif %}
+                      VT        :    {% if plaintext.vt_nums %}{{ plaintext.vt_nums }}{% endif %}
+                      {% if plaintext.vt_short %}{% for res in plaintext.vt_short %}{{ res.vendor }}{{ res.detect }}
+                      {% endfor %}{% endif %}
+
+Email Info                      :
+
+--SUMMARY--
+
+
+
+--REMEDIATION STEPS--
+
+- False Positive
+
+- Block the following:
+        Block:
+        Justification:
+        
+- Search for successful callouts
+
+- Follow malicious email remediation procedures
+
+- Operational/Approved activity
+
+- Close ticket
+
+
+--NOTES--
+
+{% if s.vt %}#### VirusTotal ####
+{{ s.vt }}{% endif %}
 
 #### EXIF Data ####
 {{ s.exif }}
@@ -440,10 +480,8 @@ FUZZY:       {{ s.fuzzy }}
 #### TRiD ####
 {{ s.trid }}
 
-{% if s.peframe %}
-#### PEFRAME ####
-{{ s.peframe }}
-{% endif %}
+{% if s.peframe %}#### PEFRAME ####
+{{ s.peframe }}{% endif %}
 
 {% if s.pescanner %}#### PEScanner ####
 {{ s.pescanner }}{% endif %}
@@ -476,6 +514,13 @@ FUZZY:       {{ s.fuzzy }}
                                 </p>
                             </div><!--end plaintext class-->
                          </div><!--end plaintext id-->
+
+
+
+
+
+
+                         
                          {% endif %}<!--end lastloop-->
                     
                     

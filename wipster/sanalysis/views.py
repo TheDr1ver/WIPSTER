@@ -8,8 +8,12 @@ import hashlib
 import handler, threatanalyzer, crits, search
 import re
 
-# Imaginary function to handle an uploaded file.
-#from .handler import handle_uploaded_file
+
+
+
+#####################
+#### Upload Form ####
+#####################
 
 def upload_form(request):
 
@@ -128,9 +132,35 @@ def sample_page(request,md5):
     savename = handler.get_savename(sample[0])
     savename = 'samples/'+md5+'/'+savename
     ta_submit = ""
+    plaintext = {'vt_short': [],
+                 'vt_nums': ""}
 
     extra_params = "&md5="+md5
 
+    # Process ticket #
+    ticket = sample[0].ticket
+    zeros = '0' * (12 - len(ticket))
+    plaintext['ticket'] = "TICKET" + zeros + ticket
+    
+    # Process VT #
+    if sample[0].vt_short:
+        vt_plain_res = sample[0].vt_short
+        if "Results:" in vt_plain_res:
+            vt_res_split = vt_plain_res.split("\r\n")
+            vt_nums_split = vt_res_split[0].split("\t")
+            if vt_nums_split > 1:
+                plaintext['vt_nums'] = vt_nums_split[1]
+            vt_split1 = vt_plain_res.split("\r\n\r\n")
+            if len(vt_split1) > 1:
+                vt_short_line = vt_split1[1].split("\r\n")
+                for line in vt_short_line:
+                    if line:
+                        vendor_detect_split = line.split(":\t")
+                        space_length = " " * (10 - len(vendor_detect_split[0]))
+                        vendor_fix = vendor_detect_split[0] + space_length + ":    "
+                        plaintext['vt_short'].append({'vendor': vendor_fix,
+                                                      'detect': vendor_detect_split[1]})
+    #debugerror
 
 ################################################
 #### Process ThreatAnalyzer POST Submission ####
@@ -152,7 +182,7 @@ def sample_page(request,md5):
         ta_analyses, ta_risks, ta_network, ta_ips, ta_domains, ta_commands = threatanalyzer.get_ta_analyses(md5, extra_params=extra_params)
     else:
         ta_analyses=ta_risks=ta_network = ""
-        ta_ips, ta_domains, ta_commands = []
+        ta_ips=ta_domains=ta_commands = []
 
     #Automatically submit to ThreatAnalyzer if ta_autosubmit == True and there is no existing analyses
     if ta_use and ta_autosubmit and "HTTP Error 404" in ta_analyses:
@@ -219,6 +249,7 @@ def sample_page(request,md5):
 
     return render(request, 'sanalysis/sample_page.html', {'sample': sample,
                                                           'savename': savename,
+                                                          'plaintext': plaintext,
                                                           'ta_use': ta_use,
                                                           'ta_analyses': ta_analyses,
                                                           'ta_risks': ta_risks,

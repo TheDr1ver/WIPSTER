@@ -23,3 +23,5 @@ Possibly later on:
 - Anubis/Malwr integration?
 - Shodan integration?
 - ThreatExpert integration?
+
+(C) Nick Driver - @TheDr1ver - 2015

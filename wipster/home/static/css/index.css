@@ -1,0 +1,57 @@
+.container{
+    margin-left:auto;
+    margin-right:auto;
+    width:940px;
+}
+
+.header h1{
+    text-align:center;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    text-decoration:none;
+    color: #FF9933;
+}
+
+.header{
+    width:100%;
+    margin-bottom:30px;
+    border-style:solid;
+    border-width: 0px 0px 3px 0px;
+    border-color:#7FB5DA;
+}
+
+.link-group{
+    width:100%;
+    display:inline-block;
+}
+
+.inner-link-group{
+    width:50%;
+    display:block;
+    border-width:3px;
+    border-style:solid;
+    border-color:#7FB5DA;
+    padding-bottom:20px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.link-group h3{
+    text-align:center;
+    color:#7FB5DA;
+    margin-top:5px;
+}
+
+.link-group ul{
+    list-style-type:none;
+    width:50%;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+    padding-left:0px;
+}
+
+.link-group li{
+
+}

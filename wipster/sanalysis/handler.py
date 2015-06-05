@@ -329,7 +329,7 @@ def get_vt(md5):
         response = urllib2.urlopen(req)
         json_resp = response.read().decode('utf-8')
         vt_resp = json.loads(json_resp)
-        if vt_resp['response_code']:
+        if vt_resp['response_code'] or vt_resp['response_code']==0:
             if vt_resp['response_code']==1:
 
                 #handle json - return long list and short list
@@ -355,7 +355,8 @@ def get_vt(md5):
                 vt_res += "Something went wrong. Response Code: "+str(vt_resp['reponse_code'])
                 vt_short_res += vt_res
         else:
-            vt_res += "No response code received from VirusTotal. Something is horribly wrong."
+            vt_res += "No response code received from VirusTotal. Something is horribly wrong.\r\n"
+            vt_res += str(vt_resp)
             vt_short_res += vt_res
 
     return vt_res, vt_short_res

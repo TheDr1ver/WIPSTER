@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!-- (C) Nick Driver - @TheDr1ver - June 2015 -->
+{% load staticfiles %}
+<html>
+    <head>
+        <title>WIPSTER - Web Interface Portal & Secutiy Threat Engine for REMnux</title>
+        <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    </head>
+    <body>
+        <div class="header">
+            <h1>Welcome to WIPSTER</h1>
+        </div><!--end header class-->
+        
+        <div class="container">
+            <div class="link-group">
+                <div id="samples" class="inner-link-group">
+                    <h3>Sample Analysis</h3>
+                    <ul>
+                        <li><a href="/sanalysis/">Upload Samples</a></li>
+                        <li><a href="/sanalysis/search/">Search Samples</a></li>
+                    </ul>
+                </div><!--end samples id-->
+            </div><!--end link-group class-->
+        </div><!--end container class-->
+    </body>
+
+</html>

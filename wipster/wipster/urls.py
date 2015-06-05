@@ -19,5 +19,6 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^sanalysis/', include('sanalysis.urls')),
+    url(r'^$', include('home.urls'))
 #    url(r'^$', direct_to_template, {"template": "index.html"}),
 ]
