@@ -179,7 +179,7 @@ def sample_page(request,md5):
 #### Process ThreatAnalyzer Data ####
 
     if ta_use:
-        ta_analyses, ta_risks, ta_network, ta_ips, ta_domains, ta_commands = threatanalyzer.get_ta_analyses(md5, extra_params=extra_params)
+        ta_analyses, ta_risks, ta_network, ta_ips, ta_domains, ta_commands, ta_dropped = threatanalyzer.get_ta_analyses(md5, extra_params=extra_params)
     else:
         ta_analyses=ta_risks=ta_network = ""
         ta_ips=ta_domains=ta_commands = []
@@ -206,7 +206,7 @@ def sample_page(request,md5):
                 crits_dict = crits_vt
 
         if ta_use and (ta_ips or ta_domains or ta_commands):
-            crits_ta = crits.crits_parse(ta_ips, ta_domains, ta_commands)
+            crits_ta = crits.crits_parse(ta_ips, ta_domains, ta_commands, ta_dropped)
             if not sample[0].vt_short:    
                 crits_dict = crits_ta
 
@@ -232,12 +232,12 @@ def sample_page(request,md5):
     if request.method=="POST" and crits_use:
         if 'crits_submit' in request.POST:
             if request.POST['crits_submit']:
-                crits_submit = crits.submit_to_crits(request.POST, sample[0], savename=savename)
+                crits_submit = crits.submit_to_crits(request.POST, sample[0], crits_ta, savename=savename)
 
     #If crits_autosubmit == True, all samples and tickets will be added to CRITs and related to eachother
     if crits_use and crits_autosubmit and request.method!="POST":
         request.POST = {}
-        crits_submit = crits.submit_to_crits(request.POST, sample[0], savename=savename)
+        crits_submit = crits.submit_to_crits(request.POST, sample[0], crits_ta, savename=savename)
 
 #            current_page = "/sanalysis/md5/"+md5+"/"
 #            return HttpResponseRedirect(current_page)
@@ -257,6 +257,7 @@ def sample_page(request,md5):
                                                           'ta_ips': ta_ips,
                                                           'ta_domains': ta_domains,
                                                           'ta_commands': ta_commands,
+                                                          'ta_dropped': ta_dropped,
                                                           'ta_submit': ta_submit,
                                                           'crits_use': crits_use,
                                                           'crits': crits_dict,

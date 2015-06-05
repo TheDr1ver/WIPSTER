@@ -32,7 +32,7 @@ def search_ignore_list(item, ignore_list):
     return match_found
 
 
-def crits_parse(ta_ips, ta_domains, ta_commands):
+def crits_parse(ta_ips, ta_domains, ta_commands, ta_dropped):
 
     crits_dict_ta = {}
     crits_dict_ta.clear()
@@ -40,6 +40,7 @@ def crits_parse(ta_ips, ta_domains, ta_commands):
     crits_dict_ta['crits_domains'] = []
     crits_dict_ta['crits_uas'] = []
     crits_dict_ta['crits_commands'] = []
+    crits_dict_ta['crits_dropped'] = []
 #    crits_dict_ta['crits_vts'] = []
 
     for ip in ta_ips:
@@ -91,6 +92,11 @@ def crits_parse(ta_ips, ta_domains, ta_commands):
                                 crits_dict_ta['crits_commands'].append(line)
                         else:
                              crits_dict_ta['crits_commands'].append(line)
+
+    for drop in ta_dropped:
+        if drop['filename'] != "" and drop['md5'] != "":
+            crits_dict_ta['crits_dropped'].append({'filename': drop['filename'],
+                                                   'md5': drop['md5']})
 #    debug_error
     return crits_dict_ta
 
@@ -197,6 +203,11 @@ def build_data(pre_data, last_sample, newname=""):
         data['file_format'] = "raw"
         data['filedata'] = open(str(newname))
 
+    if pre_data['type'] == "sample_metadata":
+        data['type'] = "sample"
+        data['upload_type'] = "metadata"
+        data['filename'] = pre_data['val']['filename']
+        data['md5'] = pre_data['val']['md5']
 
     if pre_data['type'] == "domain":
         data['domain'] = pre_data['val']
@@ -250,7 +261,7 @@ def build_data(pre_data, last_sample, newname=""):
     return data
     
 
-def submit_to_crits(post_data, last_sample, savename=""):
+def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
 
     crits_result = {}
     crits_str_result = ""
@@ -262,7 +273,7 @@ def submit_to_crits(post_data, last_sample, savename=""):
     for k, v in post_data.iteritems():
         if "chk" in k and v=="on":
             chk_input_key = re.sub("_chk", "", k)
-            if post_data[chk_input_key]: #Make sure there's an input that matches with the checkbox
+            if post_data[chk_input_key] : #Make sure there's an input that matches with the checkbox
 
                 #Create or clear the dict if it already exists
                 data, final_data = clear_upload_dicts(data, final_data)
@@ -290,10 +301,11 @@ def submit_to_crits(post_data, last_sample, savename=""):
 
                 # Search if the object already exists. If  it does, pull in the JSON, otherwise, add it to CRITs
 
-                data['search'] = data['val']
+                data['search'] = data['val']['md5']
 
                 search_res = search_crits(data)
 
+                # Set types for relationships later on
                 if data['type'] == "domain":
                     crits_type = "Domain"
                 elif data['type'] == "ip":
@@ -323,7 +335,6 @@ def submit_to_crits(post_data, last_sample, savename=""):
 
                     crits_upload_dict[data['type']].append({"id": crits_upload_res['id'],
                                                             "type": crits_type})
-                    
                     
 
     #################################################
@@ -371,8 +382,7 @@ def submit_to_crits(post_data, last_sample, savename=""):
     if search_res['objects']:
         crits_upload_dict['sample'] = [{'id': search_res['objects'][0]['_id'],
                                         'type': 'Sample'}]
-#        crits_upload_dict['sample'][0]['id'] = search_res['objects'][0]['_id']
-#        crits_upload_dict['sample'][0]['type'] = 'Sample'
+
     else:
         # Need to handle renaming the sample to remove the .MAL when adding to CRITs
         # Before calling build_data()
@@ -391,11 +401,35 @@ def submit_to_crits(post_data, last_sample, savename=""):
 
         crits_str_result += "\r\nUploaded Sample: \r\n" + str(crits_upload_dict['sample'][0]) + "\r\n\r\n****************\r\n\r\n"
 
+    ########################################################
+    #### Handle uploading metadata of any dropped files ####
+    ########################################################
+    
+    if crits_ta['crits_dropped']:
+        for dropped in crits_ta['crits_dropped']:
+        
+            data, final_data = clear_upload_dicts(data, final_data)
+            search_res.clear()
+            
+            data['type'] = "sample_metadata"
+            data['val'] = dropped
+            
+            data['search'] = dropped['md5']
+            search_res = search_crits(data)
+            
+            if search_res['objects']:
+                crits_upload_dict['sample_metadata'] = [{'id': search_res['objects'][0]['_id'],
+                                                         'type': 'Sample'}]
+                                                         
+            else:
+                final_data = build_data(data, last_sample)
+                crits_upload_res = upload_object(final_data)
+                
+                crits_upload_dict['sample_metadata'] = [{'id': crits_upload_res['id'],
+                                                         'type': 'Sample'}]
+                crits_str_result += "\r\nUploaded Sample MetaData: \r\n" + str(crits_upload_dict['sample_metadata'][0]) + "\r\n\r\n****************\r\n\r\n"
 
 
-#    final_data = build_data(data, last_sample)
-#    crits_upload_dict = upload_object(final_data)
-#    crits_str_result += str(crits_upload_dict) + "\r\n\r\n*************\r\n\r\n"
 
     ##################################
     #### Handle all relationships ####
@@ -446,7 +480,7 @@ def relate_objects(crits_upload_dict, last_sample):
 
 def search_crits(data):
 
-    if data['type'] == "sample":
+    if data['type'] == "sample" or data['type'] == "sample_metadata":
         target = crits_page + "samples/?c-md5=" + data['search']
     if data['type'] == "domain":
         target = crits_page + "domains/?c-domain=" + data['search']

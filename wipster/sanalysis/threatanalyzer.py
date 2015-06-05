@@ -13,6 +13,7 @@ def get_ta_network(analysis_id):
     ta_domains=[]
     ta_ips = []
     ta_commands = []
+    ta_dropped = []
 
     extra_params = "&archive_file=Analysis/analysis.json"
     get_ta_network_res = ""
@@ -26,7 +27,7 @@ def get_ta_network(analysis_id):
         response = urllib2.urlopen(req)
     except urllib2.URLError, e:
         get_ta_network_res = "Bad response code %s" % e
-        return ta_ips, ta_domains, ta_commands, get_ta_network_res
+        return ta_ips, ta_domains, ta_commands, ta_dropped, get_ta_network_res
 
     httpResponse = response.getcode()
     if httpResponse == 200:
@@ -35,17 +36,27 @@ def get_ta_network(analysis_id):
             result = json.loads(json_result)
         except ValueError, e:
             get_ta_network_res = "JSON load error %s" % e
-            return ta_ips, ta_domains, ta_commands, get_ta_network_res
+            return ta_ips, ta_domains, ta_commands, ta_dropped, get_ta_network_res
         size = len(result)
         if size == 0:
             get_ta_network_res = "Response size 0"
-            return ta_ips, ta_domains, ta_commands, get_ta_network_res
+            return ta_ips, ta_domains, ta_commands, ta_dropped, get_ta_network_res
 
     for k, v in result['analysis'].iteritems():
         #Grab network data from each analysis result
         if k == 'processes':
             if 'process' in k:
                 for process in v['process']:
+
+                    # Process Potential Dropped Files
+                    if 'stored_files' in process:
+                        if 'stored_created_file' in process['stored_files']:
+                            for stored_file in process['stored_files']['stored_created_file']:
+                                if '@filename' in stored_file:
+                                    ta_dropped.append({'filename': stored_file['@filename'],
+                                                       'md5': stored_file['@md5']})
+
+                    # Process Observed Network Callouts
                     if 'networkpacket_section' in process:
                         if 'connect_to_computer' in process['networkpacket_section']:
                             for connection in process['networkpacket_section']['connect_to_computer']:
@@ -88,7 +99,7 @@ def get_ta_network(analysis_id):
                                     if ta_single_command not in ta_commands:
                                         ta_commands.append(ta_single_command)
 
-    return ta_ips, ta_domains, ta_commands, get_ta_network_res
+    return ta_ips, ta_domains, ta_commands, ta_dropped, get_ta_network_res
 
 def get_ta_analyses(md5, extra_params=""):
 
@@ -159,7 +170,7 @@ def get_ta_analyses(md5, extra_params=""):
                 get_ta_risks_res += str(risk['description']) + " - " + str(risk['maliciousness']) + "\r\n"
 
             # Process network callouts - IPs, Domains, and HTTP Commands
-            analysis_ips, analysis_domains, analysis_commands, get_ta_network_res = get_ta_network(a['analysis_id'])
+            analysis_ips, analysis_domains, analysis_commands, ta_dropped, get_ta_network_res = get_ta_network(a['analysis_id'])
 
             for ip in analysis_ips:
                 if ip not in ta_ips:
@@ -175,7 +186,7 @@ def get_ta_analyses(md5, extra_params=""):
 
     #Else - do something if response != 200
 
-    return get_ta_analyses_res, get_ta_risks_res, get_ta_network_res, ta_ips, ta_domains, ta_commands
+    return get_ta_analyses_res, get_ta_risks_res, get_ta_network_res, ta_ips, ta_domains, ta_commands, ta_dropped
 
 def submit_to_ta(md5, savename, extra_params=""):
 

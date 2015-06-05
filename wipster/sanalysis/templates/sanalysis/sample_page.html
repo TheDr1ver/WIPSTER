@@ -41,7 +41,7 @@
                         {% if s.filename %}
                             <div class="one-file">
                                 <div class="filename">
-                                    <p><a href="{% static savename %}">{{ s.filename }}</a></p>
+                                    <p><a href="{% static savename %}" title="{% static savename %}">{{ s.filename|truncatechars:27 }}</a></p>
                                 </div>
                                 <div class = "ticket">
                                     <p>{{ s.ticket }}</p>
@@ -286,6 +286,17 @@
                                     </pre>
                                 </p>
                                 {% endif %} 
+                                {% if ta_dropped %}
+                                <p>
+                                    <h3>Dropped Files</h3>
+                                    <pre>
+{% for drop in ta_dropped %}
+Filename: {{ drop.filename }}
+MD5:      {{ drop.md5 }}
+{% endfor %}
+                                    </pre>
+                                </p>
+                                {% endif %} 
 			    </div><!--end callouts class-->
                             {% endif %}<!-- end ips domains or commands check-->
 
@@ -389,7 +400,7 @@
 
 					    <div class="input_block">
 						<input type="checkbox" name="crits_vt_man_chk_1" class="checkbox">
-						<label>VirusTotal Detected</label>
+						<label>VirusTotal Detection</label>
 						<input type="text" name="crits_vt_man_1" value="" class="text">
 						<br/>
 					    </div><!--end input_block class-->
