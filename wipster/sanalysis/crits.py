@@ -311,7 +311,7 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
 
                 # Search if the object already exists. If  it does, pull in the JSON, otherwise, add it to CRITs
 
-                data['search'] = data['val']['md5']
+                data['search'] = data['val']
 
                 search_res = search_crits(data)
 
