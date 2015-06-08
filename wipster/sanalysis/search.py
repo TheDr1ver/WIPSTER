@@ -67,7 +67,7 @@ def process_search(search_term):
             found_field_data = getattr(s, search_type)
             if found_field_data:
                 final_results['debug'].append(str(found_field_data))
-            pre_pattern = ".*(" + search_term + ".*)"
+            pre_pattern = "(.*" + search_term + ".*)"
             pattern = re.compile(pre_pattern, re.I)
             m = pattern.search(str(found_field_data))
             if m:

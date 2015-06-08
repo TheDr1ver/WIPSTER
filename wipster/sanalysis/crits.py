@@ -94,10 +94,20 @@ def crits_parse(ta_ips, ta_domains, ta_commands, ta_dropped):
                              crits_dict_ta['crits_commands'].append(line)
 
     for drop in ta_dropped:
-        if drop['filename'] != "" and drop['md5'] != "":
-            crits_dict_ta['crits_dropped'].append({'filename': drop['filename'],
-                                                   'md5': drop['md5']})
-#    debug_error
+        if drop['filename'] != "" and drop['md5'] != "":    #Check to make sure the filename and md5 are populated
+            if not search_ignore_list(drop['filename'], crits_ignore_dropped): #Check to make sure the filename is not on the ignore list
+                if crits_dict_ta['crits_dropped']:
+                    drop_check_array = []
+                    for drop_check in crits_dict_ta['crits_dropped']:
+                        drop_check_array.append(str(drop_check['md5']))  #Get a list of all the MD5's current in the crits_dropped dictionary
+                    if str(drop['md5']) not in drop_check_array: #Make sure this MD5 is not already in the array
+                        crits_dict_ta['crits_dropped'].append({'filename': str(drop['filename']),
+                                                               'md5': str(drop['md5'])})
+                else:
+                    crits_dict_ta['crits_dropped'].append({'filename': str(drop['filename']),
+                                                           'md5': str(drop['md5'])})
+                
+    #debug_error
     return crits_dict_ta
 
 def crits_vt(vt_short_res):
@@ -406,6 +416,7 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
     ########################################################
     
     if crits_ta['crits_dropped']:
+        crits_upload_dict['sample_metadata'] = []
         for dropped in crits_ta['crits_dropped']:
         
             data, final_data = clear_upload_dicts(data, final_data)
@@ -418,16 +429,16 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
             search_res = search_crits(data)
             
             if search_res['objects']:
-                crits_upload_dict['sample_metadata'] = [{'id': search_res['objects'][0]['_id'],
-                                                         'type': 'Sample'}]
+                crits_upload_dict['sample_metadata'].append({'id': search_res['objects'][0]['_id'],
+                                                         'type': 'Sample'})
                                                          
             else:
                 final_data = build_data(data, last_sample)
                 crits_upload_res = upload_object(final_data)
                 
-                crits_upload_dict['sample_metadata'] = [{'id': crits_upload_res['id'],
-                                                         'type': 'Sample'}]
-                crits_str_result += "\r\nUploaded Sample MetaData: \r\n" + str(crits_upload_dict['sample_metadata'][0]) + "\r\n\r\n****************\r\n\r\n"
+                crits_upload_dict['sample_metadata'].append({'id': crits_upload_res['id'],
+                                                         'type': 'Sample'})
+                crits_str_result += "\r\nUploaded Sample MetaData: \r\n" + str(crits_upload_dict['sample_metadata'][-1]) + "\r\n\r\n****************\r\n\r\n"
 
 
 
@@ -455,25 +466,37 @@ def clear_upload_dicts(data, final_data):
 def relate_objects(crits_upload_dict, last_sample):
     relation_res = ""
     data = {}
+    debug_str=[]
     for obj_key, obj_val in crits_upload_dict.items(): # Start stepping through each TLO
         data['type'] = "relationship"
-        for v in obj_val: # Step through each instance of the current TLO
+        while obj_val:
+            v = obj_val[0]
             compare1 = str(v['id']) # Set comparison string to avoid relating a TLO to itself
+
             data['tlo1type'] = v['type']
             data['tlo1id'] = v['id']
-            for obj_key2, obj_val2 in crits_upload_dict.items(): # Step through each TLO
+            
+            for obj_key2, obj_val2 in crits_upload_dict.items(): # Step through each TLO                
                 for v2 in obj_val2: # Step through each instance of the current TLO
+                
                     compare2 = str(v2['id']) # Set second comparison string
+                    
                     if compare1 != compare2: # Make sure we're not relating a TLO to itself
                         data['tlo2type'] = v2['type']
                         data['tlo2id'] = v2['id']
+                        
                         if v2['id']:
+                    
                             final_data = build_data(data, last_sample)
                             relation_res += "\r\n\r\n" + "Relating " + data['tlo1type'] +" "+ data['tlo1id']
                             relation_res += " to " + data['tlo2type'] +" "+ data['tlo2id'] + "\r\n"
                             relation_res += str(upload_object(final_data))
-        del crits_upload_dict[obj_key]
+                            
+                            
+            
+            obj_val.remove(v)
 
+    #errordebug
     return relation_res
                         
 

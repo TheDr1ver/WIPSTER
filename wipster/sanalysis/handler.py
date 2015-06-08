@@ -344,7 +344,8 @@ def get_vt(md5):
                 vt_short_res += "<a href='"+vt_resp['permalink']+"' target='_blank'>"
                 vt_short_res += vt_resp['permalink']+"</a>\r\n\r\n"
                 for vendor, details in vt_resp['scans'].iteritems():
-                    vt_res += str(vendor)+":\t"+str(details['result'])+"\r\n"
+                    spaces = (25 - len(vendor))*" "
+                    vt_res += str(vendor)+":"+spaces+str(details['result'])+"\r\n"
                     if vendor in vt_short:
                         vt_short_res += str(vendor)+":\t"+str(details['result'])+"\r\n"
                 

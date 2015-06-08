@@ -360,12 +360,14 @@ MD5:      {{ drop.md5 }}
 						<br/>
 					{% if crits.crits_vts %}
 					    {% for vt in crits.crits_vts %}
+                        {% if "None" not in vt %}
 					    <div class="input_block">
 						<input type="checkbox" name="crits_vt_chk_{{ forloop.counter }}" checked class="checkbox">
 						<label>VirusTotal Detection:</label>
 						<input type="text" name="crits_vt_{{ forloop.counter }}" value="{{ vt }}" class="text">
 						<br/>
 					    </div>
+                        {% endif %}
 					    {% endfor %}<!--end input_block class-->
 
 					{% endif %}<!--end crits_vts check-->

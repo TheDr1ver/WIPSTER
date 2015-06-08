@@ -32,6 +32,10 @@
 	float:left;
 }
 
+.search_form .result{
+    width:50%;
+}
+
 .search_form .md5{
 	width:30%;
 }
