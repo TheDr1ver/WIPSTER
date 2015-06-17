@@ -5,7 +5,7 @@ from sanalysis.settings import *
 from .forms import UploadFileForm
 from .models import Sample
 import hashlib
-import handler, threatanalyzer, crits, search
+import handler, threatanalyzer, crits, crits_relationships, search
 import re
 
 
@@ -42,7 +42,10 @@ def upload_form(request):
 
             #Do post-processing stuff here
             s = Sample.objects.filter().order_by('-id')[0]
+            #s.exif = handler.get_exif(s.sample).encode('ascii', errors='replace')
+            #s.exif = unicode(handler.get_exif(s.sample))
             s.exif = handler.get_exif(s.sample)
+            
             s.strings = handler.get_strings(s.sample)
             s.balbuzard = handler.get_balbuzard(s.sample)
             s.trid = handler.get_trid(s.sample)
@@ -89,10 +92,11 @@ def upload_form(request):
 #                s.rtfobj_str = handler.get_rtfobj_str(rtflist)
 #                s.rtfobj_balbuz = handler.get_rtfobj_balbuz(rtflist)
             
+            
 
             s.save()
 
-            newpage = "/sanalysis/md5/" + s.md5 + "/"
+            newpage = "/sanalysis/md5/" + s.md5 + "/?upload=True"
 
             return HttpResponseRedirect(newpage)
 
@@ -197,6 +201,7 @@ def sample_page(request,md5):
     crits_ta = {}
     crits_dict = {}
     crits_submit = ""
+    crits_rel_trace = ""
 
     if crits_use:
         if sample[sample.count()-1].vt_short:
@@ -215,7 +220,7 @@ def sample_page(request,md5):
             crits_dict = crits_vt.copy()
             crits_dict.update(crits_ta)
 
-#        crits_dict_clean = crits.crits_clean(crits_dict)
+        crits_dict['page'] = crits_base+"/samples/details/"+sample[sample.count()-1].md5+"/"
 
 
     else:
@@ -223,19 +228,51 @@ def sample_page(request,md5):
                        'crits_domains': [],
                        'crits_uas' : [],
                        'crits_vts' : [],
-                       'crits_commands' : [] }
+                       'crits_commands' : [],
+                       'page': ""}
 
 ############################
 #### Process CRITs Form ####
 ############################
 
     if request.method=="POST" and crits_use:
+        #If submitting new data to CRITs
         if 'crits_submit' in request.POST:
             if request.POST['crits_submit']:
                 crits_submit = crits.submit_to_crits(request.POST, sample[sample.count()-1], crits_ta, savename=savename)
+        #If trying to get relationships from CRITs DB
+        if 'crits_rel_trace' in request.POST:
+            if request.POST['crits_rel_trace']:
+                
+                #### Set the variables for the trace
+                
+                #Get all tickets related to this sample from the WIPSTER DB
+                db_tickets = []
+                for i in sample:
+                    if i.ticket and i.ticket not in db_tickets:
+                        db_tickets.append(i.ticket)
+                
+                crits_rel_trace_vars = {
+                            'md5' : sample[sample.count()-1].md5,
+                            'db_tickets' : db_tickets,
+                            'depth' : crits_depth,
+                            'crits_page' : crits_page,
+                            'crits_base' : crits_base,
+                            'crits_login' : crits_login,
+                            'api_key': crits_api_key,
+                            'username': crits_username,
+                            'type': "Sample",
+                            'cid': ''
+                       }
+                       
+                #Get the relationships for the page display
+                crits_rel_trace = crits_relationships.trace_crits_relationships(crits_rel_trace_vars)
+                if not crits_rel_trace:
+                    crits_rel_trace = "No potentially related tickets were found that are not currently associated with this sample."
 
     #If crits_autosubmit == True, all samples and tickets will be added to CRITs and related to eachother
-    if crits_use and crits_autosubmit and request.method!="POST":
+    first_upload = request.GET.get('upload', '')
+    if crits_use and crits_autosubmit and request.method!="POST" and first_upload:
         request.POST = {}
         crits_submit = crits.submit_to_crits(request.POST, sample[sample.count()-1], crits_ta, savename=savename)
 
@@ -261,7 +298,8 @@ def sample_page(request,md5):
                                                           'ta_submit': ta_submit,
                                                           'crits_use': crits_use,
                                                           'crits': crits_dict,
-                                                          'crits_submit': crits_submit, })
+                                                          'crits_submit': crits_submit, 
+                                                          'crits_rel_trace': crits_rel_trace,})
 
 ##############################                                                          
 #### Build Search Routine ####

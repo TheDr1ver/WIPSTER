@@ -77,6 +77,14 @@
 	text-align:center;
 }
 
+#crits_form #crits_link{
+    text-align:center;
+}
+
+#crits_rel_trace_form form{
+    text-align:center;
+}
+
 /*---- Tab CSS borrowed from inspirationalpixels.com----*/
 /*---- Tabs ----*/
 .tabs {

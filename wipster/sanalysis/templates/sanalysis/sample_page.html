@@ -410,13 +410,29 @@ MD5:      {{ drop.md5 }}
 					<input name="crits_submit" type="submit" value="Submit to CRITs" id="crits_button">
 
 					</form>
+                    <div id="crits_link">
+                        <a href="{{ crits.page }}" target="_blank">View Sample in CRITs</a>
+                    </div>
 					</div><!-- end #crits_form-->
 					{% if crits_submit %}
 					<h3>Submission Response</h3>
-					<pre>
-					{{ crits_submit }}
+					<pre>{{ crits_submit }}
 					</pre><!--end #sub_resp-->
 					{% endif %}
+                    
+                    {% if crits_rel_trace %}
+                    <h3>CRITs Relationship Trace</h3>
+                    <pre>{% autoescape off %}{{ crits_rel_trace }}{% endautoescape %}
+                    </pre><!--end #relationship trace-->
+                    {% else %}
+                    <h3>CRITs Relationship Trace</h3>
+                    <div id="crits_rel_trace_form" class="sample">
+                        <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+                            <input name="crits_rel_trace" type="submit" value="Find potentially related tickets" id="crits_button">
+                            <p><b>WARNING:</b> Depending on how many TLO's are related to this sample, this could take a few minutes.</p>
+                        </form>
+                    </div><!--end #crits_rel_trace_form -->
+                    {% endif %}
 
 				</p>
 			    </div><!--end class=crits-->
