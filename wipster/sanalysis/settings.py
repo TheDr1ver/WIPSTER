@@ -41,7 +41,17 @@ fuzzy_threshold = getattr(settings, "fuzzy_threshold", 10)
 
 crits_use = getattr(settings, "crits_use", False) #Set True to use CRITs
 crits_page = getattr(settings, "crits_page", "https://192.168.1.10/api/v1/")
+crits_base = getattr(settings, "crits_base", "https://192.168.1.10")
 crits_login = getattr(settings, "crits_login", "username=YOUR-USERNAME&api_key=YOUR-API-KEY")
+crits_username = getattr(settings, "crits_username", "YOUR-USERNAME")
+crits_api_key = getattr(settings, "crits_api_key", "YOUR-API-KEY")
+
+#Recommended depth is set to 3 or less. Memory usage gets sky-high if set much greater than that.
+#Plus, you'll get stuff like bad.exe -> badguy.com -> bad.exe -> badguy.com -> Ticket 555, which is just dumb.
+#That could be fixed later, but since we're only using a depth of 3 in-house, it's not a priority.
+set_crits_depth = range(3)  #Set this to how deep you want your relationship-checks to go. Highly recommend not setting higher than 3
+crits_depth = getattr(settings, "crits_depth", set_crits_depth)
+
 #If crits_autosubmit is set to True, it will automatically submit and relate the given sample and ticket number on upload
 crits_autosubmit = getattr(settings, "crits_autosubmit", True)
 
