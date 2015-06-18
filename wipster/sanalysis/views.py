@@ -120,7 +120,7 @@ def upload_form(request):
 
     else:
         form = UploadFileForm()
-        sample = Sample.objects.filter(created__lte=timezone.now()).order_by('created')[:25]
+        sample = Sample.objects.filter(created__lte=timezone.now()).order_by('-id')[:25]
         return render(request, 'sanalysis/upload_form.html', {'form': form, 'sample': sample})
 
 #    return render_to_response('sanalysis/upload_form.html', {'form': form})
