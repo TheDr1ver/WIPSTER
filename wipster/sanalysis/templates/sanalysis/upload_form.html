@@ -17,7 +17,7 @@
 			<span class="col-item col-head ticket">Ticket No.</span>
 			<span class="col-item col-head">Uploaded</span>
 		</div>
-		{% for s in sample reversed %}
+		{% for s in sample %}
 			<div class="row">
 				<span class="col-item"><a href="./md5/{{ s.md5 }}/" title="{{ s }}">{{ s|truncatechars:27 }}</a></span>
 				<span class="col-item md5">{{ s.md5 }}</span>
