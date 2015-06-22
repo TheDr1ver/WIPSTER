@@ -63,6 +63,12 @@ class Sample(models.Model):
 
     def __str__(self):
         return self.filename
+        
+    def __unicode__(self):
+        if isinstance(self.filename, unicode):
+            return self.filename
+        else:
+            return unicode(self.filename,'utf-8')
 
     def save(self, *args, **kwargs):
         if not self.pk: # file is new
