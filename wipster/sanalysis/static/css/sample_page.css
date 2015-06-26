@@ -37,6 +37,18 @@
 	float:left;
 }
 
+.red{
+    color:#FF0000;
+}
+
+.orange{
+    color:#FF9933;
+}
+
+.blue{
+    color:blue;
+}
+
 #ta_form{
 	text-align:center;
 	

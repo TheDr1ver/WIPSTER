@@ -42,7 +42,8 @@ def get_savename(f):
 
     basename, ext = os.path.splitext(f.filename)
     basename = ''.join(e for e in basename if e.isalnum())
-
+    #basename = basename.decode('unicode_escape').encode('ascii','ignore')   #Strip unicode characters
+    #basename = unicode(basename, 'utf-8', errors="ignore")
     return os.path.join(basename.lower() + ext.lower() + '.MAL')
     
 
@@ -90,6 +91,8 @@ def get_fullpath(f):
     h = get_md5(f)
     basename, ext = os.path.splitext(f.name)
     basename = ''.join(e for e in basename if e.isalnum())
+    #basename = basename.decode('unicode_escape').encode('ascii','ignore')   #Strip unicode characters
+    #basename = unicode(basename, 'utf-8', errors="ignore")
     
     return os.path.join('sanalysis', 'samples', h, basename.lower() + ext.lower())
 
@@ -99,8 +102,8 @@ def get_exif(f):
     file = fullpath
     with exiftool.ExifTool() as et:
         metadata = et.execute(f.name)
-    
-    return metadata
+    #def_enc = sys.getdefaultencoding()
+    return unicode(metadata, 'utf-8', errors="replace")
 
 def get_strings(f):
 
@@ -119,7 +122,7 @@ def get_strings(f):
 
     string_res += run.communicate()[0]
 
-    return string_res
+    return unicode(string_res, 'utf-8', errors="replace")
 
 def get_balbuzard(f):
     # Call Balbuzard.py - location set in settings.py
@@ -129,7 +132,7 @@ def get_balbuzard(f):
 
     balbuzard_res = run.communicate()[0]
 
-    return balbuzard_res
+    return unicode(balbuzard_res, 'utf-8', errors="replace")
 
 def get_trid(f):
     # Call TRiD - location set in settings.py
@@ -139,7 +142,7 @@ def get_trid(f):
 
     trid_res = run.communicate()[0]
 
-    return trid_res
+    return unicode(trid_res, 'utf-8', errors="replace")
 
 def get_peframe(f):
     # Call peframe (only if executable file detected from python-magic)
@@ -149,7 +152,7 @@ def get_peframe(f):
 
     peframe_res = run.communicate()[0]
 
-    return peframe_res
+    return unicode(peframe_res, 'utf-8', errors="replace")
 
 def get_pescanner(f):
     # Call pescanner (only if EXE detected)
@@ -159,7 +162,7 @@ def get_pescanner(f):
 
     pescanner_res = run.communicate()[0]
 
-    return pescanner_res
+    return unicode(pescanner_res, 'utf-8', errors="replace")
 
 def get_pdfid(f):
     # Call PDFiD (only if PDF detected)
@@ -169,7 +172,7 @@ def get_pdfid(f):
 
     pdfid_res = run.communicate()[0]
 
-    return pdfid_res
+    return unicode(pdfid_res, 'utf-8', errors="replace")
 
 def get_peepdf(f):
     # Call PEEPDF (only if PDF detected)
@@ -179,7 +182,7 @@ def get_peepdf(f):
 
     peepdf_res = run.communicate()[0]
 
-    return peepdf_res
+    return unicode(peepdf_res, 'utf-8', errors="replace")
 
 def get_oleid(f):
     # Call OLEID (only if Word Doc detected)
@@ -189,7 +192,7 @@ def get_oleid(f):
 
     oleid_res = run.communicate()[0]
 
-    return oleid_res
+    return unicode(oleid_res, 'utf-8', errors="replace")
 
 def get_olemeta(f):
     # Call OLEMETA (only if Word Doc and OLE identified)
@@ -199,7 +202,7 @@ def get_olemeta(f):
 
     olemeta_res = run.communicate()[0]
 
-    return olemeta_res
+    return unicode(olemeta_res, 'utf-8', errors="replace")
 
 def get_olevba(f):
     # Call OLEVBA (only if Word Doc and VBA identified)
@@ -209,7 +212,7 @@ def get_olevba(f):
 
     olevba_res = run.communicate()[0]
 
-    return olevba_res
+    return unicode(olevba_res, 'utf-8', errors="replace")
 
 def rtf_iter_objects (filename, min_size=32):
     # From decalage oletools rtfobj script
@@ -254,7 +257,8 @@ def get_rtfobj(f):
         rtfobj_res += "saving to file <a href='/{0}'>{1}</a>\r\n".format(linkname[1],fname)
         open(fname, 'wb').write(data)
 
-    return rtfobj_res, rtflist
+    #return unicode(rtfobj_res, 'utf-8', errors="replace"), unicode(rtflist, 'utf-8', errors="replace")
+    return unicode(rtfobj_res, 'utf-8', errors="replace"), rtflist
 
 def get_rtfobj_str(rtflist):
 
@@ -275,7 +279,7 @@ def get_rtfobj_str(rtflist):
 
         rtfobj_str_res += run.communicate()[0]
 
-    return rtfobj_str_res
+    return unicode(rtfobj_str_res, 'utf-8', errors="replace")
 
 def get_rtfobj_balbuz(rtflist):
 
@@ -288,7 +292,7 @@ def get_rtfobj_balbuz(rtflist):
 
         rtfobj_balbuz_res += run.communicate()[0]
 
-    return rtfobj_balbuz_res
+    return unicode(rtfobj_balbuz_res, 'utf-8', errors="replace")
 
 def ssdeep_compare(fuzzy, md5):
     #Compare Fuzzy hash of file to all files in db

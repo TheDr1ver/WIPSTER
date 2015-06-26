@@ -1,0 +1,39 @@
+{% load staticfiles %}
+<html>
+	<head>
+		<title>WIPSTER - URL Analysis</title>
+        <!-- (C) Nick Driver - @TheDr1ver - June 2015 -->
+		<link rel="stylesheet" href="{% static 'css/base.css' %}">
+		<link rel="stylesheet" href="{% static 'css/sample_page.css' %}">
+		<link rel="stylesheet" href="{% static 'css/upload_form.css' %}">
+        <link rel="stylesheet" href="{% static 'css/search_form.css' %}">
+		
+		<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+		<script src="{% static 'js/tab-functions.js' %}"></script>
+	</head>
+	<body>
+		<div class="page-header">
+			<h1><a href="/">WIPSTER - URL Analysis</a></h1>
+
+			<div class="menu-container">
+                
+                <div id="link1" class="menu-item"><a href="/sanalysis/">Upload Sample</a></div>
+                <div id="link2" class="menu-item"><a href="/sanalysis/search/">Search Analyses</a></div>
+                <div id="link3" class="menu-item"><a href="/uanalysis/">Analyze URL</a></div>
+                <div id="link4" class="menu-item"><a href="uanalysis/search/">Search URLs</a></div>
+                <!--<div id="link3" class="menu-item">Link 3</div>-->
+                
+			</div>
+
+		</div>
+
+		<div class="content container">
+			<div class="row">
+				<div class="col-md-8">
+				{% block content %}
+				{% endblock %}
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

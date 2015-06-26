@@ -1,0 +1,30 @@
+{% extends 'uanalysis/base.html' %}
+
+{% block content %}
+<div class="upload-content">
+	<h2>Upload URL to WIPSTER</h2>
+	<div id="form">
+		<form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit" class="save btn btn-default">Save</button>
+		</form>
+	</div><!--end form class-->
+	<div class="recent-samples">
+		<!--Table of Recent Samples to go here-->
+		<div class="row">
+			<span class="col-item col-head">URL</span>
+			<span class="col-item col-head md5">MD5</span>
+			<span class="col-item col-head ticket">Ticket No.</span>
+			<span class="col-item col-head">Uploaded</span>
+		</div>
+		{% for u in url %}
+			<div class="row">
+				<span class="col-item"><a href="./url/{{ u.md5 }}/" title="{{ u.uri }}">{{ u.uri|truncatechars:27 }}</a></span>
+				<span class="col-item md5">{{ u.md5 }}</span>
+				<span class="col-item ticket">{{ u.ticket }}</span>
+				<span class="col-item">{{ u.created }}</span>
+			</div>
+		{% endfor %}
+	</div><!--end recent-samples class-->
+</div><!--end upload-content class-->
+{% endblock content %}
