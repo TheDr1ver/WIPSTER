@@ -303,6 +303,8 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
                     data['type'] = "event"
 
                 data['val'] = post_data[chk_input_key]
+                if not data['val']: #If the input is empty, check the next form box
+                    continue
 
                 if "ta_" in chk_input_key:
                     data['ta'] = True
