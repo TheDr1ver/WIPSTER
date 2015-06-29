@@ -9,6 +9,8 @@
 WIPSTER is designed as an automated web portal for many of the tools included in
 REMnux (http://zeltser.com/remnux). 
 
+**Please note this version of WIPSTER will soon be discontinued. Check out the ongoing alpha build in the [remnux-django-alpha branch](https://github.com/TheDr1ver/WIPSTER/tree/remnux-django-alpha) for the latest features compatible with REMnux v6.**
+
 **NOTICE:** _This is a BETA version of WIPSTER that has NOT been fully tested for security.
 		There is still a lot of sub-par coding and pointless comments left throughout the PHP files.
 		As with most things in malware analysis, always be careful when dealing with malicious
