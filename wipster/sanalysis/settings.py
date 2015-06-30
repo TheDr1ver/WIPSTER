@@ -10,7 +10,7 @@ trid_loc = getattr(settings, "trid_loc", "/opt/remnux-trid/trid")
 
 #VirusTotal Settings
 vt_use = getattr(settings, "vt_use", True) # Set False to disable VirusTotal searches, True to enable
-vt_key = getattr(settings, "vt_key", "<YOUR API KEY>")
+vt_key = getattr(settings, "vt_key", "<KEY>")
 #vt_short is a short list of AV's of interest to be displayed on the main Summary page
 vt_short = getattr(settings, "vt_short", ['Symantec', 'Microsoft'])
 
@@ -42,9 +42,9 @@ fuzzy_threshold = getattr(settings, "fuzzy_threshold", 10)
 crits_use = getattr(settings, "crits_use", True)
 crits_page = getattr(settings, "crits_page", "https://192.168.1.110/api/v1/")
 crits_base = getattr(settings, "crits_base", "https://192.168.1.110")
-crits_login = getattr(settings, "crits_login", "username=<YOUR USERNAME>&api_key=<CRITS API KEY>")
-crits_username = getattr(settings, "crits_username", "<YOUR USERNAME>")
-crits_api_key = getattr(settings, "crits_api_key", "<CRITS API KEY>")
+crits_login = getattr(settings, "crits_login", "username=<USERNAME>&api_key=<KEY>")
+crits_username = getattr(settings, "crits_username", "<USERNAME>")
+crits_api_key = getattr(settings, "crits_api_key", "<KEY>")
 
 #Recommended depth is set to 3 or less. Memory usage gets sky-high if set much greater than that.
 #Plus, you'll get stuff like bad.exe -> badguy.com -> bad.exe -> badguy.com -> Ticket 555, which is just dumb.
@@ -78,9 +78,9 @@ crits_ignore_dropped = getattr(settings, "crits_ignore_dropped", [".*\.LNK$",
 #################################
 
 ta_use = getattr(settings, "ta_use", True)
-ta_api = getattr(settings, "ta_api", "<THREAT ANALYZER API KEY>")
-ta_url = getattr(settings, "ta_url", "http://192.168.1.120/api/v1/")
-ta_base_url = getattr(settings, "ta_base_url", "http://192.168.1.120")
+ta_api = getattr(settings, "ta_api", "<KEY>")
+ta_url = getattr(settings, "ta_url", "http://192.168.1.200/api/v1/")
+ta_base_url = getattr(settings, "ta_base_url", "http://192.168.1.200")
 ta_sub_priority = getattr(settings, "ta_sub_priority", "high")
 ta_group_opt = getattr(settings, "ta_group_opt", "for_all_group") # custom | for_any_group_id | for_all_group_id
 #ta_group_opt = getattr(settings, "ta_group_opt", "custom") # custom | for_any_group_id | for_all_group_id
