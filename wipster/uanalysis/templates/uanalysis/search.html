@@ -1,0 +1,61 @@
+{% extends 'uanalysis/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="search_form" >
+        <h2>Search Analyses</h2>
+        <form method="POST" class="post-form">{% csrf_token %}
+			<input id="search_term" name="search_term" type="text"><br/><br/>
+			<button type="submit" class="save btn btn-default">Search</button>
+		</form>
+        <div id="search_help">
+            <pre>
+                Prefix your search with the following to search specific fields:
+                
+                md5::      MD5 Hash
+                html::     Extracted HTML
+                thug::     Thug Output
+                ticket::   Ticket Number
+                vt::       VirusTotal Results
+                js::       Extracted Javascript
+                did::      JS-Didier Results
+
+                If no prefix is added, search is for URI by default
+                
+                Example:    js::eval
+            </pre>
+        </div>
+    </div><!--end search_form class-->
+    {% if search_results.hits %}
+    <br/><br/>
+    <div class="search_form">
+        <h2>Search Results</h2>
+        <div class="row">
+            <span class="col-item col-head">URL</span>
+            <span class="col-item col-head">{{ search_results.field }} Hits</span>
+        </div>
+        {% for hit in search_results.hits %}
+        <div class="row">
+            <span class="col-item">
+                <!--Filename and link to Result Page-->
+                <a href="../url/{{ hit.md5 }}/" title="{{ hit.uri }}">{{ hit.uri }}</a>
+            </span>
+            <span class="col-item result">
+                {{ hit.result|truncatechars:64 }}
+                <!--DB column found in: Search hit (truncated)-->
+            </span>
+        </div>
+        {% comment %}{{ search_results }}{% endcomment %}
+        {% endfor %}<!-- end search_results loop -->
+    </div>
+    {% elif search_results %}
+    <br/><br/>
+    <div class="search_form">
+        <h2>Search Results</h2>
+        <div class="row">
+            <pre>{{ search_results }}</pre>
+        </div>
+    </div>
+    {% endif %}
+    
+{% endblock content %}

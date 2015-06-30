@@ -4,7 +4,7 @@ from django.utils import timezone
 from uanalysis.settings import *
 from .forms import UploadUrlForm
 from .models import URL
-import handler, hashlib
+import handler, hashlib, pydeep, search
 
 # Create your views here.
 def upload_form(request):
@@ -13,16 +13,20 @@ def upload_form(request):
     if request.method == 'POST':
         form = UploadUrlForm(request.POST)
         if form.is_valid():
-
+        
             uri = request.POST['uri']
             newurl = URL(
                 uri = uri,
                 ticket = request.POST['ticket'],
                 md5 = hashlib.md5(uri).hexdigest(),
+                fuzzy = pydeep.hash_buf(uri),
                 #html = handler.get_html(uri),
             )
             ua = request.POST['UserAgent']
-            results = handler.get_thug(uri, ua)
+            results = handler.get_thug(uri, ua, request.POST['ticket'])
+            
+            #newurl.ssdeep_compare = unicode(handler.ssdeep_compare(newurl.fuzzy, newurl.md5), 'utf-8', errors="replace")
+            newurl.ssdeep_compare = handler.ssdeep_compare(newurl.fuzzy, newurl.md5)
             newurl.html = unicode(results['html'], 'utf-8', errors="replace")
             newurl.thug = unicode(results['thug_res'], 'utf-8', errors="replace")
             newurl.js = unicode(results['js'], 'utf-8', errors="replace")
@@ -38,7 +42,10 @@ def upload_form(request):
             newpage = "/uanalysis/url/" + newurl.md5
 
             return HttpResponseRedirect(newpage)
-
+        else:
+            form = UploadUrlForm()
+            url = URL.objects.filter(created__lte=timezone.now()).order_by('-id')[:25]
+            return render(request, 'uanalysis/upload_form.html', {'form': form, 'url': url})
 
     else:
         form = UploadUrlForm()
@@ -60,5 +67,20 @@ def url_page(request,md5):
     url[len(url)-1].js_didier = handler.get_formatting(url[len(url)-1].js_didier, 'url')
     return render(request, 'uanalysis/url_page.html', {'url': url})
     
+##############################
+#### Build Search Routine ####
+##############################
+
+search_content = {}
+
 def search_form(request):
-    a=1
+
+    if request.method=="POST":
+        if 'search_term' in request.POST:
+            #Locate the content
+            search_results = search.process_search(request.POST['search_term'])
+            #Render the response
+            return render(request, 'uanalysis/search.html', {'search_results': search_results})
+
+    else:
+        return render(request, 'uanalysis/search.html')

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 import hashlib
 import os
@@ -25,9 +26,16 @@ def media_file_name(instance, filename):
     basename = ''.join(e for e in basename if e.isalnum())
     return os.path.join('sanalysis', 'static', 'samples', h, basename.lower() + ext.lower() + '.MAL')
 
+def validate_ticket(value):
+    try:
+        int(value)
+    except ValueError:
+        raise ValidationError('Ticket must be numeric.')
+    
 class Sample(models.Model):
     sample = models.FileField(
         upload_to=media_file_name, storage=MediaFileSystemStorage())
+    #ticket = models.CharField(max_length=32, validators=[validate_ticket])
     ticket = models.CharField(max_length=32)
     filename = models.TextField(default='none')
     size = models.IntegerField(default=0)

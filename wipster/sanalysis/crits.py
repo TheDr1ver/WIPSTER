@@ -283,7 +283,7 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
     for k, v in post_data.iteritems():
         if "chk" in k and v=="on":
             chk_input_key = re.sub("_chk", "", k)
-            if post_data[chk_input_key] : #Make sure there's an input that matches with the checkbox
+            if chk_input_key in post_data : #Make sure there's an input that matches with the checkbox
 
                 #Create or clear the dict if it already exists
                 data, final_data = clear_upload_dicts(data, final_data)
@@ -303,6 +303,8 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
                     data['type'] = "event"
 
                 data['val'] = post_data[chk_input_key]
+                if not data['val']: #If the input is empty, check the next form box
+                    continue
 
                 if "ta_" in chk_input_key:
                     data['ta'] = True
@@ -361,18 +363,19 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
     data['search'] = last_sample.ticket
     search_res = search_crits(data)
 
-    if search_res['objects']: # If an event with this Ticket # is found to exist, use its existing ID
-        crits_upload_dict['ticket'] = [{'id': search_res['objects'][0]['_id'],
-                                        'type': 'Event'}]
+    if 'objects' in search_res: # If an event with this Ticket # is found to exist, use its existing ID
+        if search_res['objects']:
+            crits_upload_dict['ticket'] = [{'id': search_res['objects'][0]['_id'],
+                                            'type': 'Event'}]
 #        crits_upload_dict['ticket'][0]['id'] = search_res['objects'][0]['_id']
 #        crits_upload_dict['ticket'][0]['type'] = 'Event'
-    else: # Otherwise, upload it
-        final_data = build_data(data, last_sample)
-        crits_upload_res = upload_object(final_data)
+        else: # Otherwise, upload it
+            final_data = build_data(data, last_sample)
+            crits_upload_res = upload_object(final_data)
 
-        crits_upload_dict['ticket'] = [{'id': crits_upload_res['id'],
-                                        'type': 'Event'}]
-        crits_str_result += "\r\nUploaded Ticket: " + str(crits_upload_dict['ticket'][0]) + "\r\n\r\n***********************\r\n"
+            crits_upload_dict['ticket'] = [{'id': crits_upload_res['id'],
+                                            'type': 'Event'}]
+            crits_str_result += "\r\nUploaded Ticket: " + str(crits_upload_dict['ticket'][0]) + "\r\n\r\n***********************\r\n"
 
 
     ############################################
@@ -389,33 +392,34 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
     data['search'] = last_sample.md5
     search_res = search_crits(data)
 
-    if search_res['objects']:
-        crits_upload_dict['sample'] = [{'id': search_res['objects'][0]['_id'],
-                                        'type': 'Sample'}]
+    if 'objects' in search_res:
+        if search_res['objects']:
+            crits_upload_dict['sample'] = [{'id': search_res['objects'][0]['_id'],
+                                            'type': 'Sample'}]
 
-    else:
-        # Need to handle renaming the sample to remove the .MAL when adding to CRITs
-        # Before calling build_data()
+        else:
+            # Need to handle renaming the sample to remove the .MAL when adding to CRITs
+            # Before calling build_data()
 
-        savename = "sanalysis/static/"+savename
-        newname = threatanalyzer.remove_mal(savename) # Copy the file without .MAL - Removed later in main method
-        
-        final_data = build_data(data, last_sample, newname=newname)
-        crits_upload_res = upload_object(final_data)
+            savename = "sanalysis/static/"+savename
+            newname = threatanalyzer.remove_mal(savename) # Copy the file without .MAL - Removed later in main method
+            
+            final_data = build_data(data, last_sample, newname=newname)
+            crits_upload_res = upload_object(final_data)
 
-        rem_tmp = threatanalyzer.remove_tmp_file(newname) # Remove the copy of the file that doesn't have .MAL
+            rem_tmp = threatanalyzer.remove_tmp_file(newname) # Remove the copy of the file that doesn't have .MAL
 
 
-        crits_upload_dict['sample'] = [{'id': crits_upload_res['id'],
-                                        'type': 'Sample'}]
+            crits_upload_dict['sample'] = [{'id': crits_upload_res['id'],
+                                            'type': 'Sample'}]
 
-        crits_str_result += "\r\nUploaded Sample: \r\n" + str(crits_upload_dict['sample'][0]) + "\r\n\r\n****************\r\n\r\n"
+            crits_str_result += "\r\nUploaded Sample: \r\n" + str(crits_upload_dict['sample'][0]) + "\r\n\r\n****************\r\n\r\n"
 
     ########################################################
     #### Handle uploading metadata of any dropped files ####
     ########################################################
     
-    if crits_ta['crits_dropped']:
+    if 'crits_dropped' in crits_ta:
         crits_upload_dict['sample_metadata'] = []
         for dropped in crits_ta['crits_dropped']:
         
@@ -428,17 +432,18 @@ def submit_to_crits(post_data, last_sample, crits_ta, savename=""):
             data['search'] = dropped['md5']
             search_res = search_crits(data)
             
-            if search_res['objects']:
-                crits_upload_dict['sample_metadata'].append({'id': search_res['objects'][0]['_id'],
-                                                         'type': 'Sample'})
+            if 'objects' in search_res:
+                if search_res['objects']:
+                    crits_upload_dict['sample_metadata'].append({'id': search_res['objects'][0]['_id'],
+                                                             'type': 'Sample'})
                                                          
-            else:
-                final_data = build_data(data, last_sample)
-                crits_upload_res = upload_object(final_data)
-                
-                crits_upload_dict['sample_metadata'].append({'id': crits_upload_res['id'],
-                                                         'type': 'Sample'})
-                crits_str_result += "\r\nUploaded Sample MetaData: \r\n" + str(crits_upload_dict['sample_metadata'][-1]) + "\r\n\r\n****************\r\n\r\n"
+                else:
+                    final_data = build_data(data, last_sample)
+                    crits_upload_res = upload_object(final_data)
+                    
+                    crits_upload_dict['sample_metadata'].append({'id': crits_upload_res['id'],
+                                                             'type': 'Sample'})
+                    crits_str_result += "\r\nUploaded Sample MetaData: \r\n" + str(crits_upload_dict['sample_metadata'][-1]) + "\r\n\r\n****************\r\n\r\n"
 
 
 
@@ -485,7 +490,7 @@ def relate_objects(crits_upload_dict, last_sample):
                         data['tlo2type'] = v2['type']
                         data['tlo2id'] = v2['id']
                         
-                        if v2['id']:
+                        if 'id' in v2:
                     
                             final_data = build_data(data, last_sample)
                             relation_res += "\r\n\r\n" + "Relating " + data['tlo1type'] +" "+ data['tlo1id']

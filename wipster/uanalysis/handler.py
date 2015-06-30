@@ -1,12 +1,15 @@
 from uanalysis.settings import *
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from .models import URL
-import urllib2, hashlib, subprocess, sys, os, cgi, re
+from sanalysis.models import Sample
+import sanalysis.handler
+import urllib2, hashlib, subprocess, sys, os, cgi, re, pydeep
 import os.path
 from re import findall
 
-def get_thug(uri, ua):
+def get_thug(uri, ua, ticket):
     #These will be removed and pulled in from 'settings' file later
     thug_loc="/opt/remnux-thug/src/thug.py"
     es_loc = "/opt/remnux-didier/extractscripts.py"
@@ -77,8 +80,8 @@ def get_thug(uri, ua):
         ua = 'winxpie60'
 
         
-    #Run thug with useragent selected from form, max setTimeout/setInterval delay to 5 seconds, overall timeout in 5 minutes
-    #Write logs to a file in ./uanalysis/static/urls/<md5>/
+    # Run thug with useragent selected from form, max setTimeout/setInterval delay to 5 seconds, overall timeout in 5 minutes
+    # Write logs to a file in ./uanalysis/static/urls/<md5>/
     cmd = [thug_loc+" -u "+ua+" -w 5000 -T 300 -F -n ./uanalysis/static/urls/"+md5+" \""+uri+"\""]
     run = subprocess.Popen(cmd,
                            stdout=subprocess.PIPE,
@@ -121,6 +124,7 @@ def get_thug(uri, ua):
         results = get_html(file, md5, md5_url_pair, results)
         
         #...get any downloaded files from it...
+        get_sample(file, md5, ticket)
         
         #...run didier's extractscripts.py against it
         run_extractscripts(file, md5, es_loc)
@@ -164,6 +168,90 @@ def get_html(file, md5, md5_url_pair, results):
                 results['html']+="</pre>"
                 
     return results
+    
+def get_sample(file, md5, ticket):
+
+    application_list = ["application/x-msdownload",
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "application/msword",
+                        "application/octet-stream",
+                        "x-msdos-program",
+                        "application/pdf"]
+                        
+    #If website attempts to download something from the application_list, auto-process it on the Sample Analysis side                    
+    for app in application_list:    
+        if app in file:
+            full_dir = "uanalysis/static/urls/"+md5+"/"+file
+            f = open(full_dir)
+            fr = f.read()
+            position = f.seek(0, 0)
+            
+            new_samp = InMemoryUploadedFile(f, 'sample', f.name, None, len(fr), None)
+            
+            newsample = Sample(
+                sample = new_samp,
+                ticket = ticket,
+                filename = sanalysis.handler.get_md5(new_samp),
+                size = len(fr),
+                type = sanalysis.handler.get_filetype(new_samp),
+                md5 = sanalysis.handler.get_md5(new_samp),
+                sha1 = sanalysis.handler.get_sha1(new_samp),
+                sha256 = sanalysis.handler.get_sha256(new_samp),
+                fuzzy = sanalysis.handler.get_fuzzy(new_samp),
+            )
+            
+            newsample.save()
+            
+            #Post processing
+            
+            s = Sample.objects.filter().order_by('-id')[0]
+            s.exif = sanalysis.handler.get_exif(s.sample)
+            
+            s.strings = sanalysis.handler.get_strings(s.sample)
+            s.balbuzard = sanalysis.handler.get_balbuzard(s.sample)
+            s.trid = sanalysis.handler.get_trid(s.sample)
+
+            #SSDEEP/Fuzzy hash comparison
+            s.ssdeep_compare = sanalysis.handler.ssdeep_compare(s.fuzzy, s.md5)
+
+            #VirusTotal Search
+            vt_res, vt_short_res = sanalysis.handler.get_vt(s.md5)
+            if vt_res:
+                s.vt = vt_res
+                s.vt_short = vt_short_res
+
+            #If EXE file, run EXE-specific checks
+            if "PE32" and "Windows" in s.type:
+                s.peframe = sanalysis.handler.get_peframe(s.sample)
+                s.pescanner = sanalysis.handler.get_pescanner(s.sample)
+
+            #If PDF file, run PDF-specific checks
+            if "PDF" in s.type:
+                s.pdfid = sanalysis.handler.get_pdfid(s.sample)
+                s.peepdf = sanalysis.handler.get_peepdf(s.sample)
+
+            #If DOC file, run DOC-specific checks
+            if "Document File V2" in s.type:
+                s.oleid = sanalysis.handler.get_oleid(s.sample)
+                #If valid OLE file, run OLEMETA
+                olematch = re.compile(r'\|\s+OLE format\s+\|\s+True\s+\|')
+                if olematch.search(s.oleid):
+                    s.olemeta = sanalysis.handler.get_olemeta(s.sample)
+                #If VBA code detected, run OLEVBA
+                vbamatch = re.compile(r'\|\s+VBA Macros\s+\|\s+True\s+\|')
+                if vbamatch.search(s.oleid):
+                    s.olevba = sanalysis.handler.get_olevba(s.sample)
+
+            #If RTF file, run RTFOBJ
+            if "Rich Text Format" in s.type:
+                rtfobj, rtflist = sanalysis.handler.get_rtfobj(s.sample)
+                s.rtfobj = rtfobj
+
+            s.save()
+            
+
+    a=1
+    return a
     
 def run_extractscripts(file, md5, es_loc):
     if "text/html" in file:
@@ -233,6 +321,17 @@ def get_formatting(data, type):
     if type=="thug":
         data = re.sub(r"(.*Classifier\]\s.*)", "<span class='orange'>\\1</span>", data)
         
+        application_list = ["application/x-msdownload",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            "application/msword",
+                            "application/octet-stream",
+                            "x-msdos-program",
+                            "application/pdf"]
+                            
+        for app in application_list:
+            if app in data:
+                data = re.sub(r"(%s.*MD5:\s)([a-f0-9]{32})" % app, "\\1<a href='/sanalysis/md5/\\2/' target='_blank'>\\2</a>", data)
+        
     elif type=="url":
         #Highlight URLs red
         #RegEx pulled from https://gist.github.com/gruber/8891611
@@ -260,7 +359,33 @@ def get_formatting(data, type):
     return data
     
     
-    
+def ssdeep_compare(fuzzy, md5):
+    #Compare Fuzzy hash of file to all files in db
+    #fuzzy_threshold defined in settings.py - default = 10
+    all_samples = URL.objects.all()
+    ssdeep_compare_res = ""
+    res_dict = {}
+
+    for sample in all_samples:
+        if sample.md5 != md5:
+            if sample.fuzzy:
+                fuzzy_res = pydeep.compare(fuzzy,sample.fuzzy)
+                if fuzzy_res >= fuzzy_threshold:
+                    res_dict[sample.md5] = [str(fuzzy_res), sample.uri]
+            else:
+                continue
+
+    for k, v in res_dict.iteritems():
+        ssdeep_compare_res += "<a href='../"
+        ssdeep_compare_res += k
+        ssdeep_compare_res += "'>"
+        ssdeep_compare_res += v[1]
+        ssdeep_compare_res += "</a>\t"
+        ssdeep_compare_res += v[0]
+        ssdeep_compare_res += "\r\n"
+
+
+    return ssdeep_compare_res    
     
     
     

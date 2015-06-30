@@ -41,7 +41,7 @@
                         {% if s.uri %}
                             <div class="one-file">
                                 <div class="filename">
-                                    <p><a href="{% static savename %}" title="{% static savename %}">{{ s.uri|truncatechars:27 }}</a></p>
+                                    <p><a href="" title="{{ s.uri }}">{{ s.uri|truncatechars:27 }}</a></p>
                                 </div>
                                 <div class = "ticket">
                                     <p>{{ s.ticket }}</p>
@@ -57,9 +57,20 @@
                         </div><!--end basic-info class-->
                         <div class="hashes">
                             <p><b>MD5:</b> {{ s.md5 }}</p>
+                            <p><b>FUZZY:</b> {{ s.fuzzy }}</p>
                         </div>
 
 			</div><!--end sample wrapper-->
+            {% if s.ssdeep_compare %}
+			    <div class="ssdeep_compare">
+    			        <p>
+				<h3>SSDEEP Comparison</h3> 
+				{% autoescape off %}
+				<pre>{{ s.ssdeep_compare }}</pre>
+				{% endautoescape %}
+				</p>
+			    </div>
+			{% endif %}
             {% if s.thug %}
                  <div class="exif">
                     <p><h3>Thug Results</h3> <pre>{% autoescape off %}{{ s.thug }}{% endautoescape %}</pre></p>
@@ -447,10 +458,10 @@ MD5:      {{ drop.md5 }}
                                     <h3>Plaintext Results</h3>
 
                                     <textarea>
-{{ plaintext.ticket }}, Analysis Complete, Non-Incident
-{{ plaintext.ticket }}, Analysis Complete, SPAM
-{{ plaintext.ticket }}, Analysis Complete, AV-Detected
-{{ plaintext.ticket }}, Analysis Complete, Malcode Detected
+{{ s.ticket }}, Analysis Complete, Non-Incident
+{{ s.ticket }}, Analysis Complete, SPAM
+{{ s.ticket }}, Analysis Complete, AV-Detected
+{{ s.ticket }}, Analysis Complete, Malcode Detected
 
 Reason for Ticket/Alert         :
 
@@ -501,6 +512,12 @@ Email Info                      :
 
 
 --NOTES--
+
+{% if s.thug %}#### Thug ####
+{{ s.thug }}{% endif %}
+
+{% if s.js %}#### JavaScript ####
+{{ s.js }}{% endif %}
 
 {% if s.vt %}#### VirusTotal ####
 {{ s.vt }}{% endif %}

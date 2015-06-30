@@ -1,5 +1,6 @@
 from django import forms
 from .models import URL
+from django.core.validators import validate_integer
 
 class UploadUrlForm(forms.ModelForm):
 
@@ -18,6 +19,10 @@ class UploadUrlForm(forms.ModelForm):
         model = URL
         #fields = '__all__'
         fields = ('uri', 'ticket')
+        
+    def clean(self):
+        cd = self.cleaned_data
+        validate_integer(cd.get('ticket', None))
         
 #    ticket = forms.CharField(max_length=32)
 #    sample = forms.FileField()

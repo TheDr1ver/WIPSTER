@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.utils import timezone
+from django.template import RequestContext
 from sanalysis.settings import *
 from .forms import UploadFileForm
 from .models import Sample
@@ -37,7 +38,7 @@ def upload_form(request):
                 sha256 = handler.get_sha256(f),
                 fuzzy = handler.get_fuzzy(f),
             )
-
+            #breakdebug
             newsample.save()
 
             #Do post-processing stuff here
@@ -99,7 +100,11 @@ def upload_form(request):
             newpage = "/sanalysis/md5/" + s.md5 + "/?upload=True"
 
             return HttpResponseRedirect(newpage)
-
+        else:
+            form = UploadFileForm()
+            sample = Sample.objects.filter(created__lte=timezone.now()).order_by('-id')[:25]
+            return render(request, 'sanalysis/upload_form.html', {'form': form, 'sample': sample},
+                            context_instance = RequestContext(request))
 
 #            return HttpResponseRedirect('/sanalysis/')
 

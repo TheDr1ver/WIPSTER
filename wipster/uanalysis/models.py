@@ -6,6 +6,8 @@ class URL(models.Model):
     uri = models.TextField(default='')
     ticket = models.CharField(max_length=32)
     md5 = models.CharField(max_length=32)
+    fuzzy = models.TextField(default='')
+    ssdeep_compare = models.TextField(default='')
     html = models.TextField(default='')
     thug = models.TextField(default='')
     js = models.TextField(default='')
