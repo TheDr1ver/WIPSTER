@@ -256,9 +256,10 @@ def get_sample(file, md5, ticket):
 def run_extractscripts(file, md5, es_loc):
     if "text/html" in file:
         #chg_dir = "./uanalysis/static/urls/"+md5+"/"+file[:-32]
-        chg_dir = "./uanalysis/static/urls/"+md5+"/"+file+"_files"
+        chg_dir = "\"./uanalysis/static/urls/"+md5+"/"+file+"_files\""
+        chg_dir2 = chg_dir.split("_files")[0]+"\""
         #Make a new directory, move the existing file to that directory, then cd to new directory, run extractscripts, and bounce back to original dir
-        cmd = ["mkdir "+chg_dir+" && mv "+chg_dir[:-6]+" "+chg_dir+" && cd "+chg_dir+" && "+es_loc+" "+file[-32:]+" && cd -"]
+        cmd = ["mkdir "+chg_dir+" && mv "+chg_dir2+" "+chg_dir+" && cd "+chg_dir+" && "+es_loc+" "+file[-32:]+" && cd -"]
         print str(cmd)
         run = subprocess.Popen(cmd,
                                stdout=subprocess.PIPE,
@@ -278,7 +279,7 @@ def get_js(base_dir, results):
             fjs = open(full_name)
             js_content = fjs.read()
             #results['js']+="\r\n<!-- WIPSTER SPLIT "+filename+" -->\r\n"
-            if js_content.strip() and js_content!="//": #Check to make sure the file is not empty
+            if js_content.strip() and js_content!="//" and len(js_content)>6: #Check to make sure the file is not empty
                 results['js']+="<h3>Raw JS From "+filename+"</h3>\r\n<pre>\r\n"
                 results['js']+=cgi.escape(js_content)
                 results['js']+="</pre>"
@@ -336,21 +337,31 @@ def get_formatting(data, type):
         #Highlight URLs red
         #RegEx pulled from https://gist.github.com/gruber/8891611
         #Python pulled from https://gist.github.com/uogbuji/705383
-        GRUBER_URLINTEXT_PAT = re.compile(ur'(?miu)\b((?<!<h3>)(?:https?://|www\d{0,3}[.]|[a-z0-9.\-;&\?=]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{}:\'\".,<>\xab\xbb\u201c\u201d\u2018\u2019]))')
+        #GRUBER_URLINTEXT_PAT = re.compile(ur'(?miu)\b((?<!<h3>)(?:https?://|www\d{0,3}[.]|[a-z0-9.\-;&\?=]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{}:\'\".,<>\xab\xbb\u201c\u201d\u2018\u2019]))')
+        #GRUBER_URLINTEXT_PAT = re.compile(ur'(?miu)\b(\w+\s*=\s*[\'\"](https?://[^\"\']+)[\'\"])')
+        #GRUBER_URLINTEXT_PAT = re.compile(ur'(?miu)\b(\w+\s*=\s*[\'\"](https?:[^\"\']+)[\'\"])')
+        GRUBER_URLINTEXT_PAT = re.compile(ur'(?miu)(\s*[=:]\s*[\'\"](https?:[^\"\']+)[\'\"])')
+
         found_urls = GRUBER_URLINTEXT_PAT.findall(data)
         urls = []
         for f_u in found_urls:
-            if f_u[0] not in urls:
-                urls.append(f_u[0])
+            if f_u[1] not in urls:
+                urls.append(f_u[1])
             #urls.append(f_u[0])
         #data = str(data)
-        
+
+        urls.sort(key = len, reverse=True)
+        #urls.sort(key = len)
+
         for u in urls:
             if u in data:
-                #u = str(u)
+                u2=u.replace('http', 'ht<!---->tp')  #This keeps a long link from re-matching with the shorter version
+                #Otherwise, http://badguy.com/something/somethingelse.php would be rewritten to only highlight
+                #http://badguy.com after it got to that enetry in the list
+
                 #Find all the instances of this URI in the data set
                 #If they don't start with </h3>, re.sub it for the red span
-                data = data.replace(u, "<span class='red'>%s</span>" % u)
+                data = data.replace(u, "<span class='red'>%s</span>" % u2)
         #breakdebug
 
     elif type=="form_post":
@@ -370,7 +381,7 @@ def ssdeep_compare(fuzzy, md5):
         if sample.md5 != md5:
             if sample.fuzzy:
                 fuzzy_res = pydeep.compare(fuzzy,sample.fuzzy)
-                if fuzzy_res >= fuzzy_threshold:
+                if fuzzy_res > fuzzy_threshold:
                     res_dict[sample.md5] = [str(fuzzy_res), sample.uri]
             else:
                 continue

@@ -246,18 +246,21 @@ def get_rtfobj(f):
     # save in the appropriate directory
     rtfobj_res = ''
     rtflist = []
+    rtf_objects = rtf_iter_objects(f.name)
+    if rtf_objects:
+        for index, data in rtf_iter_objects(f.name):
+            rtfobj_res += 'found object size %d at index %08X \r\n' % (len(data), index)
+            fname, junk = os.path.split(f.name)
+            fname += '/object_%08X.bin' % index
+            rtflist.append(fname)
+    #        rtfobj_res += 'saving to file %s \r\n' %fname
+            linkname = fname.split('/', 1)
+            rtfobj_res += "saving to file <a href='/{0}'>{1}</a>\r\n".format(linkname[1],fname)
+            open(fname, 'wb').write(data)
 
-    for index, data in rtf_iter_objects(f.name):
-        rtfobj_res += 'found object size %d at index %08X \r\n' % (len(data), index)
-        fname, junk = os.path.split(f.name)
-        fname += '/object_%08X.bin' % index
-        rtflist.append(fname)
-#        rtfobj_res += 'saving to file %s \r\n' %fname
-        linkname = fname.split('/', 1)
-        rtfobj_res += "saving to file <a href='/{0}'>{1}</a>\r\n".format(linkname[1],fname)
-        open(fname, 'wb').write(data)
-
-    #return unicode(rtfobj_res, 'utf-8', errors="replace"), unicode(rtflist, 'utf-8', errors="replace")
+        #return unicode(rtfobj_res, 'utf-8', errors="replace"), unicode(rtflist, 'utf-8', errors="replace")
+    else:
+        rtfobj_res += "No RTF Objects Found."
     return unicode(rtfobj_res, 'utf-8', errors="replace"), rtflist
 
 def get_rtfobj_str(rtflist):
@@ -332,7 +335,10 @@ def get_vt(md5):
     if vt_use:
         response = urllib2.urlopen(req)
         json_resp = response.read().decode('utf-8')
-        vt_resp = json.loads(json_resp)
+        try:
+            vt_resp = json.loads(json_resp)
+        except ValueError, e:
+            vt_resp['response_code']='No JSON response - likely hit VT API rate limit.'
         if vt_resp['response_code'] or vt_resp['response_code']==0:
             if vt_resp['response_code']==1:
 
