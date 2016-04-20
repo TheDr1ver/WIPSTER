@@ -1,7 +1,7 @@
 WIPSTER on Django (Alpha):
 
 A rebuild of WIPSTER from the ground-up in a modular, cleaner,
-faster, leaner, and damn-sexier manner, utilizing the Django framework.
+faster, and leaner manner, utilizing the Django framework.
 
 This is completely in its alpha stages, but the raw base functionality currently works.
 
