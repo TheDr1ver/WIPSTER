@@ -5,7 +5,7 @@ faster, and leaner manner, utilizing the Django framework.
 
 This is completely in its alpha stages, but the raw base functionality currently works.
 
-Just install Django, customize settings.py to your liking, run 
+Just install Django, customize ./sanalysis/settings.py to your liking, run 
 python manage.py runserver 0.0.0.0:8000 from the /wipster/ base directory,
 point your browser to <your-ip>:8000/sanalysis, and you're off and running.
 
