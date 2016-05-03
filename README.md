@@ -5,13 +5,13 @@ A rebuild of WIPSTER from the ground-up in a modular, cleaner, faster, and leane
 This is completely in its alpha stages, but the raw base functionality currently works.
 
 ## Usage
-1. Install Django
-2. Customize ./sanalysis/settings.py with your personal settings
-3. Run this from the /wipster/ base directory:
+- Install Django
+- Customize ./sanalysis/settings.py with your personal settings
+- Run this from the /wipster/ base directory:
 ```sh
 python manage.py runserver 0.0.0.0:8000 
 ```
-4. Point your browser to :8000/sanalysis, and you're off and running.
+- Point your browser to :8000/sanalysis, and you're off and running.
 
 ## To-Do List:
 
