@@ -11,7 +11,7 @@ This is completely in its alpha stages, but the raw base functionality currently
 ```sh
 python manage.py runserver 0.0.0.0:8000 
 ```
-4. from the /wipster/ base directory, point your browser to :8000/sanalysis, and you're off and running.
+4. point your browser to :8000/sanalysis, and you're off and running.
 
 ## To-Do List:
 
