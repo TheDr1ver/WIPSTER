@@ -12,7 +12,7 @@
                 {% if s.peframe or s.pescanner %}
                 <li><a href="#exe">EXE Analysis</a></li>
                 {% endif %}
-                {% if s.pdfid or peepdf %}
+                {% if s.pdfid or s.peepdf or s.pdf_strings %}
                 <li><a href="#pdf">PDF Analysis</a></li>
                 {% endif %}
                 {% if s.oleid or s.rtfobj %}
@@ -148,6 +148,12 @@
                         {% if s.peepdf %}
                             <div class="peepdf">
                                 <p><h3>PEEPDF</h3> <pre>{{ s.peepdf }}</pre></p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if s.pdf_strings %}
+                            <div class="pdf_strings">
+                                <p><h3>PDF Strings</h3> <pre>{{ s.pdf_strings }}</pre></p>
                             </div>
                         {% endif %}
                         
@@ -520,6 +526,9 @@ Email Info                      :
 
 {% if s.peepdf %}#### PEEPDF ####
 {{ s.peepdf }}{% endif %}
+
+{% if s.pdf_strings %} #### PDF Strings ####
+{{ s.pdf_strings }}{% endif %}
 
 {% if s.oleid %}#### OLEID ####
 {{ s.oleid }}{% endif %}
