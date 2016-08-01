@@ -2,7 +2,7 @@
 # add important information to the database
 
 import hashlib, os, string, time, magic, pydeep, exiftool, subprocess
-import re, sys, binascii, simplejson, urllib, urllib2, json
+import re, sys, binascii, simplejson, urllib, urllib2, json, PyPDF2, StringIO
 #from django.utils import timezone
 
 from sanalysis.settings import *
@@ -183,6 +183,22 @@ def get_peepdf(f):
     peepdf_res = run.communicate()[0]
 
     return unicode(peepdf_res, 'utf-8', errors="replace")
+    
+def get_pdfstrings(f):
+    fname = f.name
+    with open(fname, 'rb') as fh:
+        src_pdf_blob = fh.read()
+        
+    texts = []
+    pdf = PyPDF2.PdfFileReader(StringIO.StringIO(src_pdf_blob))
+    for page_num, page in enumerate(pdf.pages):
+        texts.append(page.extractText())
+    extracted_text = ("*"*80 + "\n").join(texts)
+    
+    #print extracted_text
+    
+    return extracted_text.encode('utf-8', errors="replace")
+    #return unicode(extracted_text, 'utf-8', errors="replace")
 
 def get_oleid(f):
     # Call OLEID (only if Word Doc detected)
