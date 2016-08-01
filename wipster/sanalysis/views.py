@@ -69,6 +69,7 @@ def upload_form(request):
             if "PDF" in s.type:
                 s.pdfid = handler.get_pdfid(s.sample)
                 s.peepdf = handler.get_peepdf(s.sample)
+                s.pdf_strings = handler.get_pdfstrings(s.sample)
 
             #If DOC file, run DOC-specific checks
             if "Document File V2" in s.type:
