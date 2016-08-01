@@ -55,6 +55,7 @@ class Sample(models.Model):
     peframe = models.TextField(default='')
     pescanner = models.TextField(default='')
     pdfid = models.TextField(default='')
+    pdf_strings = models.TextField(default='')
     peepdf = models.TextField(default='')
     oleid = models.TextField(default='')
     olemeta = models.TextField(default='')
